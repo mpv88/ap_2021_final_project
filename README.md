@@ -11,6 +11,10 @@ Red-Black Trees are binary search trees satisfying the following conditions:
 
 Thanks to the mentioned properties, it is possible to insert, delete, and search a value in a red-black tree in time O(log n) [1].
 
+
+![image](https://user-images.githubusercontent.com/56740461/185750889-6148a944-393e-4abe-865c-fbe0f3dc16b1.png)
+
+
 ## References
 <a id="1">[1]</a> 
 Thomas H. Cormen, Charles E. Leiserson, Ronald L. Rivest, and Clifford Stein. 
