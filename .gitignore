@@ -28,9 +28,10 @@
 
 # Executables
 *.exe
+*.x
 *.out
+*.o
 *.app
 
 # Folders
 .vscode/*
-bin/*
