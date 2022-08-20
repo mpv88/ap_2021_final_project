@@ -1,15 +1,35 @@
-# Makefile to compile, clean and format all the sample codes
+CXX = c++
+CXXFLAGS = -Wall -Wextra -g -std=c++14
 
-default: all
+SRC = 01_variables.cpp            \
+      02_hello_name.cpp           \
+      03_loops.cpp                \
+      04_vars_pointers_refs.cpp   \
+      05_functions.cpp            \
+      06_watch_out.cpp 
 
-all: 
-	+$(MAKE) $@ -C c++
+EXE = $(SRC:.cpp=.x)
+
+# eliminate default suffixes
+.SUFFIXES:
+SUFFIXES =
+
+# just consider our own suffixes
+.SUFFIXES: .cpp .x
+
+all: $(EXE)
+
+.PHONY: all
+
+%.x: %.cpp 
+	$(CXX) $< -o $@ $(CXXFLAGS)
+
+format: $(SRC)
+	@clang-format -i $^ -verbose || echo "Please install clang-format to run this command"
+
+.PHONY: format
 
 clean:
-	+$(MAKE) $@ -C c++
-	@find . -type f \( -name '*~' -o -name 'a.out' \) -exec rm '{}' \;
+	rm -f $(EXE) *~
 
-format:
-	+$(MAKE) $@ -C c++
-
-.PHONY: all clean format default
+.PHONY: clean
