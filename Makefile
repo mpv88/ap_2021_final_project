@@ -1,6 +1,3 @@
-cd test
-le to compile, clean and format all the sample codes
-
 default: all
 
 all: 
