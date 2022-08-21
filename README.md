@@ -20,6 +20,3 @@ Thanks to the mentioned properties, it is possible to insert, delete, and search
 Thomas H. Cormen, Charles E. Leiserson, Ronald L. Rivest, and Clifford Stein. 
 Introduction to Algorithms. 
 The MIT Press, 2nd edition, 2001.
-
-### TODOs
--pp. 2, 'delete' has void type (not bool)
