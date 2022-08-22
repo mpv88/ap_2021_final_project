@@ -1,6 +1,6 @@
 # compiler
-CC := g++	#simple assignment
-CFLAGS = -Wall -Wextra -g -std=c++17
+CXX := g++	#simple assignment
+CXXFLAGS := -Wall -Wextra -g -std=c++17
 
 # directories
 SRC_DIR := src
@@ -19,14 +19,14 @@ INCLUDE := $(wildcard $(SRC_DIR)/*$(ICL_EXT))
 OBJECTS := $(patsubst $(SRC_DIR)/%, $(OBJ_DIR)/%, $(SOURCES):.$(SRC_EXT)=$(OBJ_DIR):.$(OBJ_EXT))
 
 # directives
-RM := rm -f
+RM := rm -rf
 
 all:
 
 
 
 clean:
-	@$(RM) $(TGT_DIR)/* $(OBJECTS)
+	@$(RM) $(OBJECTS) $(TGT_DIR)
 	@echo -e "cleaned!\n"
 
 clears:
