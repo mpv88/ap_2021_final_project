@@ -2,4 +2,11 @@
 
 #include "RBTree.h"
 
-typedef std::pair<int,std::map<Var,unsigned int>> node;
+// Node constructor
+Node::Node(int data) {
+       this->data = data;
+       left = right = parent = nullptr;
+       this->color = RED;
+    }
+
+// RBTree constructor
