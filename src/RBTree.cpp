@@ -28,7 +28,7 @@ int RBTree::getColor(Node *&node) {
 /**
  * @brief sets black for root & leaf nodes
  */
-int RBTree::setColor(Node *&node) {}
+void RBTree::setColor(Node *&, int) {}
 
 
 

@@ -3,6 +3,7 @@ CXX := g++
 CXXFLAGS := -Wall -Wextra -g -std=c++17
 
 # directories
+DOC_DIR := ./doxygen
 SRC_DIR := ./src
 OBJ_DIR := ./build
 TGT_DIR := ./bin
@@ -41,6 +42,9 @@ clears:
 	@clear
 	@echo "screen cleared!"
 
+docs: ./doxygen/doxy_config
+	doxygen $<
+
 format: 
 	$(SOURCES) $(INCLUDES)
 	@clang-format -i $^ -verbose || echo "Please install clang-format to run this command"
@@ -49,4 +53,4 @@ format:
 print:
 	echo $(SOURCES)
 	
-.PHONY: all clean clears extend_flags format test valgrind print
+.PHONY: all clean clears docs format test valgrind print
