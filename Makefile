@@ -42,7 +42,7 @@ clears:
 	@clear
 	@echo "screen cleared!"
 
-docs: ./doxygen/doxy_config
+docs: $(DOC_DIR)/doxy_config
 	doxygen $<
 
 format: 
