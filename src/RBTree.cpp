@@ -17,7 +17,7 @@ RBTree::RBTree() {
 // RBTree protected methods
 
 /**
- * @brief gets black for all leaf nodes
+ * @brief gets black for root & leaf nodes
  */
 int RBTree::getColor(Node *&node) {
     if (node == nullptr)
@@ -25,7 +25,10 @@ int RBTree::getColor(Node *&node) {
     return node->color;
 }
 
-
+/**
+ * @brief sets black for root & leaf nodes
+ */
+int RBTree::setColor(Node *&node) {}
 
 
 
