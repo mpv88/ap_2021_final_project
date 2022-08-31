@@ -19,7 +19,7 @@ int main() {
         std::cout << "Please enter a number" << std::endl;
         rbt2.insertValue(number);
         std::cout << "Number is appended to the tree" << std::endl;
-    
+    }
     rbt2.preorder();
 
     rbt1.merge(rbt2);
