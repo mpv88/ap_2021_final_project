@@ -5,8 +5,9 @@
 
 enum RBTColor {BLACK=0, RED=1};
 
-//TODO: form struct to templated class
-struct Node {
+//TODO: template all classes
+class Node {
+public:
     int data; // key value
     RBTColor color; // red/black
     Node *left, *right, *parent; //self-referential pointers
