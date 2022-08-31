@@ -10,3 +10,13 @@ Node::Node(int data) {
     }
 
 // RBTree constructor
+RBTree::RBTree() {
+    root = nullptr;
+
+// RBTree protected methods
+
+
+
+
+}
+

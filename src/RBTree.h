@@ -19,27 +19,30 @@ struct Node {
 class RBTree {
 private:
     Node *root;
+
 protected:
+    int getColor(Node *&);
+    void setColor(Node *&, int);
+    Node* insertBST(Node *&, Node *&);
     void rotateLeft(Node *&);
     void rotateRight(Node *&);
     void fixInsertRBTree(Node *&);
     void fixDeleteRBTree(Node *&);
+    Node* deleteBST(Node *&, int);
     void inorderBST(Node *&);
     void preorderBST(Node *&);
-    int getColor(Node *&);
-    void setColor(Node *&, int);
     Node *minValueNode(Node *&);
     Node *maxValueNode(Node *&);
-    Node* insertBST(Node *&, Node *&);
-    Node* deleteBST(Node *&, int);
     int getBlackHeight(Node *);
+
 public:
     RBTree(); // constructor
     void insertValue(int);
     void deleteValue(int);
-    void merge(RBTree);
     void inorder();
     void preorder();
+    void merge(RBTree);
+
 };
 
 
