@@ -35,7 +35,7 @@ $(OBJECTS): $(OBJ_DIR)/%$(OBJ_EXT): $(SRC_DIR)/%$(SRC_EXT)
 	@echo "compiled "$^" successfully!"
 
 clean:
-	@$(RM) $(OBJ_DIR) $(TGT_DIR)/$(TARGET)
+	@$(RM) $(DOC_DIR)/html $(DOC_DIR)/latex $(OBJ_DIR) $(TGT_DIR)/$(TARGET)
 	@echo "cleaned!"
 
 clears:
@@ -53,4 +53,4 @@ format:
 print:
 	echo $(SOURCES)
 	
-.PHONY: all clean clears docs format test valgrind print
+.PHONY: all clean clears docs format test print
