@@ -22,6 +22,10 @@ private:
     Node *root;
 
 protected:
+
+    /// @brief Gets black for root & leaf nodes.
+    /// @param node Node to get color of.
+    /// @return The sum of both parameters.
     int getColor(Node *&);
     void setColor(Node *&, int);
     Node* insertBST(Node *&, Node *&);

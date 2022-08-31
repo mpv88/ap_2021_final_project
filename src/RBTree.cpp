@@ -16,18 +16,13 @@ RBTree::RBTree() {
 
 // RBTree protected methods
 
-/**
- * @brief gets black for root & leaf nodes
- */
 int RBTree::getColor(Node *&node) {
+    /// Lorem ipsum.
     if (node == nullptr)
         return BLACK;
     return node->color;
 }
 
-/**
- * @brief sets black for root & leaf nodes
- */
 void RBTree::setColor(Node *&, int) {}
 
 
