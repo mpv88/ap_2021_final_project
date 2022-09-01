@@ -3,52 +3,62 @@
 #ifndef RBTREE_H
 #define RBTREE_H
 
-enum RBTColor {BLACK=0, RED=1};
+#include<functional>
+#include<queue>
+#include "RBTnode.h"
+#include "RBTiterator.h"
 
-//TODO: template all classes
-class Node {
+template< typename T >
+class rb_tree {
+    
 public:
-    int data; // key value
-    RBTColor color; // red/black
-    Node *left, *right, *parent; //self-referential pointers
- 
-    //      RBTNode(T value, RBTColor c, RBTNode *p, RBTNode *l, RBTNode * r):
-    //      key(value),color(c),parent(),left(l),right(r) {}
-    explicit Node(int); // constructor
-};
+	//type definitions:
+	typedef typename rb_node<T> node_type;
+	typedef typename T value_type;
+	typedef rb_iterator<node_type> iterator;
 
-class RBTree {
-private:
-    Node *root;
+	//members
+	node_type *root;
+	unsigned long size;
+
+	//constructors
+	explicit rb_tree(void);
+	
+	template<typename Iterator_>
+	explicit rb_tree(Iterator_ begin, Iterator_ end);
+
+	//utilities
+	bool empty(void) const;
+    iterator max(void);
+	iterator min(void);
+	iterator begin(void);
+	iterator end(void);
+	
+	//insertion overloading
+	iterator insert(value_type value);
+	iterator insert( iterator &current, value_type &value);
+	template<typename Iterator_>
+	void insert(Iterator_ begin, Iterator_ end);
+
+	//RBT insertion
+	node_type *insert(node_type *node);
+
+	//RBT print methods
+	void print();
+	void inorder_print(node_type *ptr);
+	int height();
 
 protected:
-
-    /// @brief Gets black for root & leaf nodes.
-    /// @param node Node to get color of.
-    /// @return The sum of both parameters.
-    int getColor(Node *&);
-    void setColor(Node *&, int);
-    Node* insertBST(Node *&, Node *&);
-    void rotateLeft(Node *&);
-    void rotateRight(Node *&);
-    void fixInsertRBTree(Node *&);
-    void fixDeleteRBTree(Node *&);
-    Node* deleteBST(Node *&, int);
-    void inorderBST(Node *&);
-    void preorderBST(Node *&);
-    Node *minValueNode(Node *&);
-    Node *maxValueNode(Node *&);
-    int getBlackHeight(Node *);
-
-public:
-    RBTree(); // constructor
-    void insertValue(int);
-    void deleteValue(int);
-    void inorder();
-    void preorder();
-    void merge(RBTree);
-
+	void print(node_type *node);
+	int height(node_type *node);
+	node_type *binary_insert(node_type*node);
+	void rb_adjust(node_type *node);
+	void left_rotate(node_type *node);
+	void right_rotate(node_type *node);
 };
 
+// instantiation parametrized template classes
+// https://stackoverflow.com/questions/115703/storing-c-template-function-definitions-in-a-cpp-file
+template typename rb_tree<int>;
 
 #endif // RBTREE_H
