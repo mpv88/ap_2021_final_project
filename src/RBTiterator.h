@@ -34,7 +34,6 @@ class rb_iterator:  public std::iterator<bidirectional_iterator_tag, typename T:
         rb_iterator operator--(void);
         rb_iterator operator--(int);
         rb_iterator & operator=(const_reference that);
-
         bool operator==(const rb_iterator & that) const;
         bool operator!=(const rb_iterator & that) const;
         operator T &();

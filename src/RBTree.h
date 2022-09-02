@@ -8,7 +8,7 @@
 #include "RBTnode.h"
 #include "RBTiterator.h"
 
-template< typename T >
+template<typename T>
 class rb_tree {
     public:
         //definition of new types:
