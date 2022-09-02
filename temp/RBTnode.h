@@ -13,7 +13,7 @@ class rb_node {
 
     public:
         //definition of new types:
-        typedef typename T value_type;
+        typedef T value_type;
         
         T value;            // key value
         bool color;         // red/black

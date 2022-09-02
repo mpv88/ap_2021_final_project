@@ -58,6 +58,6 @@ class rb_tree {
 
 // instantiation parametrized template classes
 // https://stackoverflow.com/questions/115703/storing-c-template-function-definitions-in-a-cpp-file
-template typename rb_tree<int>;
+//template typename rb_tree<int>;
 
 #endif // RBTREE_H
