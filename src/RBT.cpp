@@ -2,7 +2,7 @@
 
 #include "RBT.hpp"
 
-using namespace std;
+
 //RBT methods
 
 void RBTree::initializeNULLNode(NodePtr node, NodePtr parent) {
@@ -250,6 +250,7 @@ void RBTree::printHelper(NodePtr root, string indent, bool last) {
     }
     cout<<root->left->data<<endl;
 }
+
 
 // RBTree Constructors
 RBTree::RBTree() {
