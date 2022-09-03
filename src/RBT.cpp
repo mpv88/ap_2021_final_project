@@ -248,7 +248,7 @@ void RBTree::printHelper(NodePtr root, string indent, bool last) {
     printHelper(root->left, indent, false);
     printHelper(root->right, indent, true);
     }
-    cout<<root->left->data<<endl;
+    //cout<<root->left->data<<endl; //segmentation fault
 }
 
 
