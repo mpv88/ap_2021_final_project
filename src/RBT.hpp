@@ -57,7 +57,7 @@ class RBTree {
         void insert(int key);
         NodePtr getRoot();
         void deleteNode(int data);
-        void prettyPrint();
+        void printTree();
 };
 
 #endif // RBTREE_H
