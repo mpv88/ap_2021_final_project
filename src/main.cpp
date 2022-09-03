@@ -14,6 +14,6 @@ int main() {
   bst.insert(40);
   bst.insert(80);
   bst.deleteNode(25);
-  bst.prettyPrint();
+  bst.printTree();
   return 0;
 }
