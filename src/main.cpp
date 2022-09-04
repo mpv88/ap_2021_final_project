@@ -1,7 +1,6 @@
 // RBT driver
 
-#include"RBT.hpp"
-
+#include "RBT.hpp"
 
 int main() {
   RBTree bst;
