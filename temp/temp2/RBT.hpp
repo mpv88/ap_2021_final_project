@@ -1,14 +1,11 @@
-////file RBT.hpp
-////author mpv
-////September 2022
-///brief header file with all RBT's members' definitions
+// RBT definition header
 
 #ifndef RBT_H
 #define RBT_H
 
 #include <iostream>
-#include <memory>
-#include <vector>
+
+using namespace std;
 
 // data structure that represents a node in the tree
 class Node {
@@ -64,27 +61,3 @@ public:
 };
 
 #endif // RBTREE_H
-
-/*TODO:
-CLASSES:
-  RBTree<T, CMP=std::less<T>>
-  RBTree<T, CMP=std::less<T>>::const iterator
-
-PUBLIC METHODS:
-  for const_iterator:
-                    const T& operator*() const
-                    const T* operator->() const
-                    const_iterator& operator++()
-                    const_iterator operator++(int)
-                    const_iterator& operator--()
-                    const_iterator operator--(int)
-                    bool operator==(const const_iterator&) const
-                    bool operator!=(const const_iterator&) const
-
-  for RBTree:
-                    void insert(const T& value)
-                    bool contains(const T& value)
-                    void delete(const T& value)
-                    RBTree<T, CMP>::const_iterator begin() const
-                    RBTree<T, CMP>::const_iterator end() const
-*/
