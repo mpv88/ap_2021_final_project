@@ -82,18 +82,19 @@ CLASSES:
 
 PUBLIC METHODS:
   for const_iterator:
-                    const T& operator*() const
-                    const T* operator->() const
-                    const_iterator& operator++()
-                    const_iterator operator++(int)
-                    const_iterator& operator--()
-                    const_iterator operator--(int)
-                    bool operator==(const const_iterator&) const
-                    bool operator!=(const const_iterator&) const
+                    const T& operator*() const                        OK
+                    const T* operator->() const                       OK
+                    const_iterator& operator++()                      OK
+                    const_iterator operator++(int)                    OK
+                    const_iterator& operator--()                      OK
+                    const_iterator operator--(int)                    OK
+                    bool operator==(const const_iterator&) const      OK
+                    bool operator!=(const const_iterator&) const      OK
 
   for RBTree:
                     void insert(const T& value)
-                    bool contains(const T& value)         ----> see Bibeknam's
-searchTreeHelper void delete(const T& value) RBTree<T, CMP>::const_iterator
-begin() const RBTree<T, CMP>::const_iterator end() const
+                    bool contains(const T& value)         ----> see Bibeknam's searchTreeHelper 
+                    void delete(const T& value) 
+                    RBTree<T, CMP>::const_iterator begin() const 
+                    RBTree<T, CMP>::const_iterator end() const
 */
