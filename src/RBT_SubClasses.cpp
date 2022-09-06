@@ -27,7 +27,7 @@ public:
   ///\param p pointer to the parent node.
   /// Initializer List initializes the data members of a class,
   /// default color is BLACK, default parent is NULL [overloaded].
-  Node(<T> k, Color c = BLACK, Node *p = nullptr): data{k}, color = {c}, left{nullptr}, right{nullptr}, parent{p} {}
+  Node(<T> k, Color c = BLACK, Node *p = nullptr) : data{k}, color = {c}, left{nullptr}, right{nullptr}, parent{p} {}
 
 };
 
@@ -37,39 +37,39 @@ public:
 template <class T, class CMP> 
 class RBTree<T, CMP>::const_iterator {
   friend class RBTree; // FIXME: is this necessary?
-  typedef RBTree<T, CMP>::Node node;
+  typedef RBTree<T, CMP>::Node *NodePtr;
 
 private:
-  node *current_node; ///< node currently pointed by the iterator.
+  NodePtr current_node; ///< node currently pointed by the iterator.
   
 public:
 
   ///\brief RBTree's constant iterator constructor.
-  ///\param nd RBTree's node over which const iterator is constructed.
-  explicit const_iterator(node *nd): current_node{nd} {}
+  ///\param node RBTree's node over which const iterator is constructed.
+  explicit const_iterator(NodePtr node) : current_node{node} {}
 
   ///\brief RBTree's constant iterator indirection/deference operator.
   ///\return Const T reference to the node pointed (i.e. current) by the iterator. 
   ///       Used to get the value associated to the RBTree's const_iterator.
   const T& operator*() const {
-  
-
+    return current_node->data;
   }  
-
 
   ///\brief RBTree's constant iterator member access operator.
   ///\return Const T pointer to the node pointed (i.e. current) by the iterator. 
   ///       Used to access the value associated to the RBTree's const_iterator.
   const T* operator->() const {
-                
+    return &(*(*(this));
   }
-
 
   ///\brief RBTree's constant iterator prefix ++ operator (i.e. ++IT).
   ///\return Reference const_iterator to the new current RBTree node, after advancing IT. 
   ///       Used to pre-increment the RBTree's const_iterator.
   const_iterator& operator++() {
-
+    if (currNode_ != 0) {
+        current_node = current_node->lchild;
+    }
+    return *this;
   }     
 
   ///\brief RBTree's constant iterator postfix ++ operator (i.e. IT++).

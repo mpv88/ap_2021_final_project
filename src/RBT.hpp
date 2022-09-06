@@ -93,8 +93,7 @@ PUBLIC METHODS:
 
   for RBTree:
                     void insert(const T& value)
-                    bool contains(const T& value)         ----> see Bibeknam's searchTreeHelper 
-                    void delete(const T& value) 
-                    RBTree<T, CMP>::const_iterator begin() const 
-                    RBTree<T, CMP>::const_iterator end() const
+                    bool contains(const T& value)         ----> see Bibeknam's
+searchTreeHelper void delete(const T& value) RBTree<T, CMP>::const_iterator
+begin() const RBTree<T, CMP>::const_iterator end() const
 */
