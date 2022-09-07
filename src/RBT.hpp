@@ -6,41 +6,53 @@
 #define RBT_HPP
 
 #include <iostream>
-#include <memory>
 #include <string>
 #include <vector>
-#include "RBT_Subclasses.hpp"
+
+//RBTree class forward declaration to break cyclic references with includes.
+template <class T, class CMP = std::less<T>> 
+class RBTree;
+
+#include "RBT_SubClasses.hpp"
 #include "RBT_Methods.hpp"
 
-// FIXME:
-//  definition of new types:
-typedef Node *NodePtr;
 
-///\brief RBTree is a template class which implements R. Bayer's Red Black Tree
-///(1972) \param T type of the tree nodes' keys \param CMP relational function
-/// to compare nodes' keys (default set to std::less<T>)
-template <class T, class CMP = std::less<T>> class RBTree {
+///\brief RBTree is a template class which implements R. Bayer's Red Black Tree (1972).
+///\param T type of the tree nodes' keys.
+///\param CMP relational function to compare nodes' keys (default std::less<T>).
+template <class T, class CMP> 
+class RBTree {
+  friend class const_iterator;
+  friend class iterator;
+  typedef Node *NodePtr; //TODO: maybe duplicated from Node class
 
-protected:
-  ///\brief RBTree's single node, each node bears a key and a color (red or
-  /// black)
-  ///       each node has a parent and two children (left and right)
-  class Node; // FIXME: maybe struct?
+private:
+
+  ///\brief RBTree's single node, each node bears a key and a color (red or black).
+  ///       Each node has a parent and two children (left and right).
+  class Node;
+
 
 public:
-  ///\brief RBTree's regular iterator class
-  ///       used to iterate over a sequence and manipulate RBTree's elements
+  ///\brief RBTree's regular iterator class.
+  ///       Used to iterate over a sequence and manipulate RBTree's elements.
   class iterator;
 
-  ///\brief RBTree's constant iterator class
-  ///       used to iterate over a sequence and access only RBTree's elements
+  ///\brief RBTree's constant iterator class.
+  ///      Used to iterate over a sequence and access only RBTree's elements.
   class const_iterator;
 
-protected:
-  std::unique_ptr<Node> root; ///< root of the tree (always black)
 
-  NodePtr TNULL;
+private:
+  NodePtr root; ///< root of the tree (always black)
 
+
+
+
+
+
+
+/*
 public:
   // utility methods
   void initializeNULLNode(NodePtr node, NodePtr parent);
@@ -75,8 +87,6 @@ public:
   void printTree();
 };
 
-#endif // RBT_HPP
-
 /*TODO:
 CLASSES:
   RBTree<T, CMP=std::less<T>>                                         OK
@@ -95,7 +105,10 @@ PUBLIC METHODS:
 
   for RBTree:
                     void insert(const T& value)
-                    bool contains(const T& value)         ----> see Bibeknam's
-searchTreeHelper void delete(const T& value) RBTree<T, CMP>::const_iterator
-begin() const RBTree<T, CMP>::const_iterator end() const
+                    bool contains(const T& value)---->Bibeknam's searchTreeHelper 
+                    void delete(const T& value) 
+                    RBTree<T, CMP>::const_iterator begin() const
+                    RBTree<T, CMP>::const_iterator end() const
 */
+
+#endif // RBT_HPP

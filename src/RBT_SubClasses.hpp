@@ -39,7 +39,7 @@ public:
 ///       Used to iterate over a sequence and access only RBTree's elements.
 template <class T, class CMP> 
 class RBTree<T, CMP>::const_iterator {
-  friend class RBTree; // FIXME: is this necessary?
+  friend class RBTree;
   typedef RBTree<T, CMP>::Node *NodePtr;
 
 private:
@@ -50,6 +50,11 @@ public:
   ///\brief RBTree's constant iterator constructor.
   ///\param node RBTree's node over which const iterator is constructed.
   explicit const_iterator(NodePtr node) : current_node{node} {}
+
+
+  ///\brief RBTree's constant iterator destructor.
+  ///       RBTree's const iterator is deleted.
+    ~const_iterator() {}
 
 
   ///\brief RBTree's constant iterator indirection/deference operator.
@@ -90,8 +95,8 @@ public:
   else {                         //case C: remaining cases (no right child)   
          NodePtr p {current_node->parent}; // keep track of parent
          while (p!=nullptr && current_node==p->right) { // move up the tree
-            current_node = p; //get parent for which current is left child
-            p = p->parent; //move up one more time (increment)
+            current_node = p; //get parent for which current node is left child
+            p = p->parent; //move up increment
           }
         current_node = p; //if parent is empty
     }
