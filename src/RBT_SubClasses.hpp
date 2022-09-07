@@ -1,6 +1,9 @@
-///\file RBT.hpp
+///\file RBT_Subclasses.hpp
 ///\author mpv
 ///\brief implementation of RBT's sub-classes (iterator and const_iterator).
+
+#ifndef RBTSUBC_HPP
+#define RBTSUBC_HPP
 
 #include "RBT.hpp"
 
@@ -17,7 +20,7 @@ public:
   Color color;                 ///< color of the node (black=0 or red=1).
   Node *left, *right, *parent; ///< pointers to parent, left and right children.
 
-  ///\brief Default Constructor for the node.
+  ///\brief Default Constructor of a RBTree's node.
   ///
   Node() = default;
 
@@ -48,12 +51,14 @@ public:
   ///\param node RBTree's node over which const iterator is constructed.
   explicit const_iterator(NodePtr node) : current_node{node} {}
 
+
   ///\brief RBTree's constant iterator indirection/deference operator.
   ///\return Const T reference to the node pointed (i.e. current) by the iterator. 
   ///       Used to get the value associated to the RBTree's const_iterator.
   const T& operator*() const {
     return current_node->data;
   }  
+
 
   ///\brief RBTree's constant iterator member access operator.
   ///\return Const T pointer to the node pointed (i.e. current) by the iterator. 
@@ -62,21 +67,45 @@ public:
     return &(*(*(this));
   }
 
+
   ///\brief RBTree's constant iterator prefix ++ operator (i.e. ++IT).
   ///\return Reference const_iterator to the new current RBTree node, after advancing IT. 
   ///       Used to pre-increment the RBTree's const_iterator.
+  ///       Reference: https://www.cs.odu.edu/~zeil/cs361/latest/Public/treetraversal/index.html
   const_iterator& operator++() {
-    if (currNode_ != 0) {
-        current_node = current_node->lchild;
+  if (current_node==nullptr) { //case A: RBTree current node is empty //
+    current_node = tree->root; // move to root #FIXME: need RBT::get_root()
+      if (current_node==nullptr) //case A: RBTree current node is empty //
+        throw UnderflowException { }; // get error (if RBTree is empty)
+      while (current_node->left!=nullptr) { 
+        current_node = current_node->left; //get tree's leftmost node (smallest)
+        }
     }
-    return *this;
+  else if (current_node->right!=nullptr) { //case B: right child isn't empty
+    current_node = current_node->right; // move to right child
+    while (current_node->left!=nullptr) {
+        current_node = current_node->left; // get Rsubtree's leftmost child (smallest)
+        }
+    }
+  else {                         //case C: remaining cases (no right child)   
+         NodePtr p {current_node->parent}; // keep track of parent
+         while (p!=nullptr && current_node==p->right) { // move up the tree
+            current_node = p; //get parent for which current is left child
+            p = p->parent; //move up one more time (increment)
+          }
+        current_node = p; //if parent is empty
+    }
+  return *this;
   }     
+
 
   ///\brief RBTree's constant iterator postfix ++ operator (i.e. IT++).
   ///\return Const iterator to previously current node, after advancing IT. 
   ///       Used to post-increment the RBTree's const_iterator [overloaded].
   const_iterator operator++(int) {
-
+    const_iterator retval{*this};
+	++(*this);
+	return retval;
   }
 
 
@@ -92,21 +121,25 @@ public:
   ///\return Const iterator to previously current node, after moving backwards IT. 
   ///       Used to post-decrement the RBTree's const_iterator [overloaded].
   const_iterator operator--(int) {
-
+    const_iterator retval{*this};
+	--(*this);
+	return retval;
   }
 
 
   ///\brief RBTree's constant iterator equality operator.
-  ///\return Bool: true if both iterators points to the same node.
+  ///\return Bool: true if both iterators point to the same node.
   ///       Used to to test whether two iterators are equivalent.
   bool operator==(const const_iterator& other) const {
     return current_node == other.current_node;
   }
 
 
-
+  ///\brief RBTree's constant iterator disequality operator.
+  ///\return Bool: false if both iterators point to the same node.
+  ///       Used to to test whether two iterators are different.
   bool operator!=(const const_iterator&) const {
-
+    return current_node != other.current_node;
   }
 
 };
@@ -126,3 +159,5 @@ public:
 
 
 };
+
+#endif //RBTSUBC_HPP

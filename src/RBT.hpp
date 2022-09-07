@@ -9,6 +9,8 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include "RBT_Subclasses.hpp"
+#include "RBT_Methods.hpp"
 
 // FIXME:
 //  definition of new types:

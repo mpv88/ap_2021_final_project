@@ -1,4 +1,9 @@
-// RBT Implementation
+///\file RBT_Methods.hpp
+///\author mpv
+///\brief implementation of RBT class's methods.
+
+#ifndef RBTMTD_HPP
+#define RBTMTD_HPP
 
 #include "RBT.hpp"
 
@@ -427,3 +432,5 @@ void RBTree::printTree() {
     printHelper(this->root, "", true);
   }
 }
+
+#endif // RBTMTD_HPP
