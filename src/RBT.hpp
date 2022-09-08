@@ -1,6 +1,6 @@
 ///\file RBT.hpp
 ///\author mpv
-///\brief header file with all RBT's members' declarations.
+///\brief header file with all RBT's members' declarations and methods' definition.
 
 #ifndef RBT_HPP
 #define RBT_HPP
@@ -14,8 +14,6 @@ template <class T, class CMP=std::less<T>>
 class RBTree;
 
 #include "RBT_SubClasses.hpp"
-#include "RBT_Methods.hpp"
-
 
 ///\brief RBTree is a template class which implements R. Bayer's Red Black Tree (1972).
 ///\param T type of the tree nodes' keys.
@@ -26,7 +24,7 @@ class RBTree {
   friend class iterator;//TODO: maybe duplicated from Node class
   typedef Node *NodePtr; //TODO: maybe duplicated from Node class
 
-private:
+public:
 
   ///\brief RBTree's single node, each node bears a key and a color (red or black).
   ///       Each node has a parent and two children (left and right).
@@ -48,13 +46,30 @@ private:
   NodePtr NIL; ///< leaf of the RBTree (always black)
 
 
+//SPECIALS:
+  void initializeNULLNode(NodePtr node, NodePtr parent); //
+  void preOrderHelper(NodePtr node);
+  void inOrderHelper(NodePtr node);
+  void postOrderHelper(NodePtr node);
+  NodePtr searchTreeHelper(NodePtr node, T key);
+  void fixDelete(NodePtr x);
+  void rbTransplant(NodePtr u, NodePtr v);
+  void deleteNodeHelper(NodePtr node, T key);
+  void fixInsert(NodePtr k);
+  void printHelper(NodePtr rt, string indent, bool last);
+
+
+
+
+
+
 public:
   CMP comparator; ///< comparison operator. 
 
 
   ///\brief RBTree's constructor.
   ///       Default constructor for the RBTree class.
-  RBTree() noexcept {}
+  RBTree() noexcept : root{new Node{NIL, BLACK, nullptr}} {}
 
 
 	///\brief Constructor for RBTree given the root node.
@@ -67,16 +82,40 @@ public:
   ///       Default destructor for the RBTree class.
   ~RBTree() {}
    
-
+//--------------------------------------------------------------------
   ///\brief Copy constructor for RBTree.
 	///\param rbt The RBTree which will be copied to a new one.
 	///\param cmp A custom comparison function for tree nodes (defaulted to std::less).
   RBTree(const RBTree &rbt, CMP cmp=CMP{}) : {root = copy(rbt.root)}
  
 
+  ///\brief Copy assignment for RBTree.
+	///\param rbt The RBTree which is going to be copied.
+	///\param cmp A custom comparison function for tree nodes (defaulted to std::less).
+  RBTree& operator=(const RBTree &rbt, CMP cmp=CMP{}) {
+    if (this!=&rbt) {
+      delete root;
+      root = copy(rbt.root);
+    }
+    return *this;
+  }
+
+
+
   ///\brief Move constructor for RBTree.
 	///\param rbt The RBTree which will be moved into a new one.
 	RBTree(RBTree&& rbt) noexcept : root{std::move(rbt.root)} {}
+
+  ///\brief Move assignment for RBTree.
+	///\param rbt The RBTree which will be moved into a new one.
+	RBTree& operator=(RBTree&& rbt) {
+    if (this!=&rbt) {
+      delete root;
+      root = std::move(rbt.root);
+    }
+  }
+ 
+//--------------------------------------------------------------------
 
   ///\brief Function to insert a new value in the tree.
 	///\param value The value you are going to insert.
@@ -89,56 +128,454 @@ public:
 	///\return Bool true if the value is in the RBTree, false otherwise.
   bool contains(const T& value) const;
 
+
   ///\brief Function to delete a value from the tree.
 	///\param value The value you are going to delete.
 	///\return A RBTree without the node which contained the value inserted.
   void delete(const T& value);
-  
+
+
   ///\brief Function to get a constant tree iterator over all the tree keys.
-	///\param value The value you are going to delete.
+	///\return RBTree's const_iterator to the in-order first element of the tree.
+  RBTree<T, CMP>::const_iterator begin() const;
+
+
+  ///\brief Function to get the last value for a tree iterator.
 	///\return A RBTree without the node which contained the value inserted.
-  RBTree<T, CMP>::const_iterator begin() const
-  
-  ///\brief Function to get the last value onstant tree iterator over all the tree keys.
-	///\param value The value you are going to delete.
-	///\return A RBTree without the node which contained the value inserted.
-  RBTree<T, CMP>::const_iterator end() const
+  RBTree<T, CMP>::const_iterator end() const;
 
 
-/*
-public:
-  // utility methods
-  void initializeNULLNode(NodePtr node, NodePtr parent);
-  void preOrderHelper(NodePtr node);
-  void inOrderHelper(NodePtr node);
-  void postOrderHelper(NodePtr node);
-  NodePtr searchTreeHelper(NodePtr node, int key);
-  void fixDelete(NodePtr x);
-  void rbTransplant(NodePtr u, NodePtr v);
-  void deleteNodeHelper(NodePtr node, int key);
-  void fixInsert(NodePtr k);
-  void printHelper(NodePtr root, string indent, bool last);
-
-  //----------------------------------------------------------------
-  // Constructor
-  RBTree();
-
-  // Public methods
-  void preorder();
-  void inorder();
-  void postorder();
-  NodePtr searchTree(int k);
-  NodePtr minimum(NodePtr node);
-  NodePtr maximum(NodePtr node);
-  NodePtr successor(NodePtr x);
-  NodePtr predecessor(NodePtr x);
-  void leftRotate(NodePtr x);
-  void rightRotate(NodePtr x);
-  void insert(int key);
-  NodePtr getRoot();
-  void deleteNode(int data);
+  void preorder() const;
+  void inorder() const;
+  void postorder() const;
+  NodePtr getRoot() const;
+  NodePtr searchTree(T const key) const;
+  NodePtr minimum(NodePtr node) const;
+  NodePtr maximum(NodePtr node) const;
+  NodePtr successor(NodePtr node) const;
+  NodePtr predecessor(NodePtr node) const;
+  void leftRotate(NodePtr node);
+  void rightRotate(NodePtr node);
+  void insert(T key);
+  void deleteNode(T key);
   void printTree();
+
 };
+
+
+// private methods
+
+template <class T, class CMP> 
+void RBTree<T, CMP>::initializeNULLNode(NodePtr node, NodePtr parent) {
+  node->data{0};
+  node->color{BLACK};
+  node->parent {parent};
+  node->left {nullptr};
+  node->right {nullptr};
+}
+
+template <class T, class CMP>
+void RBTree<T, CMP>::preOrderHelper(NodePtr node) {
+  if (node!=NIL) {
+    std::cout << node->data << " ";
+    preOrderHelper(node->left);
+    preOrderHelper(node->right);
+  }
+}
+
+template <class T, class CMP>
+void RBTree<T, CMP>::inOrderHelper(NodePtr node) {
+  if (node!=NIL) {
+    inOrderHelper(node->left);
+    std::cout << node->data << " ";
+    inOrderHelper(node->right);
+  }
+}
+
+template <class T, class CMP>
+void RBTree<T, CMP>::postOrderHelper(NodePtr node) {
+  if (node!=NIL) {
+    postOrderHelper(node->left);
+    postOrderHelper(node->right);
+    std::cout << node->data << " ";
+  }
+}
+
+template <class T, class CMP>
+typename RBTree<T, CMP>::NodePtr RBTree<T, CMP>::searchTreeHelper(NodePtr node, T key) {
+  if (node==NIL || key==node->data) {
+    return node;
+  }
+  if (key < node->data) {
+    return searchTreeHelper(node->left, key);
+  }
+  return searchTreeHelper(node->right, key);
+}
+
+template <class T, class CMP>
+void RBTree<T, CMP>::fixDelete(NodePtr x) {
+  NodePtr s;
+  while (x!=root && x->color==BLACK) {
+    if (x==x->parent->left) {
+      s=x->parent->right;
+      if (s->color==RED) { 
+        // case 3.1
+        s->color=BLACK;
+        x->parent->color=RED;
+        leftRotate(x->parent);
+        s=x->parent->right;
+      }
+      if (s->left->color==BLACK && s->right->color==BLACK) {
+        // case 3.2
+        s->color=RED;
+        x=x->parent;
+      } else {
+        if (s->right->color==BLACK) {
+          // case 3.3
+          s->left->color=BLACK;
+          s->color=RED;
+          rightRotate(s);
+          s=x->parent->right;
+        }
+        // case 3.4
+        s->color=x->parent->color;
+        x->parent->color=BLACK;
+        s->right->color=BLACK;
+        leftRotate(x->parent);
+        x=root;
+      }
+    } else {
+      s=x->parent->left;
+      if (s->color==RED) {
+        // case 3.1
+        s->color=BLACK;
+        x->parent->color=RED;
+        rightRotate(x->parent);
+        s=x->parent->left;
+      }
+      if (s->right->color==BLACK && s->left->color==BLACK) {
+        // case 3.2
+        s->color=RED;
+        x=x->parent;
+      } else {
+        if (s->left->color==BLACK) {
+          // case 3.3
+          s->right->color=BLACK;
+          s->color=RED;
+          leftRotate(s);
+          s=x->parent->left;
+        }
+        // case 3.4
+        s->color=x->parent->color;
+        x->parent->color=BLACK;
+        s->left->color=BLACK;
+        rightRotate(x->parent);
+        x=root;
+      }
+    }
+  }
+  x->color=BLACK;
+}
+
+
+template <class T, class CMP>
+void RBTree<T, CMP>::rbTransplant(NodePtr u, NodePtr v) {
+  if (u->parent==NIL) {
+    root=v;
+  } else if (u==u->parent->left) {
+    u->parent->left=v;
+  } else {
+    u->parent->right=v;
+  }
+  v->parent=u->parent;
+}
+
+
+template<class T, class CMP>
+void RBTree<T, CMP>::deleteNodeHelper(NodePtr node, T key) {
+  NodePtr z=NIL;
+  NodePtr x, y;
+  while (node!=NIL) {
+    if (node->data==key) {
+      z=node;
+    }
+    if (node->data <= key) {
+      node=node->right;
+    } else {
+      node=node->left;
+    }
+  }
+  if (z==NIL) {
+    std::cout << "Couldn't find key in the tree"<<std::endl;
+    return;
+  }
+  y=z;
+  Color y_original_color=y->color;
+  if (z->left==NIL) {
+    x=z->right;
+    rbTransplant(z, z->right);
+  } else if (z->right==NIL) {
+    x=z->left;
+    rbTransplant(z, z->left);
+  } else {
+    y=minimum(z->right);
+    y_original_color=y->color;
+    x=y->right;
+    if (y->parent==z) {
+      x->parent=y;
+    } else {
+      rbTransplant(y, y->right);
+      y->right=z->right;
+      y->right->parent=y;
+    }
+    rbTransplant(z, y);
+    y->left=z->left;
+    y->left->parent=y;
+    y->color=z->color;
+  }
+  delete z;
+  if (y_original_color==BLACK) {
+    fixDelete(x);
+  }
+}
+
+template<class T, class CMP>
+void RBTree<T, CMP>::fixInsert(NodePtr k) {
+  NodePtr u;
+  while (k->parent->color == RED) {
+    if (k->parent == k->parent->parent->right) {
+      u = k->parent->parent->left; // uncle
+      if (u->color == RED) {
+        // case 3.1
+        u->color = BLACK;
+        k->parent->color = BLACK;
+        k->parent->parent->color = RED;
+        k = k->parent->parent;
+      } else {
+        if (k == k->parent->left) {
+          // case 3.2.2
+          k = k->parent;
+          rightRotate(k);
+        }
+        // case 3.2.1
+        k->parent->color = BLACK;
+        k->parent->parent->color = RED;
+        leftRotate(k->parent->parent);
+      }
+    } else {
+      u = k->parent->parent->right; // uncle
+
+      if (u->color == RED) {
+        // mirror case 3.1
+        u->color = BLACK;
+        k->parent->color = BLACK;
+        k->parent->parent->color = RED;
+        k = k->parent->parent;
+      } else {
+        if (k == k->parent->right) {
+          // mirror case 3.2.2
+          k = k->parent;
+          leftRotate(k);
+        }
+        // mirror case 3.2.1
+        k->parent->color = BLACK;
+        k->parent->parent->color = RED;
+        rightRotate(k->parent->parent);
+      }
+    }
+    if (k == root) {
+      break;
+    }
+  }
+  root->color = BLACK;
+}
+
+template<class T, class CMP>
+void RBTree<T, CMP>::printHelper(NodePtr root, string indent, bool last) {
+  if (root!=nullptr) {
+    std::cout << indent;
+    if (last) {
+      std::cout << "R----";
+      indent += "     ";
+    } else {
+      std::cout << "L----";
+      indent += "|    ";
+    }
+    std::string sColor = root->color ? "RED" : "BLACK";
+    std::cout << root->data << "(" << sColor << ")" << std::endl;
+    printHelper(root->left, indent, false);
+    printHelper(root->right, indent, true);
+  }
+}
+
+
+// public methods
+
+template<class T, class CMP>
+void RBTree<T, CMP>::preorder() const {
+  preOrderHelper(this->root);
+}
+
+
+template<class T, class CMP>
+void RBTree<T, CMP>::inorder() const {
+  inOrderHelper(this->root);
+}
+
+
+template<class T, class CMP>
+void RBTree<T, CMP>::postorder() const {
+  postOrderHelper(this->root);
+}
+
+
+template <class T, class CMP>
+typename RBTree<T, CMP>::NodePtr RBTree<T, CMP>::getRoot() const {
+  return this->root;
+}
+
+
+template<class T, class CMP>
+typename RBTree<T, CMP>::NodePtr RBTree<T, CMP>::searchTree(T const key) const {
+  return searchTreeHelper(this->root, key);
+}
+
+
+template<class T, class CMP>
+typename RBTree<T, CMP>::NodePtr RBTree<T, CMP>::minimum(NodePtr node) const {
+  while (node->left!=NIL) {
+    node = node->left;
+  }
+  return node;
+}
+
+
+template<class T, class CMP>
+typename RBTree<T, CMP>::NodePtr RBTree<T, CMP>::maximum(NodePtr node) const {
+  while (node->right!=NIL) {
+    node = node->right;
+  }
+  return node;
+}
+
+
+template<class T, class CMP>
+typename RBTree<T, CMP>::NodePtr RBTree<T, CMP>::successor(NodePtr node) const {
+  if (node->right!=NIL) {
+    return minimum(node->right);
+  }
+  NodePtr p = node->parent;
+  while (p!=NIL && node == p->right) {
+    node = p;
+    p = y->parent;
+  }
+  return p;
+}
+
+
+template<class T, class CMP>
+typename RBTree<T, CMP>::NodePtr RBTree<T, CMP>::predecessor(NodePtr node) const {
+  if (node->left!=NIL) {
+    return maximum(node->left);
+  }
+  NodePtr p = node->parent;
+  while (p!=NIL && node == p->left) {
+    node = p;
+    p = p->parent;
+  }
+  return p;
+}
+
+
+template <class T, class CMP>
+void RBTree<T, CMP>::leftRotate(NodePtr node) {
+  NodePtr right_node = node->right;
+  node->right = right_node->left;
+  if (right_node->left!=NIL) {
+    right_node->left->parent = node;
+  }
+  right_node->parent = node->parent;
+  if (node->parent==NIL) {
+    this->root = right_node;
+  } else if (node==node->parent->left) {
+    node->parent->left = right_node;
+  } else {
+    node->parent->right = right_node;
+  }
+  right_node->left = node;
+  node->parent = right_node;
+}
+
+
+template <class T, class CMP>
+void RBTree<T, CMP>::rightRotate(NodePtr node) {
+  NodePtr left_node = node->left;
+  node->left = left_node->right;
+  if (left_node->right!=NIL) {
+    left_node->right->parent = node;
+  }
+  left_node->parent = node->parent;
+  if (node->parent==NIL) {
+    this->root = left_node;
+  } else if (node==node->parent->right) {
+    node->parent->right = left_node;
+  } else {
+    node->parent->left = left_node;
+  }
+  left_node->right = node;
+  node->parent = left_node;
+}
+
+
+template <class T, class CMP>
+void RBTree<T, CMP>::insert(T key) {
+  NodePtr node{new Node(key, RED, nullptr)};
+  node->left{NIL};
+  node->right{NIL};
+  NodePtr y{nullptr};
+  NodePtr x{this->root};
+  while (x!=NIL) {
+    y = x;
+    if (node->data < x->data) {
+      x = x->left;
+    } else {
+      x = x->right;
+    }
+  }
+  node->parent = y;
+  if (y==nullptr) {
+    this->root = node;
+  } else if (node->data < y->data) {
+    y->left = node;
+  } else {
+    y->right = node;
+  }
+  if (node->parent==nullptr) {
+    node->color = BLACK;
+    return;
+  }
+  if (node->parent->parent==nullptr) {
+    return;
+  }
+  RBTree::insertFix(node);
+}
+
+
+template <class T, class CMP>
+void RBTree<T, CMP>::deleteNode(T key) {
+  deleteNodeHelper(this->root, key);
+}
+
+
+template <class T, class CMP>
+void RBTree<T, CMP>::printTree() {
+  if (root!=nullptr) {
+    printHelper(this->root, "", true);
+  } else {
+    std::cout << "Empty Tree" << std::endl;
+  }
+}
+
 
 /*TODO:
 CLASSES:
@@ -151,7 +588,7 @@ PUBLIC METHODS:
                     const T* operator->() const                       OK
                     const_iterator& operator++()                      OK
                     const_iterator operator++(int)                    OK
-                    const_iterator& operator--()                      OK
+                    const_iterator& operator--()                      NOT OK
                     const_iterator operator--(int)                    OK
                     bool operator==(const const_iterator&) const      OK
                     bool operator!=(const const_iterator&) const      OK
