@@ -148,7 +148,7 @@ public:
 
 };
 
-
+//TODO: a sketch class for showing inheritance
 ///\brief RBTree's regular iterator class.
 ///       Used to iterate over a sequence and manipulate RBTree's elements.
 template <class T, class CMP> 

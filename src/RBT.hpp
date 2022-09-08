@@ -45,7 +45,7 @@ public:
 
 private:
   NodePtr root; ///< root of the RBTree (always black)
-  NodePtr LEAF; ///< leaf of the RBTree (always black)
+  NodePtr NIL; ///< leaf of the RBTree (always black)
 
 
 public:
@@ -89,15 +89,19 @@ public:
 	///\return Bool true if the value is in the RBTree, false otherwise.
   bool contains(const T& value) const;
 
-  ///\brief Function to test whether the tree contains a value.
-	///\param value The value to be checked if already present within the RBTree.
-	///\return Bool true if the value is in the RBTree, false otherwise.
+  ///\brief Function to delete a value from the tree.
+	///\param value The value you are going to delete.
+	///\return A RBTree without the node which contained the value inserted.
   void delete(const T& value);
   
-  
+  ///\brief Function to get a constant tree iterator over all the tree keys.
+	///\param value The value you are going to delete.
+	///\return A RBTree without the node which contained the value inserted.
   RBTree<T, CMP>::const_iterator begin() const
   
-  
+  ///\brief Function to get the last value onstant tree iterator over all the tree keys.
+	///\param value The value you are going to delete.
+	///\return A RBTree without the node which contained the value inserted.
   RBTree<T, CMP>::const_iterator end() const
 
 
