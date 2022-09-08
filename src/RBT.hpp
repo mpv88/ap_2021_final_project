@@ -10,7 +10,7 @@
 #include <vector>
 
 //RBTree class forward declaration to break cyclic references with includes.
-template <class T, class CMP = std::less<T>> 
+template <class T, class CMP=std::less<T>> 
 class RBTree;
 
 #include "RBT_SubClasses.hpp"
@@ -22,8 +22,8 @@ class RBTree;
 ///\param CMP relational function to compare nodes' keys (default std::less<T>).
 template <class T, class CMP> 
 class RBTree {
-  friend class const_iterator;
-  friend class iterator;
+  friend class const_iterator;//TODO: maybe duplicated from Node class
+  friend class iterator;//TODO: maybe duplicated from Node class
   typedef Node *NodePtr; //TODO: maybe duplicated from Node class
 
 private:
@@ -44,12 +44,61 @@ public:
 
 
 private:
-  NodePtr root; ///< root of the tree (always black)
+  NodePtr root; ///< root of the RBTree (always black)
+  NodePtr LEAF; ///< leaf of the RBTree (always black)
 
 
+public:
+  CMP comparator; ///< comparison operator. 
 
 
+  ///\brief RBTree's constructor.
+  ///       Default constructor for the RBTree class.
+  RBTree() noexcept {}
 
+
+	///\brief Constructor for RBTree given the root node.
+	///\param value The value to be inserted into the RBTree's root node.
+	///\param cmp A custom comparison function for tree nodes (defaulted to std::less).
+	RBTree(T value, CMP cmp=CMP{}) : root{new Node{value}}, comparator{cmp} {}
+
+
+  ///\brief RBTree's destructor.
+  ///       Default destructor for the RBTree class.
+  ~RBTree() {}
+   
+
+  ///\brief Copy constructor for RBTree.
+	///\param rbt The RBTree which will be copied to a new one.
+	///\param cmp A custom comparison function for tree nodes (defaulted to std::less).
+  RBTree(const RBTree &rbt, CMP cmp=CMP{}) : {root = copy(rbt.root)}
+ 
+
+  ///\brief Move constructor for RBTree.
+	///\param rbt The RBTree which will be moved into a new one.
+	RBTree(RBTree&& rbt) noexcept : root{std::move(rbt.root)} {}
+
+  ///\brief Function to insert a new value in the tree.
+	///\param value The value you are going to insert.
+	///\return A RBTree which includes an additional node with the value inserted.
+  void insert(const T& value);
+  
+  
+  ///\brief Function to test whether the tree contains a value.
+	///\param value The value to be checked if already present within the RBTree.
+	///\return Bool true if the value is in the RBTree, false otherwise.
+  bool contains(const T& value) const;
+
+  ///\brief Function to test whether the tree contains a value.
+	///\param value The value to be checked if already present within the RBTree.
+	///\return Bool true if the value is in the RBTree, false otherwise.
+  void delete(const T& value);
+  
+  
+  RBTree<T, CMP>::const_iterator begin() const
+  
+  
+  RBTree<T, CMP>::const_iterator end() const
 
 
 /*
