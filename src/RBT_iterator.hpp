@@ -2,6 +2,7 @@
 ///\author mpv
 ///\brief implementation of RBT's iterator and const_iterator sub-classes.
 
+
 #ifndef RBT_ITERATOR_HPP
 #define RBT_ITERATOR_HPP
 
@@ -13,7 +14,6 @@
 template <class T, class CMP> 
 class RBTree<T, CMP>::const_iterator {
   friend class RBTree;
-  typedef RBTree<T, CMP>::Node *NodePtr;
 
 private:
   NodePtr current_node; ///< node currently pointed by the iterator.

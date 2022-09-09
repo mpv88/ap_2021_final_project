@@ -9,11 +9,12 @@
 #include <string>
 #include <vector>
 
+
 //RBTree class forward declaration to break cyclic references with includes.
 template <class T, class CMP=std::less<T>> 
 class RBTree;
 
-#include "RBT_iterator.hpp"
+
 
 ///\brief RBTree is a template class which implements R. Bayer's Red Black Tree (1972).
 ///\param T type of the tree nodes' keys.
@@ -21,13 +22,14 @@ class RBTree;
 template <class T, class CMP> 
 class RBTree {
 
+
 private:
 
   ///\brief RBTree's single node, each node bears a key and a color (red or black).
   ///       Each node has a parent and two children (left and right).
   class Node;
   typedef Node *NodePtr; //TODO: maybe duplicated from Node class
-  using NodePtr = Node*;
+  //using NodePtr = Node*;
 
 public:
   ///\brief RBTree's regular iterator class.
@@ -40,7 +42,7 @@ public:
 
 
 private:
-  NodePtr *root; ///< root of the RBTree (always black)
+  NodePtr root; ///< root of the RBTree (always black)
   NodePtr NIL; ///< leaf of the RBTree (always black)
 
 
@@ -598,5 +600,5 @@ PUBLIC METHODS:
                     RBTree<T, CMP>::const_iterator begin() const
                     RBTree<T, CMP>::const_iterator end() const
 */
-
+#include "RBT_iterator.hpp"
 #endif // RBT_HPP
