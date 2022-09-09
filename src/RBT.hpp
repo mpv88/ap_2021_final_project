@@ -65,7 +65,7 @@ public:
 
   ///\brief RBTree's constructor.
   ///       Default constructor for the RBTree class.
-  RBTree() noexcept : root{new Node{NIL, BLACK, nullptr}} {}
+  RBTree() noexcept : root{new Node} {}
 
 
 	///\brief Constructor for RBTree given the root node.
@@ -82,20 +82,20 @@ public:
   ///\brief Copy constructor for RBTree.
 	///\param rbt The RBTree which will be copied to a new one.
 	///\param cmp A custom comparison function for tree nodes (defaulted to std::less).
-  RBTree(const RBTree &rbt, CMP cmp=CMP{}) : {root = copy(rbt.root)}
+  RBTree(const RBTree &rbt) {
+    root = copy(rbt.root);
+  }
  
 
   ///\brief Copy assignment for RBTree.
 	///\param rbt The RBTree which is going to be copied.
 	///\param cmp A custom comparison function for tree nodes (defaulted to std::less).
-  RBTree& operator=(const RBTree &rbt, CMP cmp=CMP{}) {
-    if (this!=&rbt) {
-      delete root;
-      root = copy(rbt.root);
-    }
+  RBTree& operator=(const RBTree &rbt) {
+    root.reset();
+    auto tmp = rbt; 
+    *this = std::move(tmp);
     return *this;
   }
-
 
 
   ///\brief Move constructor for RBTree.
@@ -128,7 +128,7 @@ public:
   ///\brief Function to delete a value from the tree.
 	///\param value The value you are going to delete.
 	///\return A RBTree without the node which contained the value inserted.
-  void delete(const T& value);
+  void deleteKey(const T& value);
 
 
   ///\brief Function to get a constant tree iterator over all the tree keys.
@@ -163,11 +163,11 @@ public:
 
 template <class T, class CMP> 
 void RBTree<T, CMP>::initializeNULLNode(NodePtr node, NodePtr parent) {
-  node->data{0};
-  node->color{BLACK};
-  node->parent {parent};
-  node->left {nullptr};
-  node->right {nullptr};
+  node->data=0;
+  node->color=BLACK;
+  node->parent={parent};
+  node->left={nullptr};
+  node->right={nullptr};
 }
 
 template <class T, class CMP>
@@ -463,7 +463,7 @@ typename RBTree<T, CMP>::NodePtr RBTree<T, CMP>::successor(NodePtr node) const {
   NodePtr p = node->parent;
   while (p!=NIL && node == p->right) {
     node = p;
-    p = y->parent;
+    p = p->parent;
   }
   return p;
 }
@@ -526,8 +526,8 @@ void RBTree<T, CMP>::rightRotate(NodePtr node) {
 template <class T, class CMP>
 void RBTree<T, CMP>::insert(T key) {
   NodePtr node{new Node(key, RED, nullptr)};
-  node->left{NIL};
-  node->right{NIL};
+  node->left=NIL;
+  node->right=NIL;
   NodePtr y{nullptr};
   NodePtr x{this->root};
   while (x!=NIL) {
@@ -553,7 +553,7 @@ void RBTree<T, CMP>::insert(T key) {
   if (node->parent->parent==nullptr) {
     return;
   }
-  RBTree::insertFix(node);
+  fixInsert(node);
 }
 
 

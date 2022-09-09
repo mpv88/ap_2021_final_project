@@ -43,7 +43,7 @@ public:
   ///\return Const T pointer to the node pointed (i.e. current) by the iterator. 
   ///       Used to access the value associated to the RBTree's const_iterator.
   const T* operator->() const {
-    return &(*(*(this));
+    return &(*(*(this)));
   }
 
 
@@ -52,14 +52,11 @@ public:
   ///       Used to pre-increment the RBTree's const_iterator.
   ///       Reference: https://www.cs.odu.edu/~zeil/cs361/latest/Public/treetraversal/index.html
   const_iterator& operator++() {
-  if (current_node==nullptr) { //case A: RBTree current node is empty //
-    current_node = tree->root; // move to root #FIXME: need RBT::get_root()
-      if (current_node==nullptr) //case A: RBTree current node is empty //
-        throw UnderflowException { }; // get error (if RBTree is empty)
-      while (current_node->left!=nullptr) { 
-        current_node = current_node->left; //get tree's leftmost node (smallest)
-        }
-    }
+  //if (current_node==nullptr) { //case A: RBTree current node is empty //
+  //  current_node = this->root; //#FIXME: https://stackoverflow.com/questions/6198224/how-to-refer-to-enclosing-instance-from-c-inner-class
+  if (current_node!=nullptr) {//case A: RBTree current node is empty //
+        return *this;
+  }
   else if (current_node->right!=nullptr) { //case B: right child isn't empty
     current_node = current_node->right; // move to right child
     while (current_node->left!=nullptr) {
@@ -117,7 +114,7 @@ public:
   ///\brief RBTree's constant iterator disequality operator.
   ///\return Bool: false if both iterators point to the same node.
   ///       Used to to test whether two iterators are different.
-  bool operator!=(const const_iterator&) const {
+  bool operator!=(const const_iterator& other) const {
     return current_node != other.current_node;
   }
 
