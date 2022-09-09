@@ -165,9 +165,9 @@ template <class T, class CMP>
 void RBTree<T, CMP>::initializeNULLNode(NodePtr node, NodePtr parent) {
   node->data=0;
   node->color=BLACK;
-  node->parent={parent};
-  node->left={nullptr};
-  node->right={nullptr};
+  node->parent=parent;
+  node->left=nullptr;
+  node->right=nullptr;
 }
 
 template <class T, class CMP>
@@ -595,6 +595,15 @@ PUBLIC METHODS:
                     void delete(const T& value) 
                     RBTree<T, CMP>::const_iterator begin() const
                     RBTree<T, CMP>::const_iterator end() const
+
+1) update doxygen                                                     OK
+2) check segmentation fault from root node
+3) check instances of to-be-changed methods
+4) replace with to-be-changed methods (N.B. use the comparator!!!)
+_
+4) check if all methods are implemented
+5) set up unit test suite
+
 */
 #include "RBT_iterator.hpp" //FIXME: here or at bottom?
 #endif // RBT_HPP
