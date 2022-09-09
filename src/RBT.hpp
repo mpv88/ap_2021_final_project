@@ -13,23 +13,21 @@
 template <class T, class CMP=std::less<T>> 
 class RBTree;
 
-#include "RBT_SubClasses.hpp"
+#include "RBT_iterator.hpp"
 
 ///\brief RBTree is a template class which implements R. Bayer's Red Black Tree (1972).
 ///\param T type of the tree nodes' keys.
 ///\param CMP relational function to compare nodes' keys (default std::less<T>).
 template <class T, class CMP> 
 class RBTree {
-  friend class const_iterator;//TODO: maybe duplicated from Node class
-  friend class iterator;//TODO: maybe duplicated from Node class
-  typedef Node *NodePtr; //TODO: maybe duplicated from Node class
 
-public:
+private:
 
   ///\brief RBTree's single node, each node bears a key and a color (red or black).
   ///       Each node has a parent and two children (left and right).
   class Node;
-
+  typedef Node *NodePtr; //TODO: maybe duplicated from Node class
+  using NodePtr = Node*;
 
 public:
   ///\brief RBTree's regular iterator class.
@@ -42,7 +40,7 @@ public:
 
 
 private:
-  NodePtr root; ///< root of the RBTree (always black)
+  NodePtr *root; ///< root of the RBTree (always black)
   NodePtr NIL; ///< leaf of the RBTree (always black)
 
 
@@ -110,7 +108,7 @@ public:
 	///\param rbt The RBTree which will be moved into a new one.
 	RBTree& operator=(RBTree&& rbt) {
     if (this!=&rbt) {
-      delete root;
+      delete this->root;
       root = std::move(rbt.root);
     }
   }
