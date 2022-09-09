@@ -10,16 +10,10 @@
 #include "Node.hpp"
 
 
-//RBTree class forward declaration to break cyclic references with includes.
-template <class T, class CMP=std::less<T>> 
-class RBTree;
-
-
-
 ///\brief RBTree is a template class which implements R. Bayer's Red Black Tree (1972).
 ///\param T type of the tree nodes' keys.
 ///\param CMP relational function to compare nodes' keys (default std::less<T>).
-template <class T, class CMP> 
+template <class T, class CMP=std::less<T>> 
 class RBTree {
 
 public:
@@ -602,8 +596,9 @@ PUBLIC METHODS:
 4) replace with to-be-changed methods (N.B. use the comparator!!!)
 _
 4) check if all methods are implemented
+6) terminate regular iterator + inheritance on const_iter
 5) set up unit test suite
 
 */
-#include "RBT_iterator.hpp" //FIXME: here or at bottom?
+#include "RBT_iterator.hpp"
 #endif // RBT_HPP

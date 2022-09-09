@@ -26,10 +26,11 @@ int main() {
 */
 int main() {
   RBTree<int> rbt;
-  rbt.insert(8);
-  rbt.printTree();  
+
+  rbt.printTree();
+/*rbt.insert(8);  
   rbt.insert(18);
-/*rbt.insert(5);
+  rbt.insert(5);
   rbt.insert(15);
   rbt.insert(17);
   rbt.insert(25);
