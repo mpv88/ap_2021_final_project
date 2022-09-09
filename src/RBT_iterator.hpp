@@ -6,6 +6,7 @@
 #ifndef RBT_ITERATOR_HPP
 #define RBT_ITERATOR_HPP
 
+#include "Node.hpp"
 #include "RBT.hpp"
 
 

@@ -1,15 +1,17 @@
 // RBT driver
 
-#include "node.hpp"
+#include "Node.hpp"
+#include "RBT.hpp"
+#include "RBT_iterator.hpp"
 #include <iostream>
 
-
+/*
 int main() {
   
-  typedef int node_type; //where int is the T inside the RBT class
-  typedef Node<node_type> node;
+  typedef int node_type; //where int is the T into RBT
+  typedef _Node<node_type> Node;
 
-  node nodo{5, RED};
+  Node nodo{5, RED};
   //nodo=1; // default constructor
   std::cout << nodo.data << std::endl;
   std::cout << nodo.color << std::endl;
@@ -21,19 +23,18 @@ int main() {
 
   return 0;
 }
-/*
-int main() {
-  RBTree bst;
-  bst.insert(8);
-  bst.insert(18);
-  bst.insert(5);
-  bst.insert(15);
-  bst.insert(17);
-  bst.insert(25);
-  bst.insert(40);
-  bst.insert(80);
-  bst.deleteNode(25);
-  bst.printTree();
+*/
+void main() {
+  RBTree<int> rbt;
+  rbt.insert(8);
+  rbt.insert(18);
+  rbt.insert(5);
+  rbt.insert(15);
+  rbt.insert(17);
+  rbt.insert(25);
+  rbt.insert(40);
+  rbt.insert(80);
+  rbt.deleteNode(25);
+  rbt.printTree();
   return 0;
 }
-*/

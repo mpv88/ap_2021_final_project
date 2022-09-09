@@ -6,8 +6,8 @@
 #define RBT_HPP
 
 #include <iostream>
-#include <string>
 #include <vector>
+#include "Node.hpp"
 
 
 //RBTree class forward declaration to break cyclic references with includes.
@@ -22,16 +22,12 @@ class RBTree;
 template <class T, class CMP> 
 class RBTree {
 
-
-private:
-
-  ///\brief RBTree's single node, each node bears a key and a color (red or black).
-  ///       Each node has a parent and two children (left and right).
-  class Node;
-  typedef Node *NodePtr; //TODO: maybe duplicated from Node class
-  //using NodePtr = Node*;
-
 public:
+  typedef T node_type; ///< type of the tree nodes' keys.
+  typedef _Node<node_type> Node; ///< type of template tree node.
+  typedef Node *NodePtr; ///< type of pointer to template tree node.
+
+
   ///\brief RBTree's regular iterator class.
   ///       Used to iterate over a sequence and manipulate RBTree's elements.
   class iterator;
@@ -56,7 +52,7 @@ private:
   void rbTransplant(NodePtr u, NodePtr v);
   void deleteNodeHelper(NodePtr node, T key);
   void fixInsert(NodePtr k);
-  void printHelper(NodePtr rt, string indent, bool last);
+  void printHelper(NodePtr rt, std::string indent, bool last);
 
 
 
@@ -120,7 +116,7 @@ public:
   ///\brief Function to insert a new value in the tree.
 	///\param value The value you are going to insert.
 	///\return A RBTree which includes an additional node with the value inserted.
-  void insert(const T& value);
+  //void insert(const T& value);
   
   
   ///\brief Function to test whether the tree contains a value.
@@ -391,7 +387,7 @@ void RBTree<T, CMP>::fixInsert(NodePtr k) {
 }
 
 template<class T, class CMP>
-void RBTree<T, CMP>::printHelper(NodePtr root, string indent, bool last) {
+void RBTree<T, CMP>::printHelper(NodePtr root, std::string indent, bool last) {
   if (root!=nullptr) {
     std::cout << indent;
     if (last) {
@@ -600,5 +596,5 @@ PUBLIC METHODS:
                     RBTree<T, CMP>::const_iterator begin() const
                     RBTree<T, CMP>::const_iterator end() const
 */
-#include "RBT_iterator.hpp"
+#include "RBT_iterator.hpp" //FIXME: here or at bottom?
 #endif // RBT_HPP

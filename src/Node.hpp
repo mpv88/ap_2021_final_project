@@ -1,4 +1,4 @@
-///\file RBT_node.hpp
+///\file RBT_Node.hpp
 ///\author mpv
 ///\brief header file with the implementation of RBT's node.
 
@@ -12,15 +12,15 @@ enum Color { BLACK=0, RED=1 }; ///< enumerated type color declaration.
 ///\brief RBTree's single node, each node bears a key and a color (red or black).
 ///       Each node has a parent and two children (left and right).
 template <class T> 
-class Node {
+class _Node {
 public:
   T data;                      ///< template key of the node.
   Color color;                 ///< color of the node.
-  Node *left, *right, *parent; ///< pointers to parent, left and right children.
+  _Node *left, *right, *parent; ///< pointers to parent, left and right children.
 
   ///\brief Default Constructor of a RBTree's node.
   ///
-  Node() {}
+  _Node() {}
 
   ///\brief Constructor of a new node given a key and (optionally) color and parent. 
   ///\param k key which will be inserted into the node.
@@ -28,7 +28,7 @@ public:
   ///\param p pointer to the parent node.
   /// Initializer List initializes the data members of a class,
   /// default color is BLACK, default parent is NULL [overloaded].
-  Node(T k, Color clr=BLACK, Node *p=nullptr) : data{k}, color{clr}, left{nullptr}, right{nullptr}, parent{p} {}
+  _Node(T k, Color clr=BLACK, _Node *p=nullptr) : data{k}, color{clr}, left{nullptr}, right{nullptr}, parent{p} {}
 
 };
 
