@@ -601,7 +601,7 @@ PUBLIC METHODS:
                     RBTree<T, CMP>::const_iterator end() const
 
 1) update doxygen                                                     OK
-2) check segmentation fault from root node
+2) check segmentation fault from root node                            OK
 3) check instances of to-be-changed methods
 4) replace with to-be-changed methods (N.B. use the comparator!!!)
 _

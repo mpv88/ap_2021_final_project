@@ -23,12 +23,12 @@ public:
   _Node() {}
 
   ///\brief Constructor of a new node given a key and (optionally) color and parent. 
-  ///\param k key which will be inserted into the node.
+  ///\param key key which will be inserted into the node.
   ///\param clr color of the node (default set to BLACK).
-  ///\param p pointer to the parent node.
+  ///\param parent pointer to the parent node.
   /// Initializer List initializes the data members of a class,
-  /// default color is BLACK, default parent is NULL [overloaded].
-  _Node(T k, Color clr=BLACK, _Node *p=nullptr) : data{k}, color{clr}, left{nullptr}, right{nullptr}, parent{p} {}
+  /// default color is BLACK, default parent is empty [overloaded].
+  _Node(T key, Color clr=BLACK, _Node *parent=nullptr) : data{k}, color{clr}, left{nullptr}, right{nullptr}, parent{p} {}
 
 };
 
