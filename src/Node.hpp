@@ -28,7 +28,7 @@ public:
   ///\param parent pointer to the parent node.
   /// Initializer List initializes the data members of a class,
   /// default color is BLACK, default parent is empty [overloaded].
-  _Node(T key, Color clr=BLACK, _Node *parent=nullptr) : data{k}, color{clr}, left{nullptr}, right{nullptr}, parent{p} {}
+  _Node(T key, Color clr=BLACK, _Node *parent=nullptr) : data{key}, color{clr}, left{nullptr}, right{nullptr}, parent{parent} {}
 
 };
 
