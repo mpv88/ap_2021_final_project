@@ -26,9 +26,7 @@ int main() {
 */
 int main() {
   RBTree<int> rbt;
-
-  rbt.printTree();
-/*rbt.insert(8);  
+  rbt.insert(8);  
   rbt.insert(18);
   rbt.insert(5);
   rbt.insert(15);
@@ -37,6 +35,6 @@ int main() {
   rbt.insert(40);
   rbt.insert(80);
   rbt.deleteNode(25);
-  rbt.printTree(); */
+  rbt.printTree();
   return 0;
 }

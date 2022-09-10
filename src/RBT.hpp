@@ -59,7 +59,17 @@ public:
 
   ///\brief RBTree's constructor.
   ///       Default constructor for the RBTree class.
-  RBTree() noexcept : root{new Node} {}
+  RBTree() noexcept {
+    //root{new Node}
+    //root->color{BLACK};
+    //root->left{nullptr};
+    //root->right{nullptr};
+    NIL = new Node;
+    NIL->color = BLACK;
+    NIL->left = nullptr;
+    NIL->right = nullptr;
+    root = NIL;
+  }
 
 
 	///\brief Constructor for RBTree given the root node.
@@ -485,7 +495,7 @@ void RBTree<T, CMP>::leftRotate(NodePtr node) {
     right_node->left->parent = node;
   }
   right_node->parent = node->parent;
-  if (node->parent==NIL) {
+  if (node->parent==nullptr) {
     this->root = right_node;
   } else if (node==node->parent->left) {
     node->parent->left = right_node;
@@ -505,7 +515,7 @@ void RBTree<T, CMP>::rightRotate(NodePtr node) {
     left_node->right->parent = node;
   }
   left_node->parent = node->parent;
-  if (node->parent==NIL) {
+  if (node->parent==nullptr) {
     this->root = left_node;
   } else if (node==node->parent->right) {
     node->parent->right = left_node;
