@@ -59,23 +59,13 @@ public:
 
   ///\brief RBTree's constructor.
   ///       Default constructor for the RBTree class.
-  RBTree() noexcept {
-    //root{new Node}
-    //root->color{BLACK};
-    //root->left{nullptr};
-    //root->right{nullptr};
-    NIL = new Node;
-    NIL->color = BLACK;
-    NIL->left = nullptr;
-    NIL->right = nullptr;
-    root = NIL;
-  }
+  RBTree() noexcept {root = NIL = new Node;}
 
 
 	///\brief Constructor for RBTree given the root node.
 	///\param value The value to be inserted into the RBTree's root node.
 	///\param cmp A custom comparison function for tree nodes (defaulted to std::less).
-	RBTree(T value, CMP cmp=CMP{}) : root{new Node{value}}, comparator{cmp} {}
+	RBTree(T value, CMP cmp=CMP{}) : root{new Node{value}}, comparator{cmp}, NIL{new Node} {}
 
 
   ///\brief RBTree's destructor.
@@ -121,7 +111,7 @@ public:
 	///\param value The value you are going to insert.
 	///\return A RBTree which includes an additional node with the value inserted.
   //void insert(const T& value);
-  
+  void insert(T key);
   
   ///\brief Function to test whether the tree contains a value.
 	///\param value The value to be checked if already present within the RBTree.
@@ -156,7 +146,7 @@ public:
   NodePtr predecessor(NodePtr node) const;
   void leftRotate(NodePtr node);
   void rightRotate(NodePtr node);
-  void insert(T key);
+  
   void deleteNode(T key);
   void printTree();
 
@@ -594,20 +584,20 @@ PUBLIC METHODS:
                     bool operator!=(const const_iterator&) const      OK
 
   for RBTree:
-                    void insert(const T& value)
+                    void insert(const T& value)                       OK
                     bool contains(const T& value)---->Bibeknam's searchTreeHelper 
-                    void delete(const T& value) 
+                    void delete(const T& value)                     *cambia nome
                     RBTree<T, CMP>::const_iterator begin() const
                     RBTree<T, CMP>::const_iterator end() const
 
 1) update doxygen                                                     OK
 2) check segmentation fault from root node                            OK
-3) check instances of to-be-changed methods
+3) check instances of to-be-changed methods                          in progress...
 4) replace with to-be-changed methods (N.B. use the comparator!!!)
 _
-4) check if all methods are implemented
+5) check if all methods are implemented
 6) terminate regular iterator + inheritance on const_iter
-5) set up unit test suite
+7) set up unit test suite es. (while with 50 int, same with 50 double, test iterator, print tree, test find, print inorder traversal)
 
 */
 #include "RBT_iterator.hpp"
