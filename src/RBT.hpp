@@ -110,8 +110,8 @@ public:
   ///\brief Function to insert a new value in the tree.
 	///\param value The value you are going to insert.
 	///\return A RBTree which includes an additional node with the value inserted.
-  //void insert(const T& value);
-  void insert(T key);
+  void insert(const T& value);
+
   
   ///\brief Function to test whether the tree contains a value.
 	///\param value The value to be checked if already present within the RBTree.
@@ -122,7 +122,7 @@ public:
   ///\brief Function to delete a value from the tree.
 	///\param value The value you are going to delete.
 	///\return A RBTree without the node which contained the value inserted.
-  void deleteKey(const T& value);
+  void delete_(const T& value);
 
 
   ///\brief Function to get a constant tree iterator over all the tree keys.
@@ -134,21 +134,22 @@ public:
 	///\return A RBTree without the node which contained the value inserted.
   RBTree<T, CMP>::const_iterator end() const;
 
+  //the only public methods: find a function to access pointer's value
 
-  void preorder() const;
-  void inorder() const;
-  void postorder() const;
   NodePtr getRoot() const;
-  NodePtr searchTree(T const key) const;
-  NodePtr minimum(NodePtr node) const;
-  NodePtr maximum(NodePtr node) const;
-  NodePtr successor(NodePtr node) const;
-  NodePtr predecessor(NodePtr node) const;
+  NodePtr searchTree(T const key) ; //base for contains
+  NodePtr minimum(NodePtr node); //const?
+  NodePtr maximum(NodePtr node); //const?
+  NodePtr successor(NodePtr node); //const?
+  NodePtr predecessor(NodePtr node); //const?
+  void preorder() ; //const?
+  void inorder() ; //const?
+  void postorder() ; //const?
+  void printTree(); //const?
+  // to become private
   void leftRotate(NodePtr node);
   void rightRotate(NodePtr node);
   
-  void deleteNode(T key);
-  void printTree();
 
 };
 
@@ -296,7 +297,7 @@ void RBTree<T, CMP>::deleteNodeHelper(NodePtr node, T key) {
     }
   }
   if (z==NIL) {
-    std::cout << "Couldn't find key in the tree"<<std::endl;
+    std::cout << "Couldn't find key " << key << " in the tree" <<std::endl;
     return;
   }
   y=z;
@@ -402,19 +403,19 @@ void RBTree<T, CMP>::printHelper(NodePtr root, std::string indent, bool last) {
 // public methods
 
 template<class T, class CMP>
-void RBTree<T, CMP>::preorder() const {
+void RBTree<T, CMP>::preorder() {
   preOrderHelper(this->root);
 }
 
 
 template<class T, class CMP>
-void RBTree<T, CMP>::inorder() const {
+void RBTree<T, CMP>::inorder() {
   inOrderHelper(this->root);
 }
 
 
 template<class T, class CMP>
-void RBTree<T, CMP>::postorder() const {
+void RBTree<T, CMP>::postorder() {
   postOrderHelper(this->root);
 }
 
@@ -426,13 +427,13 @@ typename RBTree<T, CMP>::NodePtr RBTree<T, CMP>::getRoot() const {
 
 
 template<class T, class CMP>
-typename RBTree<T, CMP>::NodePtr RBTree<T, CMP>::searchTree(T const key) const {
+typename RBTree<T, CMP>::NodePtr RBTree<T, CMP>::searchTree(T const key) {
   return searchTreeHelper(this->root, key);
 }
 
 
 template<class T, class CMP>
-typename RBTree<T, CMP>::NodePtr RBTree<T, CMP>::minimum(NodePtr node) const {
+typename RBTree<T, CMP>::NodePtr RBTree<T, CMP>::minimum(NodePtr node) {
   while (node->left!=NIL) {
     node = node->left;
   }
@@ -441,7 +442,7 @@ typename RBTree<T, CMP>::NodePtr RBTree<T, CMP>::minimum(NodePtr node) const {
 
 
 template<class T, class CMP>
-typename RBTree<T, CMP>::NodePtr RBTree<T, CMP>::maximum(NodePtr node) const {
+typename RBTree<T, CMP>::NodePtr RBTree<T, CMP>::maximum(NodePtr node) {
   while (node->right!=NIL) {
     node = node->right;
   }
@@ -450,7 +451,7 @@ typename RBTree<T, CMP>::NodePtr RBTree<T, CMP>::maximum(NodePtr node) const {
 
 
 template<class T, class CMP>
-typename RBTree<T, CMP>::NodePtr RBTree<T, CMP>::successor(NodePtr node) const {
+typename RBTree<T, CMP>::NodePtr RBTree<T, CMP>::successor(NodePtr node) {
   if (node->right!=NIL) {
     return minimum(node->right);
   }
@@ -464,7 +465,7 @@ typename RBTree<T, CMP>::NodePtr RBTree<T, CMP>::successor(NodePtr node) const {
 
 
 template<class T, class CMP>
-typename RBTree<T, CMP>::NodePtr RBTree<T, CMP>::predecessor(NodePtr node) const {
+typename RBTree<T, CMP>::NodePtr RBTree<T, CMP>::predecessor(NodePtr node) {
   if (node->left!=NIL) {
     return maximum(node->left);
   }
@@ -518,10 +519,9 @@ void RBTree<T, CMP>::rightRotate(NodePtr node) {
 
 
 template <class T, class CMP>
-void RBTree<T, CMP>::insert(T key) {
-  NodePtr node{new Node(key, RED, nullptr)};
-  node->left=NIL;
-  node->right=NIL;
+void RBTree<T, CMP>::insert(const T& value) {
+  NodePtr node{new Node(value, RED, nullptr)};
+  node->left = node->right = NIL;
   NodePtr y{nullptr};
   NodePtr x{this->root};
   while (x!=NIL) {
@@ -552,8 +552,8 @@ void RBTree<T, CMP>::insert(T key) {
 
 
 template <class T, class CMP>
-void RBTree<T, CMP>::deleteNode(T key) {
-  deleteNodeHelper(this->root, key);
+void RBTree<T, CMP>::delete_(const T& value) {
+  deleteNodeHelper(this->root, value);
 }
 
 
@@ -582,11 +582,10 @@ PUBLIC METHODS:
                     const_iterator operator--(int)                    OK
                     bool operator==(const const_iterator&) const      OK
                     bool operator!=(const const_iterator&) const      OK
-
   for RBTree:
                     void insert(const T& value)                       OK
-                    bool contains(const T& value)---->Bibeknam's searchTreeHelper 
-                    void delete(const T& value)                     *cambia nome
+                    void delete(const T& value)                       OK
+                    bool contains(const T& value)---->Bibeknam's searchTreeHelper find & delete
                     RBTree<T, CMP>::const_iterator begin() const
                     RBTree<T, CMP>::const_iterator end() const
 
