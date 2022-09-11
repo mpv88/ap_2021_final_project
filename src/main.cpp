@@ -1,11 +1,10 @@
 // RBT driver
 
-#include "Node.hpp"
-#include "RBT.hpp"
-#include "RBT_iterator.hpp"
 #include <iostream>
+#include "RBT.hpp"
 
-/* #TODO: testing Node class
+
+/*// #TODO: testing Node class
 int main() {
   
   typedef int node_type; //where int is the T into RBT
@@ -19,9 +18,8 @@ int main() {
   std::cout << nodo.right << std::endl;
   std::cout << nodo.parent << std::endl;
   return 0;
-
-  #TODO: testing RBT_iterator class
 }
+//#TODO: testing RBT_iterator class
 */
 int main() {
   RBTree<int> rbt;
@@ -43,12 +41,12 @@ int main() {
   std::cout << (rbt.contains(85)) << std::endl; //1
   std::cout << (rbt.contains(1)) << std::endl;  //0
   std::cout << std::endl;
-  rbt.inorder(); //total order
+  rbt.print_ordered_keys(1);  //total order
   std::cout << std::endl;
-  rbt.preorder(); //from top to bottom right
+  rbt.print_ordered_keys(2);  //from top to bottom right
   std::cout << std::endl;
-  rbt.postorder(); //from bottom left to top
+  rbt.print_ordered_keys(3); //from bottom left to top
   std::cout << std::endl;
-  rbt.printTree();
+  rbt.print_tree();
   return 0;
 }
