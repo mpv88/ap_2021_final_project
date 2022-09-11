@@ -54,7 +54,7 @@ int main() {
   std::cout << rbt.get_height(rbt.get_root()) << std::endl; //get height + root
   std::cout << rbt.get_leftmost(rbt.get_root())->data << std::endl; // min
   std::cout << rbt.get_rightmost(rbt.get_root())->data << std::endl; // max
-  std::cout << rbt.successor(rbt.get_root())->data << std::endl; // 1st right
-  std::cout << rbt.predecessor(rbt.get_root())->data << std::endl; // 1nd left
+  std::cout << rbt.get_successor(rbt.get_root())->data << std::endl; // 1st right
+  std::cout << rbt.get_predecessor(rbt.get_root())->data << std::endl; // 1nd left
   return 0;
 }

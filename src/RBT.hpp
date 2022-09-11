@@ -191,13 +191,13 @@ public:
   ///\brief A function to discover the successor of the current node.
   ///\param node The starting node for exploring the rest of the RBTree.
   ///\return A pointer to the successive node (one step to the right).
-  NodePtr successor(NodePtr node) const;
+  NodePtr get_successor(NodePtr node) const;
 
 
   ///\brief A function to discover the predecessor of the current node.
   ///\param node The starting node for exploring the rest of the RBTree.
   ///\return A pointer to the preceding node (one step to the left).
-  NodePtr predecessor(NodePtr node) const;
+  NodePtr get_predecessor(NodePtr node) const;
 
 
   ///\brief A wrapper function to print RBT's keys (see: recursive_ordering).
@@ -487,7 +487,7 @@ typename RBTree<T, CMP>::NodePtr RBTree<T, CMP>::get_rightmost(NodePtr node) con
 
 
 template<class T, class CMP>
-typename RBTree<T, CMP>::NodePtr RBTree<T, CMP>::successor(NodePtr node) const {
+typename RBTree<T, CMP>::NodePtr RBTree<T, CMP>::get_successor(NodePtr node) const {
   if (node->right!=NIL) {
     return get_leftmost(node->right);
   }
@@ -501,7 +501,7 @@ typename RBTree<T, CMP>::NodePtr RBTree<T, CMP>::successor(NodePtr node) const {
 
 
 template<class T, class CMP>
-typename RBTree<T, CMP>::NodePtr RBTree<T, CMP>::predecessor(NodePtr node) const {
+typename RBTree<T, CMP>::NodePtr RBTree<T, CMP>::get_predecessor(NodePtr node) const {
   if (node->left!=NIL) {
     return get_rightmost(node->left);
   }
