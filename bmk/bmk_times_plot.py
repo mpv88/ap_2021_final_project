@@ -11,10 +11,11 @@ plt.title('Benchmarking comparison')
 plt.xlabel('# nodes')
 plt.ylabel('time (μs)')
 ax = plt.subplot(111)
-ax.legend()
 ax.plot(data['#nodes'], data['std::map'], label = 'map')
 ax.plot(data['#nodes'], data['std::unordered_map'], label = 'unordered_map')
 ax.plot(data['#nodes'], data['RedBlackTree'], label = 'RBTree')
+ax.legend()
+
 
 if __name__ == '__main__':
     plt.show()
