@@ -31,38 +31,44 @@ public:
 
 private:
   NodePtr root; ///< root of the RBTree (always black)
-  NodePtr NIL; ///< leaf of the RBTree (always black)
-
-  ///\brief Function to get the root of the RBTree.
-	///\return A pointer to RBTree's root.
-  NodePtr get_root() const;
+  NodePtr NIL; ///< empty (leaf) node of the RBTree (always black)
 
 
   ///\brief A recursive helper function to print RBTree's keys (see: print_ordered_keys).
-  ///\param node The starting node for exploring the RBTree, typically its root.
+  ///\param root The starting node for exploring the RBTree, typically its root.
   ///\param choice A const integer to explicit which type of traversal you want.
   ///\return Prints the ordered keys of RBTree following the type of traversal chosen.
-  void recursive_ordering(NodePtr node, int choice) const;
+  void recursive_ordering(NodePtr root, int choice) const;
 
 
   ///\brief A recursive helper function to find a RBTree's node given its key (see: contains).
-  ///\param node The starting node for exploring the RBTree, typically its root.
+  ///\param root The starting node for exploring the RBTree, typically its root.
   ///\param value The value of the key you are searching within the RBTree.
   ///\return Prints the ordered keys of RBTree following the type of traversal chosen.
-  NodePtr recursive_search(NodePtr node, T value) const;
+  NodePtr recursive_search(NodePtr root, T value) const;
 
 
   ///\brief A recursive helper function to print the RBTree's structure (see: print_tree).
-  ///\param node The starting node for exploring the RBTree, typically its root.
-  ///\param indent Specifies the indent of the current branch.
-  ///\return Prints the ordered keys of RBTree following the type of traversal chosen.
-  void printHelper(NodePtr node, std::string indent, bool last) const;
+  ///\param root The starting node for exploring the RBTree, typically its root.
+  ///\param indent Specifies the degree of indentation for tree's branches.
+    ///\param last Specifies if we are in the left or right sub-tree.
+  ///\return Prints the complete branch-leaf structure of RBTree.
+  void recursive_print(NodePtr root, std::string indent, bool last) const;
 
-    //SPECIALS:
-  void fixInsert(NodePtr k);
-  void fixDelete(NodePtr x);
-  void deleteNodeHelper(NodePtr node, T key);
+  // #TODO: continue review here from recursive print!!!
+
+
+  //SPECIALS:
   void rbTransplant(NodePtr u, NodePtr v);
+
+  void leftRotate(NodePtr node); //rotate
+  void rightRotate(NodePtr node); //rotate
+
+  void fixInsert(NodePtr k); //rebalance_on_insert
+  void fixDelete(NodePtr x); //rebalance_on_delete
+  void deleteNodeHelper(NodePtr node, T key);
+
+  
 
 
 
@@ -119,19 +125,34 @@ public:
 	///\param rbt The RBTree which will be moved into a new one.
 	RBTree& operator=(RBTree&& rbt) {
     if (this!=&rbt) {
-      delete this->root;
+      delete get_root();
       root = std::move(rbt.root);
     }
   }
  
 //--------------------------------------------------------------------
+  ///\brief Function to get the root of the RBTree.
+	///\return A pointer to RBTree's root.
+  NodePtr get_root() const;
 
 
+  ///\brief Function to get the RBTree's height.
+	///\param root The starting node for exploring the RBTree, typically its root.
+	///\return The total height of the RBTree, as an integer levels count.
+  int get_height(NodePtr root) const; 
 
 
- RBTree<T, CMP>::const_iterator find(const T& value) const {
-  return recursive_search(this->root, value);
-  }
+  ///\brief A function to discover which is the leftmost node in RBTree.
+  ///\param node The starting node for exploring the rest of the RBTree.
+  ///\return A pointer to the leftmost node, which is the min key in the RBTree.
+  NodePtr get_leftmost(NodePtr node) const;
+
+
+  ///\brief A function to discover which is the rightmost node in RBTree.
+  ///\param node The starting node for exploring the rest of the RBTree.
+  ///\return A pointer to the rightmost node, which is the max key in the RBTree.
+  NodePtr get_rightmost(NodePtr node) const;
+
 
   ///\brief Function to insert a new value in the tree.
 	///\param value The value you are going to insert.
@@ -140,10 +161,16 @@ public:
 
   
   ///\brief Function to test whether the tree contains a value (see: recursive_search).
-	///\param value The value to be checked if already present within the RBTree.
+	///\param value The value to be checked if present within the RBTree.
 	///\return Bool true (1) if the value is in the RBTree, false (0) otherwise.
   bool contains(const T& value) const;
 
+
+  ///\brief Function to find a value in the RBTree (see: recursive_search).
+	///\param value The value to be checked if present within the RBTree.
+	///\return The value searched if present inside the tree, nothing otherwise.
+  T find(const T& value) const;
+  
 
   ///\brief Function to delete a value from the tree.
 	///\param value The value you are going to delete.
@@ -161,29 +188,27 @@ public:
   RBTree<T, CMP>::const_iterator end() const;
 
 
+  ///\brief A function to discover the successor of the current node.
+  ///\param node The starting node for exploring the rest of the RBTree.
+  ///\return A pointer to the successive node (one step to the right).
+  NodePtr successor(NodePtr node) const;
+
+
+  ///\brief A function to discover the predecessor of the current node.
+  ///\param node The starting node for exploring the rest of the RBTree.
+  ///\return A pointer to the preceding node (one step to the left).
+  NodePtr predecessor(NodePtr node) const;
+
+
   ///\brief A wrapper function to print RBT's keys (see: recursive_ordering).
   ///\param choice The type of traversal: 1='in-order', 2='pre-order', 3='post-order'.
 	///\return A call to recursive_ordering which prints the keys.
   void print_ordered_keys(int choice) const;
 
 
-  ///\brief Function to print the RBTree (see: recursive_print).
+  ///\brief A wrapper function to print the RBTree (see: recursive_print).
 	///\return The print of the complete RBTree structure.
   void print_tree() const;
-
-
-
-
-  NodePtr minimum(NodePtr node); //const?
-  NodePtr maximum(NodePtr node); //const?
-  NodePtr successor(NodePtr node); //const?
-  NodePtr predecessor(NodePtr node); //const?
-
-  // to become private
-  void leftRotate(NodePtr node);
-  void rightRotate(NodePtr node);
-  
-
 };
 // --------------------------------IMPLEMENTATION------------------------------------------
 
@@ -198,26 +223,26 @@ typename RBTree<T, CMP>::NodePtr RBTree<T, CMP>::get_root() const {
 
 
 template <class T, class CMP>
-void RBTree<T, CMP>::recursive_ordering(NodePtr node, const int choice) const {
-  if (node!=NIL) {
+void RBTree<T, CMP>::recursive_ordering(NodePtr root, const int choice) const {
+  if (root!=NIL) {
     switch (choice) {
       case 1: //in-order traversal (left-root-right)
-        recursive_ordering(node->left, choice);
-        std::cout << node->data << " | ";
-        recursive_ordering(node->right, choice);
+        recursive_ordering(root->left, choice);
+        std::cout << root->data << " | ";
+        recursive_ordering(root->right, choice);
         break;
       case 2: //pre-order traversal (root-left-right)
-        std::cout << node->data << " | ";
-        recursive_ordering(node->left, choice);
-        recursive_ordering(node->right, choice);
+        std::cout << root->data << " | ";
+        recursive_ordering(root->left, choice);
+        recursive_ordering(root->right, choice);
         break;
       case 3: //post-order traversal (left-right-root)
-        recursive_ordering(node->left, choice);
-        recursive_ordering(node->right, choice);
-        std::cout << node->data << " | ";
+        recursive_ordering(root->left, choice);
+        recursive_ordering(root->right, choice);
+        std::cout << root->data << " | ";
         break;
       default:
-      // choice doesn't match any available case (1, 2, 3)
+        // choice doesn't match any available case (1, 2, 3)
         std::cout << "Invalid option, please review your choice";
         break;
     }
@@ -226,14 +251,14 @@ void RBTree<T, CMP>::recursive_ordering(NodePtr node, const int choice) const {
 
 
 template <class T, class CMP>
-typename RBTree<T, CMP>::NodePtr RBTree<T, CMP>::recursive_search(NodePtr node, T value) const {
-  if (value==node->data or node==NIL) {
-    return node;
+typename RBTree<T, CMP>::NodePtr RBTree<T, CMP>::recursive_search(NodePtr root, T value) const {
+  if (value==root->data or root==NIL) {
+    return root;
   }
-  if (comparator(value, node->data)) {
-    return recursive_search(node->left, value);
+  if (comparator(value, root->data)) {
+    return recursive_search(root->left, value);
   } else {
-    return recursive_search(node->right, value);
+    return recursive_search(root->right, value);
   }
 }
 
@@ -344,7 +369,7 @@ void RBTree<T, CMP>::deleteNodeHelper(NodePtr node, T key) {
     x=z->left;
     rbTransplant(z, z->left);
   } else {
-    y=minimum(z->right);
+    y=get_leftmost(z->right);
     y_original_color=y->color;
     x=y->right;
     if (y->parent==z) {
@@ -368,10 +393,10 @@ void RBTree<T, CMP>::deleteNodeHelper(NodePtr node, T key) {
 template<class T, class CMP>
 void RBTree<T, CMP>::fixInsert(NodePtr k) {
   NodePtr u;
-  while (k->parent->color == RED) {
+  while (k->parent->color==RED) {
     if (k->parent == k->parent->parent->right) {
       u = k->parent->parent->left; // uncle
-      if (u->color == RED) {
+      if (u->color==RED) {
         // case 3.1
         u->color = BLACK;
         k->parent->color = BLACK;
@@ -391,7 +416,7 @@ void RBTree<T, CMP>::fixInsert(NodePtr k) {
     } else {
       u = k->parent->parent->right; // uncle
 
-      if (u->color == RED) {
+      if (u->color==RED) {
         // mirror case 3.1
         u->color = BLACK;
         k->parent->color = BLACK;
@@ -409,7 +434,7 @@ void RBTree<T, CMP>::fixInsert(NodePtr k) {
         rightRotate(k->parent->parent);
       }
     }
-    if (k == root) {
+    if (k==root) {
       break;
     }
   }
@@ -417,7 +442,7 @@ void RBTree<T, CMP>::fixInsert(NodePtr k) {
 }
 
 template<class T, class CMP>
-void RBTree<T, CMP>::printHelper(NodePtr root, std::string indent, bool last) const {
+void RBTree<T, CMP>::recursive_print(NodePtr root, std::string indent, bool last) const {
   if (root!=nullptr) {
     std::cout << indent;
     if (last) {
@@ -429,8 +454,8 @@ void RBTree<T, CMP>::printHelper(NodePtr root, std::string indent, bool last) co
     }
     std::string sColor = root->color ? "RED" : "BLACK";
     std::cout << root->data << "(" << sColor << ")" << std::endl;
-    printHelper(root->left, indent, false);
-    printHelper(root->right, indent, true);
+    recursive_print(root->left, indent, false);
+    recursive_print(root->right, indent, true);
   }
 }
 
@@ -439,12 +464,12 @@ void RBTree<T, CMP>::printHelper(NodePtr root, std::string indent, bool last) co
 
 template<class T, class CMP>
  void RBTree<T, CMP>::print_ordered_keys(int const choice) const {
-    recursive_ordering(this->root, choice);
+    recursive_ordering(get_root(), choice);
 }
 
 
 template<class T, class CMP>
-typename RBTree<T, CMP>::NodePtr RBTree<T, CMP>::minimum(NodePtr node) {
+typename RBTree<T, CMP>::NodePtr RBTree<T, CMP>::get_leftmost(NodePtr node) const {
   while (node->left!=NIL) {
     node = node->left;
   }
@@ -453,7 +478,7 @@ typename RBTree<T, CMP>::NodePtr RBTree<T, CMP>::minimum(NodePtr node) {
 
 
 template<class T, class CMP>
-typename RBTree<T, CMP>::NodePtr RBTree<T, CMP>::maximum(NodePtr node) {
+typename RBTree<T, CMP>::NodePtr RBTree<T, CMP>::get_rightmost(NodePtr node) const {
   while (node->right!=NIL) {
     node = node->right;
   }
@@ -462,30 +487,30 @@ typename RBTree<T, CMP>::NodePtr RBTree<T, CMP>::maximum(NodePtr node) {
 
 
 template<class T, class CMP>
-typename RBTree<T, CMP>::NodePtr RBTree<T, CMP>::successor(NodePtr node) {
+typename RBTree<T, CMP>::NodePtr RBTree<T, CMP>::successor(NodePtr node) const {
   if (node->right!=NIL) {
-    return minimum(node->right);
+    return get_leftmost(node->right);
   }
-  NodePtr p = node->parent;
-  while (node==p->right and p!=NIL) {
-    node = p;
-    p = p->parent;
+  while (node==node->parent->right and node->parent!=NIL) {
+    // lowest grandparent whose left child is a node's ancestor as well
+    node = node->parent;
+    node->parent = node->parent->parent;
   }
-  return p;
+  return node->parent;
 }
 
 
 template<class T, class CMP>
-typename RBTree<T, CMP>::NodePtr RBTree<T, CMP>::predecessor(NodePtr node) {
+typename RBTree<T, CMP>::NodePtr RBTree<T, CMP>::predecessor(NodePtr node) const {
   if (node->left!=NIL) {
-    return maximum(node->left);
+    return get_rightmost(node->left);
   }
-  NodePtr p = node->parent;
-  while (node==p->left and p!=NIL) {
-    node = p;
-    p = p->parent;
+  while (node==node->parent->left and node->parent!=NIL) {
+    // lowest grandparent whose right child is a node's ancestor as well
+    node = node->parent;
+    node->parent = node->parent->parent;
   }
-  return p;
+  return node->parent;
 }
 
 
@@ -534,7 +559,7 @@ void RBTree<T, CMP>::insert(const T& value) {
   NodePtr node{new Node(value, RED, nullptr)};
   node->left = node->right = NIL;
   NodePtr y{nullptr};
-  NodePtr x{this->root};
+  NodePtr x{get_root()};
   while (x!=NIL) {
     y = x;
     if (comparator(node->data, x->data)) {
@@ -564,24 +589,23 @@ void RBTree<T, CMP>::insert(const T& value) {
 
 template <class T, class CMP>
 void RBTree<T, CMP>::delete_(const T& value) {
-  deleteNodeHelper(this->root, value);
+  deleteNodeHelper(get_root(), value);
 }
 
 
 template <class T, class CMP>
 void RBTree<T, CMP>::print_tree() const {
   if (root!=nullptr) {
-    printHelper(this->root, "", true);
+    recursive_print(get_root(), "", true);
   } else {
     std::cout << "Empty Tree" << std::endl;
   }
 }
 
 
-
 template <class T, class CMP>
 bool RBTree<T, CMP>::contains(const T& value) const {
-  if (recursive_search(this->root, value)->data==value) {
+  if (recursive_search(get_root(), value)->data==value) {
     return true;
   } else {
     return false;
@@ -590,8 +614,13 @@ bool RBTree<T, CMP>::contains(const T& value) const {
 
 
 template <class T, class CMP>
+T RBTree<T, CMP>::find(const T& value) const {
+    return recursive_search(root, value)->data;
+}
+
+template <class T, class CMP>
 typename RBTree<T, CMP>::const_iterator RBTree<T, CMP>::begin() const {
-  return const_iterator(minimum(this->root));
+  return const_iterator(get_leftmost(get_root()));
 }
 
 
@@ -600,6 +629,13 @@ typename RBTree<T, CMP>::const_iterator RBTree<T, CMP>::end() const {
   return const_iterator(NIL);
 }
 
+template <class T, class CMP>
+int RBTree<T, CMP>::get_height(NodePtr root) const {
+  if (root==NIL) {
+    return 0;
+  }
+  return std::max(get_height(root->left), get_height(root->right))+1; 
+} 
 
 
 /*TODO:
