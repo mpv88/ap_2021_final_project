@@ -5,7 +5,7 @@
 #include "RBT_iterator.hpp"
 #include <iostream>
 
-/*
+/* #TODO: testing Node class
 int main() {
   
   typedef int node_type; //where int is the T into RBT
@@ -19,30 +19,36 @@ int main() {
   std::cout << nodo.right << std::endl;
   std::cout << nodo.parent << std::endl;
   return 0;
+
+  #TODO: testing RBT_iterator class
 }
 */
 int main() {
   RBTree<int> rbt;
-  rbt.insert(8);
-  rbt.insert(18);
-  rbt.insert(5);
-  rbt.insert(15);
-  rbt.insert(17);
-  rbt.insert(25);
-  rbt.insert(40);
-  rbt.insert(80);
-  rbt.delete_(25);
-  rbt.delete_(10);
-  rbt.delete_(55);
-  std::cout << std::endl;
-  rbt.preorder(); //from top to bottom right
+  rbt.insert(61);
+  rbt.insert(52);
+  rbt.insert(20);
+  rbt.insert(16);
+  rbt.insert(55);
+  rbt.insert(85);
+  rbt.insert(76);
+  rbt.insert(71);
+  rbt.insert(65);
+  rbt.insert(81);
+  rbt.insert(93);
+  rbt.insert(90);
+  rbt.insert(101);
+  std::cout << (rbt.contains(60)) << std::endl; //0
+  std::cout << (rbt.contains(61)) << std::endl; //1
+  std::cout << (rbt.contains(85)) << std::endl; //1
+  std::cout << (rbt.contains(1)) << std::endl;  //0
   std::cout << std::endl;
   rbt.inorder(); //total order
   std::cout << std::endl;
+  rbt.preorder(); //from top to bottom right
+  std::cout << std::endl;
   rbt.postorder(); //from bottom left to top
   std::cout << std::endl;
-  std::cout << rbt.searchTree(40) << std::endl;
-  std::cout << rbt.getRoot() << std::endl;
   rbt.printTree();
   return 0;
 }
