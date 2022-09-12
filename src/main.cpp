@@ -37,7 +37,11 @@ int main() {
   rbt.insert(90);
   rbt.insert(101);
   rbt.insert(102);
-  //rbt.delete_(102); //delete
+  rbt.delete_(102); //delete
+  rbt.delete_(82); //delete
+  rbt.delete_(52); //delete
+  rbt.delete_(55); //delete
+  rbt.delete_(10); //delete
   std::cout << (rbt.find(61)) << std::endl; //find & contains
   std::cout << (rbt.contains(60)) << std::endl; //0
   std::cout << (rbt.contains(61)) << std::endl; //1
