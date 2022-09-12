@@ -1,6 +1,6 @@
 ///\file RBT.hpp
 ///\author mpv
-///\brief header file with all RBT's members' declarations and methods' definition.
+///\brief header file with all RBT's members' declarations and methods' definitionss.
 
 #ifndef RBT_HPP
 #define RBT_HPP
@@ -50,32 +50,43 @@ private:
 
   ///\brief A recursive helper function to print the RBTree's structure (see: print_tree).
   ///\param root The starting node for exploring the RBTree, typically its root.
-  ///\param indent Specifies the degree of indentation for tree's branches.
-    ///\param last Specifies if we are in the left or right sub-tree.
+  ///\param indentation Specifies the degree of indentation for tree's branches.
+  ///\param is_right Specifies if we are in the left or right sub-tree.
   ///\return Prints the complete branch-leaf structure of RBTree.
-  void recursive_print(NodePtr root, std::string indent, bool last) const;
-
-  // #TODO: continue review here from recursive print!!!
+  void recursive_print(NodePtr root, std::string indentation, bool is_right) const;
 
 
-  //SPECIALS:
-  void rbTransplant(NodePtr u, NodePtr v);
-
-  void leftRotate(NodePtr node); //rotate
-  void rightRotate(NodePtr node); //rotate
-
-  void fixInsert(NodePtr k); //rebalance_on_insert
-  void fixDelete(NodePtr x); //rebalance_on_delete
-  void deleteNodeHelper(NodePtr node, T key);
-
+  ///\brief Private utility function to help rebalance RBTree's after deletion (see: delete_adjustment).
+  ///\param replaced The node we want to be replaced with the replacer node.
+  ///\param replacer The node we want to be a replacement of replaced node.
+  ///\return Modifies RBTree's structure, swapping one node with another.
+  void node_replacement(NodePtr replaced, NodePtr replacer);
   
 
+  ///\brief Private utility function to help rebalance RBTree's after insertion/deletion.
+  ///\param node The node which constitutes the pivot point for the rotation.
+  ///\param to_right Direction of desired rotation: 0=left (child up), 1=right (child down).
+  ///\return Modifies RBTree's structure, performing a right/left rotation of nodes.
+  void node_rotation(NodePtr node, bool to_right);
 
 
+  ///\brief Private utility function to rebalance RBTree's after insertion (see: insert).
+  ///\param node The node we are going to insert into the previous RBTree structure.
+  ///\return Rebalances RBTree's to restore compliance with 5 rules that may have been infringed.
+  void rebalance_on_insert(NodePtr node);
 
 
+  ///\brief Private utility function to rebalance RBTree's after deletion (see: delete_).
+  ///\param node The node we are going to delete from the previous RBTree structure.
+  ///\return Rebalances RBTree's to restore compliance with 5 rules that may have been infringed.
+  void rebalance_on_delete(NodePtr node);
 
 
+    //SPECIALS:
+
+  void delete_adjustment(NodePtr node, T key);
+
+  
 
 
 public:
@@ -121,6 +132,7 @@ public:
 	///\param rbt The RBTree which will be moved into a new one.
 	RBTree(RBTree&& rbt) noexcept : root{std::move(rbt.root)} {}
 
+
   ///\brief Move assignment for RBTree.
 	///\param rbt The RBTree which will be moved into a new one.
 	RBTree& operator=(RBTree&& rbt) {
@@ -129,7 +141,7 @@ public:
       root = std::move(rbt.root);
     }
   }
- 
+
 //--------------------------------------------------------------------
   ///\brief Function to get the root of the RBTree.
 	///\return A pointer to RBTree's root.
@@ -213,14 +225,6 @@ public:
 // --------------------------------IMPLEMENTATION------------------------------------------
 
 // private methods
-template <class T, class CMP>
-typename RBTree<T, CMP>::NodePtr RBTree<T, CMP>::get_root() const {
-  if(this->root==nullptr) {
-    return nullptr;
-  }
-  return this->root;
-}
-
 
 template <class T, class CMP>
 void RBTree<T, CMP>::recursive_ordering(NodePtr root, const int choice) const {
@@ -263,87 +267,182 @@ typename RBTree<T, CMP>::NodePtr RBTree<T, CMP>::recursive_search(NodePtr root, 
 }
 
 
-template <class T, class CMP>
-void RBTree<T, CMP>::fixDelete(NodePtr x) {
-  NodePtr s;
-  while (x->color==BLACK and x!=root) {
-    if (x==x->parent->left) {
-      s=x->parent->right;
-      if (s->color==RED) { 
-        // case 3.1
-        s->color=BLACK;
-        x->parent->color=RED;
-        leftRotate(x->parent);
-        s=x->parent->right;
-      }
-      if (s->right->color==BLACK and s->left->color==BLACK) {
-        // case 3.2
-        s->color=RED;
-        x=x->parent;
-      } else {
-        if (s->right->color==BLACK) {
-          // case 3.3
-          s->left->color=BLACK;
-          s->color=RED;
-          rightRotate(s);
-          s=x->parent->right;
-        }
-        // case 3.4
-        s->color=x->parent->color;
-        x->parent->color=BLACK;
-        s->right->color=BLACK;
-        leftRotate(x->parent);
-        x=root;
-      }
-    } else {
-      s=x->parent->left;
-      if (s->color==RED) {
-        // case 3.1
-        s->color=BLACK;
-        x->parent->color=RED;
-        rightRotate(x->parent);
-        s=x->parent->left;
-      }
-      if (s->left->color==BLACK and s->right->color==BLACK) {
-        // case 3.2
-        s->color=RED;
-        x=x->parent;
-      } else {
-        if (s->left->color==BLACK) {
-          // case 3.3
-          s->right->color=BLACK;
-          s->color=RED;
-          leftRotate(s);
-          s=x->parent->left;
-        }
-        // case 3.4
-        s->color=x->parent->color;
-        x->parent->color=BLACK;
-        s->left->color=BLACK;
-        rightRotate(x->parent);
-        x=root;
-      }
-    }
+template<class T, class CMP>
+void RBTree<T, CMP>::recursive_print(NodePtr root, std::string indentation, bool is_right) const {
+  std::string h_branch {"        "};
+  if (root->right) {
+    recursive_print(root->right, indentation+(is_right ? h_branch : "L"+h_branch), 1);
   }
-  x->color=BLACK;
+  std::cout << indentation << " (" << "----- "; // 
+  std::cout << root->data << " " << (root->color ? "RED" : "BLACK") << std::endl;
+  if (root->left) {
+      recursive_print(root->left, indentation+(is_right ? "R"+h_branch : h_branch), 0);
+  }
 }
 
 
 template <class T, class CMP>
-void RBTree<T, CMP>::rbTransplant(NodePtr u, NodePtr v) {
-  if (u->parent==NIL) {
-    root=v;
-  } else if (u==u->parent->left) {
-    u->parent->left=v;
+void RBTree<T, CMP>::node_replacement(NodePtr replaced, NodePtr replacer) {
+  if (replaced->parent==NIL) { // if parent is root 
+    root=replacer;   // A: replacer becomes new root
+  } else if (replaced==replaced->parent->right) { // if node is right child
+    replaced->parent->right=replacer; // B: replacer becomes right child
   } else {
-    u->parent->right=v;
+    replaced->parent->left=replacer; // C: replacer becomes left child
   }
-  v->parent=u->parent;
+  replacer->parent=replaced->parent; // replacer's parent becomes node's parent
+}
+
+
+template <class T, class CMP>
+void RBTree<T, CMP>::node_rotation(NodePtr node, bool to_right) {
+  NodePtr _node;
+  if (to_right) { // right rotation
+    _node = node->left; // keep pivot left child
+    node->left = _node->right; // pivot left becomes pivot left-right grandchild
+    if (_node->right!=NIL) {
+      _node->right->parent = node; // pivot's left-right grandchild's parent becomes pivot
+      }
+    _node->parent = node->parent; // pivot's left child's parent becomes pivot's parent 
+    if (node->parent==nullptr) {
+      this->root = _node; // root becomes pivot's left child
+    } else if (node==node->parent->right) {
+      node->parent->right = _node; // pivot's parent right child becomes pivot's left child
+    } else {
+      node->parent->left = _node; // pivot's parent left child becomes pivot's left child
+    }
+    _node->right = node; // pivot's left-right granchild becomes pivot
+  } else { // left rotation
+    _node = node->right; // keep pivot right child
+    node->right = _node->left; // pivot right becomes pivot right-left grandchild
+    if (_node->left!=NIL) {
+      _node->left->parent = node; // pivot's right-left grandchild's parent becomes pivot
+      }
+    _node->parent = node->parent; // pivot's right child's parent becomes pivot's parent
+    if (node->parent==nullptr) {
+      this->root = _node; // root becomes pivot's right child
+    } else if (node==node->parent->left) {
+      node->parent->left = _node; // pivot's parent left child becomes pivot's right child
+    } else {
+      node->parent->right = _node; // pivot's parent right child becomes pivot's right child
+    }
+    _node->left = node; // pivot's right-left granchild becomes pivot
+  }
+  node->parent = _node; // pivot's parent becomes pivot's left or right child
 }
 
 
 template<class T, class CMP>
-void RBTree<T, CMP>::deleteNodeHelper(NodePtr node, T key) {
+void RBTree<T, CMP>::rebalance_on_insert(NodePtr node) {
+  // details on cases at source: https://en.wikipedia.org/wiki/Red-black_tree
+  while (node->parent->color==RED) { // parent is RED
+    if (node->parent==node->parent->parent->right) { // if parent is right child
+      NodePtr uncle{node->parent->parent->left}; // left uncle
+      if (uncle->color==RED) { // case C: L_uncle is RED (simple recolor)
+        node->parent->parent->color = RED; // grandparent becomes RED
+        node->parent->color = BLACK; // parent becomes BLACK
+        uncle->color = BLACK; // uncle becomes BLACK
+        node = node->parent->parent; // node becomes grandparent
+      } else {
+        if (node==node->parent->left) { // case D: L_uncle is BLACK and node is left child
+          node = node->parent; // node becomes parent
+          node_rotation(node, 1); // right rotation
+        }                            // case E: L_uncle is BLACK and node is right child
+        node->parent->parent->color = RED; // grandparent becomes RED
+        node->parent->color = BLACK; // parent becomes BLACK
+        node_rotation(node->parent->parent, 0); // left rotation
+      }
+    } else {  // if parent is left child
+      NodePtr uncle{node->parent->parent->right}; // right uncle
+      if (uncle->color==RED) { // case F: R_uncle is RED (simple recolor)
+        node->parent->parent->color = RED; // grandparent becomes RED
+        node->parent->color = BLACK; // parent becomes BLACK
+        uncle->color = BLACK; // uncle becomes BLACK
+        node = node->parent->parent; // node becomes grandparent
+      } else {
+        if (node==node->parent->right) { // case G: R_uncle is BLACK and node is right child
+          node = node->parent; // node becomes parent
+          node_rotation(node, 0); // left rotation
+        }                            // case H: R_uncle is BLACK and node is left child
+        node->parent->parent->color = RED; // grandparent becomes RED
+        node->parent->color = BLACK; // parent becomes BLACK
+        node_rotation(node->parent->parent, 1); // right rotation
+      }
+    }
+    if (node==root) {break;} // Case A: RBTree empty, add BLACK root
+  }
+  root->color = BLACK; // Case B: parent is BLACK, keep root BLACK
+}
+
+
+template <class T, class CMP>
+void RBTree<T, CMP>::rebalance_on_delete(NodePtr node) {
+  // details on cases at source: https://en.wikipedia.org/wiki/Red-black_tree
+  while (node->color==BLACK and node!=root) {
+    if (node==node->parent->left) {
+      NodePtr sibiling{node->parent->right};
+      if (sibiling->color==RED) { 
+        // case 3.1
+        sibiling->color = BLACK;
+        node->parent->color = RED;
+        node_rotation(node->parent, 0);
+        sibiling = node->parent->right;
+      }
+      if (sibiling->right->color==BLACK and sibiling->left->color==BLACK) {
+        // case 3.2
+        sibiling->color = RED;
+        node = node->parent;
+      } else {
+        if (sibiling->right->color==BLACK) {
+          // case 3.3
+          sibiling->left->color = BLACK;
+          sibiling->color = RED;
+          node_rotation(sibiling, 1);
+          sibiling = node->parent->right;
+        }
+        // case 3.4
+        sibiling->color = node->parent->color;
+        node->parent->color = BLACK;
+        sibiling->right->color = BLACK;
+        node_rotation(node->parent, 0);
+        node = root;
+      }
+    } else {
+      NodePtr sibiling{node->parent->left};
+      if (sibiling->color==RED) {
+        // case 3.1
+        sibiling->color = BLACK;
+        node->parent->color = RED;
+        node_rotation(node->parent, 1);
+        sibiling = node->parent->left;
+      }
+      if (sibiling->left->color==BLACK and sibiling->right->color==BLACK) {
+        // case 3.2
+        sibiling->color = RED;
+        node = node->parent;
+      } else {
+        if (sibiling->left->color==BLACK) {
+          // case 3.3
+          sibiling->right->color = BLACK;
+          sibiling->color = RED;
+          node_rotation(sibiling, 0);
+          sibiling = node->parent->left;
+        }
+        // case 3.4
+        sibiling->color = node->parent->color;
+        node->parent->color = BLACK;
+        sibiling->left->color = BLACK;
+        node_rotation(node->parent, 1);
+        node = root;
+      }
+    }
+  }
+  node->color = BLACK;
+}
+
+
+template<class T, class CMP>
+void RBTree<T, CMP>::delete_adjustment(NodePtr node, T key) {
   NodePtr z=NIL;
   NodePtr x, y;
   while (node!=NIL) {
@@ -364,10 +463,10 @@ void RBTree<T, CMP>::deleteNodeHelper(NodePtr node, T key) {
   Color y_original_color=y->color;
   if (z->left==NIL) {
     x=z->right;
-    rbTransplant(z, z->right);
+    node_replacement(z, z->right);
   } else if (z->right==NIL) {
     x=z->left;
-    rbTransplant(z, z->left);
+    node_replacement(z, z->left);
   } else {
     y=get_leftmost(z->right);
     y_original_color=y->color;
@@ -375,97 +474,39 @@ void RBTree<T, CMP>::deleteNodeHelper(NodePtr node, T key) {
     if (y->parent==z) {
       x->parent=y;
     } else {
-      rbTransplant(y, y->right);
+      node_replacement(y, y->right);
       y->right=z->right;
       y->right->parent=y;
     }
-    rbTransplant(z, y);
+    node_replacement(z, y);
     y->left=z->left;
     y->left->parent=y;
     y->color=z->color;
   }
   delete z;
   if (y_original_color==BLACK) {
-    fixDelete(x);
+    rebalance_on_delete(x);
   }
 }
-
-template<class T, class CMP>
-void RBTree<T, CMP>::fixInsert(NodePtr k) {
-  NodePtr u;
-  while (k->parent->color==RED) {
-    if (k->parent == k->parent->parent->right) {
-      u = k->parent->parent->left; // uncle
-      if (u->color==RED) {
-        // case 3.1
-        u->color = BLACK;
-        k->parent->color = BLACK;
-        k->parent->parent->color = RED;
-        k = k->parent->parent;
-      } else {
-        if (k == k->parent->left) {
-          // case 3.2.2
-          k = k->parent;
-          rightRotate(k);
-        }
-        // case 3.2.1
-        k->parent->color = BLACK;
-        k->parent->parent->color = RED;
-        leftRotate(k->parent->parent);
-      }
-    } else {
-      u = k->parent->parent->right; // uncle
-
-      if (u->color==RED) {
-        // mirror case 3.1
-        u->color = BLACK;
-        k->parent->color = BLACK;
-        k->parent->parent->color = RED;
-        k = k->parent->parent;
-      } else {
-        if (k == k->parent->right) {
-          // mirror case 3.2.2
-          k = k->parent;
-          leftRotate(k);
-        }
-        // mirror case 3.2.1
-        k->parent->color = BLACK;
-        k->parent->parent->color = RED;
-        rightRotate(k->parent->parent);
-      }
-    }
-    if (k==root) {
-      break;
-    }
-  }
-  root->color = BLACK;
-}
-
-template<class T, class CMP>
-void RBTree<T, CMP>::recursive_print(NodePtr root, std::string indent, bool last) const {
-  if (root!=nullptr) {
-    std::cout << indent;
-    if (last) {
-      std::cout << "R----";
-      indent += "     ";
-    } else {
-      std::cout << "L----";
-      indent += "|    ";
-    }
-    std::string sColor = root->color ? "RED" : "BLACK";
-    std::cout << root->data << "(" << sColor << ")" << std::endl;
-    recursive_print(root->left, indent, false);
-    recursive_print(root->right, indent, true);
-  }
-}
-
 
 // public methods
 
-template<class T, class CMP>
- void RBTree<T, CMP>::print_ordered_keys(int const choice) const {
-    recursive_ordering(get_root(), choice);
+template <class T, class CMP>
+typename RBTree<T, CMP>::NodePtr RBTree<T, CMP>::get_root() const {
+  if(this->root==nullptr) {
+    return nullptr;
+  }
+  return this->root;
 }
+
+
+template <class T, class CMP>
+int RBTree<T, CMP>::get_height(NodePtr root) const {
+  if (root==NIL) {
+    return 0;
+  }
+  return std::max(get_height(root->left), get_height(root->right))+1; 
+} 
 
 
 template<class T, class CMP>
@@ -483,74 +524,6 @@ typename RBTree<T, CMP>::NodePtr RBTree<T, CMP>::get_rightmost(NodePtr node) con
     node = node->right;
   }
   return node;
-}
-
-
-template<class T, class CMP>
-typename RBTree<T, CMP>::NodePtr RBTree<T, CMP>::get_successor(NodePtr node) const {
-  if (node->right!=NIL) {
-    return get_leftmost(node->right);
-  }
-  while (node==node->parent->right and node->parent!=NIL) {
-    // lowest grandparent whose left child is a node's ancestor as well
-    node = node->parent;
-    node->parent = node->parent->parent;
-  }
-  return node->parent;
-}
-
-
-template<class T, class CMP>
-typename RBTree<T, CMP>::NodePtr RBTree<T, CMP>::get_predecessor(NodePtr node) const {
-  if (node->left!=NIL) {
-    return get_rightmost(node->left);
-  }
-  while (node==node->parent->left and node->parent!=NIL) {
-    // lowest grandparent whose right child is a node's ancestor as well
-    node = node->parent;
-    node->parent = node->parent->parent;
-  }
-  return node->parent;
-}
-
-
-template <class T, class CMP>
-void RBTree<T, CMP>::leftRotate(NodePtr node) {
-  NodePtr right_node = node->right;
-  node->right = right_node->left;
-  if (right_node->left!=NIL) {
-    right_node->left->parent = node;
-  }
-  right_node->parent = node->parent;
-  if (node->parent==nullptr) {
-    this->root = right_node;
-  } else if (node==node->parent->left) {
-    node->parent->left = right_node;
-  } else {
-    node->parent->right = right_node;
-  }
-  right_node->left = node;
-  node->parent = right_node;
-}
-
-
-template <class T, class CMP>
-void RBTree<T, CMP>::rightRotate(NodePtr node) {
-  NodePtr left_node = node->left;
-  node->left = left_node->right;
-  if (left_node->right!=NIL) {
-    left_node->right->parent = node;
-  }
-  left_node->parent = node->parent;
-  if (node->parent==nullptr) {
-    this->root = left_node;
-  } else if (node==node->parent->right) {
-    node->parent->right = left_node;
-  } else {
-    node->parent->left = left_node;
-  }
-  left_node->right = node;
-  node->parent = left_node;
 }
 
 
@@ -583,23 +556,7 @@ void RBTree<T, CMP>::insert(const T& value) {
   if (node->parent->parent==nullptr) {
     return;
   }
-  fixInsert(node);
-}
-
-
-template <class T, class CMP>
-void RBTree<T, CMP>::delete_(const T& value) {
-  deleteNodeHelper(get_root(), value);
-}
-
-
-template <class T, class CMP>
-void RBTree<T, CMP>::print_tree() const {
-  if (root!=nullptr) {
-    recursive_print(get_root(), "", true);
-  } else {
-    std::cout << "Empty Tree" << std::endl;
-  }
+  rebalance_on_insert(node);
 }
 
 
@@ -618,6 +575,13 @@ T RBTree<T, CMP>::find(const T& value) const {
     return recursive_search(root, value)->data;
 }
 
+
+template <class T, class CMP>
+void RBTree<T, CMP>::delete_(const T& value) {
+  delete_adjustment(get_root(), value);
+}
+
+
 template <class T, class CMP>
 typename RBTree<T, CMP>::const_iterator RBTree<T, CMP>::begin() const {
   return const_iterator(get_leftmost(get_root()));
@@ -629,13 +593,49 @@ typename RBTree<T, CMP>::const_iterator RBTree<T, CMP>::end() const {
   return const_iterator(NIL);
 }
 
-template <class T, class CMP>
-int RBTree<T, CMP>::get_height(NodePtr root) const {
-  if (root==NIL) {
-    return 0;
+
+template<class T, class CMP>
+typename RBTree<T, CMP>::NodePtr RBTree<T, CMP>::get_successor(NodePtr node) const {
+  if (node->right!=NIL) {
+    return get_leftmost(node->right);
   }
-  return std::max(get_height(root->left), get_height(root->right))+1; 
-} 
+  while (node==node->parent->right and node->parent!=NIL) {
+    // lowest grandparent whose left child is a node's ancestor as well
+    node = node->parent;
+    node->parent = node->parent->parent;
+  }
+  return node->parent;
+}
+
+
+template<class T, class CMP>
+typename RBTree<T, CMP>::NodePtr RBTree<T, CMP>::get_predecessor(NodePtr node) const {
+  if (node->left!=NIL) {
+    return get_rightmost(node->left);
+  }
+  while (node==node->parent->left and node->parent!=NIL) {
+    // lowest grandparent whose right child is a node's ancestor as well
+    node = node->parent;
+    node->parent = node->parent->parent;
+  }
+  return node->parent;
+}
+
+
+template<class T, class CMP>
+ void RBTree<T, CMP>::print_ordered_keys(int const choice) const {
+    recursive_ordering(get_root(), choice);
+}
+
+
+template <class T, class CMP>
+void RBTree<T, CMP>::print_tree() const {
+  if (root!=NIL) {
+    recursive_print(get_root(), "", 1);
+  } else {
+    std::cout << "RBTree is empty, nothing to print here!" << std::endl;
+  }
+}
 
 
 /*TODO:
@@ -662,12 +662,12 @@ PUBLIC METHODS:
 
 1) update doxygen                                                     OK
 2) check segmentation fault from root node                            OK
-3) check instances of to-be-changed methods                          in progress...
-4) replace with to-be-changed methods (N.B. use the comparator->OK)  in progress...
+3) check instances of to-be-changed methods                           OK
+4) replace with to-be-changed methods (N.B. use the comparator->OK)   OK
 _
 5) check if all methods are implemented                               OK
 6) terminate regular iterator + inheritance on const_iter
-7) set up unit test suite:
+7) set up unit test suite:                                          in progress...
 while with 50 int, same with 50 double, test iteratorS, print tree, test find,
 print inorder traversal, etc..
 */

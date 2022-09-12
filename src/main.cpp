@@ -37,7 +37,7 @@ int main() {
   rbt.insert(90);
   rbt.insert(101);
   rbt.insert(102);
-  rbt.delete_(102); //delete
+  //rbt.delete_(102); //delete
   std::cout << (rbt.find(61)) << std::endl; //find & contains
   std::cout << (rbt.contains(60)) << std::endl; //0
   std::cout << (rbt.contains(61)) << std::endl; //1
@@ -50,11 +50,14 @@ int main() {
   std::cout << std::endl;
   rbt.print_ordered_keys(3); //from bottom left to top
   std::cout << std::endl;
-  rbt.print_tree();  //print whole
   std::cout << rbt.get_height(rbt.get_root()) << std::endl; //get height + root
   std::cout << rbt.get_leftmost(rbt.get_root())->data << std::endl; // min
   std::cout << rbt.get_rightmost(rbt.get_root())->data << std::endl; // max
   std::cout << rbt.get_successor(rbt.get_root())->data << std::endl; // 1st right
   std::cout << rbt.get_predecessor(rbt.get_root())->data << std::endl; // 1nd left
+  rbt.print_tree();  //print whole
+
+  //copy & move constructors/assignments
+
   return 0;
 }
