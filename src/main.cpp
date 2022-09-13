@@ -64,12 +64,14 @@ int main() {
   //rbt.print_tree();  //print whole
 */
   //copy & move constructors/assignments
-  //RBTree<int> rbt2{};   // custom constructor
-  RBTree<int> rbt2{rbt};  // copy custom constructor
+  RBTree<int> rbt2{};   // constructor
+  //RBTree<int> rbt2{rbt};  // copy constructor
+  //RBTree<int> rbt2{std::move(rbt)};  // move constructor MAY modify original object (not always)
   //rbt2 = rbt; // copy assignment
+  rbt2 = std::move(rbt); // move assignment
   //rbt2.print_tree();	  // print copied tre
-  rbt2.insert(102);
-  rbt2.print_tree(); // testing for deep copy so not shallow (not 102 added to original)
+  rbt.insert(102);
   rbt.print_tree();
+  rbt2.print_tree(); // testing for deep copy so not shallow (not 102 added to original)
   return 0;
 }

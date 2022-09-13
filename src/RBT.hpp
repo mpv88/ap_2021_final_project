@@ -133,7 +133,7 @@ public:
   RBTree& operator=(const RBTree& rbt) {
     if (this!=&rbt) {
       if (root!=nullptr) {
-        //destroy(root);
+        //destroy(rbt.root);
       }
       copy(root, nullptr, rbt.root);
     }
@@ -144,21 +144,23 @@ public:
   ///\brief Move constructor for RBTree.
 	///\param rbt The rvalue reference to the RBTree which will be moved to another new tree.
   ///\return The moved RBTree.
-	RBTree(RBTree&& rbt) noexcept : root{std::move(rbt.root)} {}
+	RBTree(RBTree&& rbt) noexcept: root{std::move(rbt.root)} {}
 
 
   ///\brief Move assignment for RBTree.
 	///\param rbt The rvalue reference to RBTree that will be moved to an existing tree.
   ///\return The moved RBTree.
-	RBTree& operator=(RBTree&& rbt) {
+	RBTree& operator=(RBTree&& rbt) noexcept {
     if (this!=&rbt) {
-      //delete get_root();
+      if (root!=nullptr) {
+      //destroy(rbt.root);
+      }
       root = std::move(rbt.root);
-    }
+    } 
     return *this;
   }
 
-//--------------------------------------------------------------------
+
   ///\brief Function to get the root of the RBTree.
 	///\return A pointer to RBTree's root.
   NodePtr get_root() const;
