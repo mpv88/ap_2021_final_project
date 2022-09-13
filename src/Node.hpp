@@ -30,6 +30,10 @@ public:
   /// default color is BLACK, default parent is empty [overloaded].
   _Node(T key, Color clr=BLACK, _Node *left=nullptr, _Node *right=nullptr, _Node *parent=nullptr) : data{key}, color{clr}, left{left}, right{right}, parent{parent} {}
 
+  ///\brief Destructor of a RBTree's node.
+  ///
+  ~_Node() {}
+
 };
 
 #endif // NODE_HPP

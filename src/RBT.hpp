@@ -35,8 +35,11 @@ private:
 
 
   ///\brief A recursive helper function to create a deep copy of a RBTree.
-  ///\param node The starting node for exploring the RBTree, typically its root.
-	void copy(const NodePtr node);
+  ///\param copied The starting node for exploring the RBTree, typically its root.
+  ///\param new_parent Supplied parent node in case needed (starting: nullptr).
+  ///\param other_rbt The starting node for exploring the RBTree, typically its root.
+  ///\return A deep copy of the original RBTree provided.
+  void copy(NodePtr& copied, NodePtr new_parent, NodePtr other_rbt);
 
 
   ///\brief A recursive helper function to print RBTree's keys (see: print_ordered_keys).
@@ -118,19 +121,24 @@ public:
 	///\param rbt The RBTree which will be copied to another new tree.
 	///\return A 'deep copy' of RBTree, by means of a call to the constructor.
   RBTree(const RBTree &rbt) {
-    copy(rbt.root);
-  }
+      copy(root, nullptr, rbt.root);  // deep copy
+      //root = new Node (*rbt.root);  // shallow copy
+
+}
 
 
   ///\brief Copy assignment for RBTree.
 	///\param rbt A const lvalue reference to RBTree that will be copied to an existing tree.
 	///\return The copy of the RBTree.
   RBTree& operator=(const RBTree& rbt) {
-
-    //root.reset();
-    //*this = rbt;
-    return *this;
-  }
+    if (this!=&rbt) {
+      if (root!=nullptr) {
+        //destroy(root);
+      }
+      copy(root, nullptr, rbt.root);
+    }
+  return *this;
+}
 
 
   ///\brief Move constructor for RBTree.
@@ -144,7 +152,7 @@ public:
   ///\return The moved RBTree.
 	RBTree& operator=(RBTree&& rbt) {
     if (this!=&rbt) {
-      delete get_root();
+      //delete get_root();
       root = std::move(rbt.root);
     }
     return *this;
@@ -240,12 +248,16 @@ public:
 // private methods
 
 template <class T, class CMP>
-void  RBTree<T, CMP>::copy(const NodePtr node) {
-  //return (node==nullptr) ? nullptr : new Node(node->data, node->color, copy(node->left), copy(node->right), copy(node->parent));
-  if(node!=NIL) {
-      insert(node->data);
-      copy(node->left);
-      copy(node->right);
+void RBTree<T, CMP>::copy(NodePtr& copied, NodePtr new_parent, NodePtr other_rbt) {
+  if (other_rbt==nullptr) {
+    copied = nullptr;
+  } else {
+    copied = new Node;
+    copied->data = other_rbt->data;
+    copied->color = other_rbt->color;
+    copied->parent = new_parent;
+    copy(copied->left, copied, other_rbt->left);
+    copy(copied->right, copied, other_rbt->right);
   }
 }
 
@@ -540,7 +552,7 @@ typename RBTree<T, CMP>::NodePtr RBTree<T, CMP>::get_rightmost(NodePtr node) con
 
 template <class T, class CMP>
 void RBTree<T, CMP>::insert(const T& value) {
-  NodePtr node{new Node(value, RED, nullptr)};
+  NodePtr node{new Node(value, RED)};
   node->left = node->right = NIL;
   NodePtr node_B{nullptr};
   NodePtr node_A{get_root()};
@@ -651,7 +663,10 @@ void RBTree<T, CMP>::print_tree() const {
 
 template<class T, class CMP>
  void RBTree<T, CMP>::clear_tree() noexcept {
-  //**root.reset();
+    if (root==NIL) return; 
+    //p = clear_tree(get_root()->left); 
+    //p = clear_tree(get_root()->right);
+    delete root;
 }
 
 /*TODO:

@@ -22,7 +22,7 @@ int main() {
 //#TODO: testing RBT_iterator class
 */
 int main() {
-  RBTree<int> rbt;
+  RBTree<int> rbt{};
   rbt.insert(61); //insert
   rbt.insert(52);
   rbt.insert(20);
@@ -42,7 +42,7 @@ int main() {
   rbt.delete_(52); //delete
   rbt.delete_(55); //delete
   rbt.delete_(10); //delete
-  std::cout << (rbt.find(61)) << std::endl; //find & contains
+/*std::cout << (rbt.find(61)) << std::endl; //find & contains
   std::cout << (rbt.contains(60)) << std::endl; //0
   std::cout << (rbt.contains(61)) << std::endl; //1
   std::cout << (rbt.contains(85)) << std::endl; //1
@@ -59,13 +59,17 @@ int main() {
   std::cout << rbt.get_rightmost(rbt.get_root())->data << std::endl; // max
   std::cout << rbt.get_successor(rbt.get_root())->data << std::endl; // 1st right
   std::cout << rbt.get_predecessor(rbt.get_root())->data << std::endl; // 1nd left
-  //rbt.clear_tree();  //print whole
+  std::cout << (rbt.get_root()->data) << std::endl;
+  rbt.clear_tree();  //clear whole
   //rbt.print_tree();  //print whole
-
+*/
   //copy & move constructors/assignments
   //RBTree<int> rbt2{};   // custom constructor
   RBTree<int> rbt2{rbt};  // copy custom constructor
   //rbt2 = rbt; // copy assignment
-  rbt2.print_tree();	  // print copied tree
+  //rbt2.print_tree();	  // print copied tre
+  rbt2.insert(102);
+  rbt2.print_tree(); // testing for deep copy so not shallow (not 102 added to original)
+  rbt.print_tree();
   return 0;
 }
