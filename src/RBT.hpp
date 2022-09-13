@@ -34,6 +34,11 @@ private:
   NodePtr NIL; ///< empty (leaf) node of the RBTree (always black)
 
 
+  ///\brief A recursive helper function to create a deep copy of a RBTree.
+  ///\param node The starting node for exploring the RBTree, typically its root.
+	void copy(const NodePtr node);
+
+
   ///\brief A recursive helper function to print RBTree's keys (see: print_ordered_keys).
   ///\param root The starting node for exploring the RBTree, typically its root.
   ///\param choice A const integer to explicit which type of traversal you want.
@@ -110,36 +115,39 @@ public:
    
 //--------------------------------------------------------------------
   ///\brief Copy constructor for RBTree.
-	///\param rbt The RBTree which will be copied to a new one.
-	///\param cmp A custom comparison function for tree nodes (defaulted to std::less).
+	///\param rbt The RBTree which will be copied to another new tree.
+	///\return A 'deep copy' of RBTree, by means of a call to the constructor.
   RBTree(const RBTree &rbt) {
-    root = copy(rbt.root);
+    copy(rbt.root);
   }
- 
+
 
   ///\brief Copy assignment for RBTree.
-	///\param rbt The RBTree which is going to be copied.
-	///\param cmp A custom comparison function for tree nodes (defaulted to std::less).
-  RBTree& operator=(const RBTree &rbt) {
-    root.reset();
-    auto tmp = rbt; 
-    *this = std::move(tmp);
+	///\param rbt A const lvalue reference to RBTree that will be copied to an existing tree.
+	///\return The copy of the RBTree.
+  RBTree& operator=(const RBTree& rbt) {
+
+    //root.reset();
+    //*this = rbt;
     return *this;
   }
 
 
   ///\brief Move constructor for RBTree.
-	///\param rbt The RBTree which will be moved into a new one.
+	///\param rbt The rvalue reference to the RBTree which will be moved to another new tree.
+  ///\return The moved RBTree.
 	RBTree(RBTree&& rbt) noexcept : root{std::move(rbt.root)} {}
 
 
   ///\brief Move assignment for RBTree.
-	///\param rbt The RBTree which will be moved into a new one.
+	///\param rbt The rvalue reference to RBTree that will be moved to an existing tree.
+  ///\return The moved RBTree.
 	RBTree& operator=(RBTree&& rbt) {
     if (this!=&rbt) {
       delete get_root();
       root = std::move(rbt.root);
     }
+    return *this;
   }
 
 //--------------------------------------------------------------------
@@ -221,10 +229,26 @@ public:
   ///\brief A wrapper function to print the RBTree (see: recursive_print).
 	///\return The print of the complete RBTree structure.
   void print_tree() const;
+
+
+  ///\brief Utility function to clear the whole RBTree.
+	///\return A totally empty tree.
+  void clear_tree() noexcept;
 };
 // --------------------------------IMPLEMENTATION------------------------------------------
 
 // private methods
+
+template <class T, class CMP>
+void  RBTree<T, CMP>::copy(const NodePtr node) {
+  //return (node==nullptr) ? nullptr : new Node(node->data, node->color, copy(node->left), copy(node->right), copy(node->parent));
+  if(node!=NIL) {
+      insert(node->data);
+      copy(node->left);
+      copy(node->right);
+  }
+}
+
 
 template <class T, class CMP>
 void RBTree<T, CMP>::recursive_ordering(NodePtr root, const int choice) const {
@@ -441,30 +465,29 @@ template<class T, class CMP>
 void RBTree<T, CMP>::delete_adjustment(NodePtr node, T value) {
   NodePtr node_A{NIL}, node_B{NIL}, node_C{NIL}; // temporary helper nodes
   if(recursive_search(node, value)!=NIL) {
-    node_A = recursive_search(node, value); // store in node_A the node to be canceled
+    node_A = recursive_search(node, value); // if found, node_A stores the node to be canceled
   } else {
     std::cout << "Value " << value << " not found" << std::endl;
     return;
   }
-
   node_B = node_A; // node_B becomes node_A
   Color B_color{node_B->color}; // save original color of node_B node
   if (node_A->left==NIL) { // case: node_A has no left child
-    node_C = node_A->right;
-    node_replacement(node_A, node_A->right);
+    node_C = node_A->right; // node_C becomes node_A's right child
+    node_replacement(node_A, node_A->right); // node_A is replaced by node_A's right child
   } else if (node_A->right==NIL) { // case: node_A has no right child
-    node_C = node_A->left;
-    node_replacement(node_A, node_A->left);
+    node_C = node_A->left; // node_C becomes node_A's left child
+    node_replacement(node_A, node_A->left); // node_A is replaced by node_A's left child
   } else { // case: node_A has both children
-    node_B = get_leftmost(node_A->right);
-    B_color = node_B->color;
-    node_C = node_B->right;
+    node_B = get_leftmost(node_A->right); // node_B becomes node_A's right child's leftmost node
+    B_color = node_B->color; // update color of node_B node
+    node_C = node_B->right; // node_C becomes node_B's right child
     if (node_B->parent==node_A) { // subcase: node_B's parent equals node_A
-      node_C->parent = node_B;
+      node_C->parent = node_B; // node_C's parent becomes node_B
     } else { // subcase: node_B's parent not equals node_A
-      node_replacement(node_B, node_B->right);
-      node_B->right = node_A->right;
-      node_B->right->parent = node_B;
+      node_replacement(node_B, node_B->right); // node_B is replaced by node_B's right child
+      node_B->right = node_A->right; // node_B's right child becomes node_A's right child
+      node_B->right->parent = node_B; // node_B's right child's parent becomes node_B
     }
     node_replacement(node_A, node_B); // replace node_A with node_B
     node_B->left = node_A->left; // node_B's left child becomes node_A's left child
@@ -472,8 +495,8 @@ void RBTree<T, CMP>::delete_adjustment(NodePtr node, T value) {
     node_B->color = node_A->color; // node_B's color becomes node_A's color
   }
   delete node_A;
-  if (B_color==BLACK) {
-    rebalance_on_delete(node_C);
+  if (B_color==BLACK) { // if node_B was BLACK, we need to fix the tree deleting node_C
+    rebalance_on_delete(node_C);  
   }
 }
 
@@ -625,6 +648,11 @@ void RBTree<T, CMP>::print_tree() const {
   }
 }
 
+
+template<class T, class CMP>
+ void RBTree<T, CMP>::clear_tree() noexcept {
+  //**root.reset();
+}
 
 /*TODO:
 CLASSES:

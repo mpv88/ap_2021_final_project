@@ -59,9 +59,13 @@ int main() {
   std::cout << rbt.get_rightmost(rbt.get_root())->data << std::endl; // max
   std::cout << rbt.get_successor(rbt.get_root())->data << std::endl; // 1st right
   std::cout << rbt.get_predecessor(rbt.get_root())->data << std::endl; // 1nd left
-  rbt.print_tree();  //print whole
+  //rbt.clear_tree();  //print whole
+  //rbt.print_tree();  //print whole
 
   //copy & move constructors/assignments
-
+  //RBTree<int> rbt2{};   // custom constructor
+  RBTree<int> rbt2{rbt};  // copy custom constructor
+  //rbt2 = rbt; // copy assignment
+  rbt2.print_tree();	  // print copied tree
   return 0;
 }
