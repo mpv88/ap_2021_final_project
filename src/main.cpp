@@ -37,7 +37,7 @@ int main() {
   rbt.insert(90);
   rbt.insert(101);
   rbt.insert(102);
-  rbt.delete_(102); //delete
+  rbt.insert(102); //delete
   rbt.delete_(82); //delete
   rbt.delete_(52); //delete
   rbt.delete_(55); //delete
@@ -60,18 +60,18 @@ int main() {
   std::cout << rbt.get_successor(rbt.get_root())->data << std::endl; // 1st right
   std::cout << rbt.get_predecessor(rbt.get_root())->data << std::endl; // 1nd left
   std::cout << (rbt.get_root()->data) << std::endl;
-  rbt.clear_tree();  //clear whole
-  //rbt.print_tree();  //print whole
-*/
+  rbt.clear_tree();  //clear whole */
+  rbt.print_tree();  //print whole
+
   //copy & move constructors/assignments
-  RBTree<int> rbt2{};   // constructor
+  //RBTree<int> rbt2{};   // constructor
   //RBTree<int> rbt2{rbt};  // copy constructor
   //RBTree<int> rbt2{std::move(rbt)};  // move constructor MAY modify original object (not always)
   //rbt2 = rbt; // copy assignment
-  rbt2 = std::move(rbt); // move assignment
+  //rbt2 = std::move(rbt); // move assignment
   //rbt2.print_tree();	  // print copied tre
-  rbt.insert(102);
-  rbt.print_tree();
-  rbt2.print_tree(); // testing for deep copy so not shallow (not 102 added to original)
+  //rbt.insert(102);
+  //rbt.print_tree();
+  //rbt2.print_tree(); // testing for deep copy so not shallow (not 102 added to original)
   return 0;
 }

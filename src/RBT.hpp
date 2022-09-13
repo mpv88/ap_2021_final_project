@@ -116,7 +116,7 @@ public:
   ///       Default destructor for the RBTree class.
   ~RBTree() {}
    
-//--------------------------------------------------------------------
+
   ///\brief Copy constructor for RBTree.
 	///\param rbt The RBTree which will be copied to another new tree.
 	///\return A 'deep copy' of RBTree, by means of a call to the constructor.
@@ -133,7 +133,7 @@ public:
   RBTree& operator=(const RBTree& rbt) {
     if (this!=&rbt) {
       if (root!=nullptr) {
-        //destroy(rbt.root);
+        //clear_tree(rbt.root);
       }
       copy(root, nullptr, rbt.root);
     }
@@ -153,7 +153,7 @@ public:
 	RBTree& operator=(RBTree&& rbt) noexcept {
     if (this!=&rbt) {
       if (root!=nullptr) {
-      //destroy(rbt.root);
+      //clear_tree(rbt.root);
       }
       root = std::move(rbt.root);
     } 
@@ -556,25 +556,28 @@ template <class T, class CMP>
 void RBTree<T, CMP>::insert(const T& value) {
   NodePtr node{new Node(value, RED)};
   node->left = node->right = NIL;
-  NodePtr node_B{nullptr};
-  NodePtr node_A{get_root()};
-  while (node_A!=NIL) {
-    node_B = node_A;
+  NodePtr node_B{nullptr}; // temporary helper node_B
+  NodePtr node_A{get_root()}; // temporary helper node_A
+  while (node_A!=NIL) { // root is different than NIL
+    node_B = node_A; // node_B becomes node_A
     if (comparator(node->data, node_A->data)) {
-      node_A = node_A->left;
-    } else {
+      node_A = node_A->left; 
+    } else if (comparator(node_A->data, node->data)) {
       node_A = node_A->right;
+    } else {  // key already present
+      std::cout << "Value " << value << " already in the RBTree" << std::endl;
+      return;
     }
   }
-  node->parent = node_B;
+  node->parent = node_B; // node's parent becomes node_B
   if (node_B==nullptr) {
-    this->root = node;
-  } else if (comparator(node->data, node_B->data)) {
-    node_B->left = node;
-  } else {
-    node_B->right = node;
+    this->root = node;  // if tree was empty, node becomes root
+  } else if (comparator(node->data, node_B->data)) { // if node's data is smaller than node_B's data
+    node_B->left = node; // node becomes node_B's left child
+  } else { // if node's data is equal or bigger than node_B's data
+    node_B->right = node; // node becomes node_B's right child
   }
-  if (node->parent==nullptr) {
+  if (node->parent==nullptr) { // if node's parent is NIL
     node->color = BLACK;
     return;
   }
@@ -662,7 +665,7 @@ void RBTree<T, CMP>::print_tree() const {
   }
 }
 
-
+//#FIXME: why segmentation fault?
 template<class T, class CMP>
  void RBTree<T, CMP>::clear_tree() noexcept {
     if (root==NIL) return; 

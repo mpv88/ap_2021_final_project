@@ -89,7 +89,24 @@ public:
   ///\return Reference const_iterator to the new current RBTree node, after moving backwards IT. 
   ///       Used to pre-decrement the RBTree's const_iterator.
   const_iterator& operator--() {
-
+    if (current_node!=nullptr) {//case A: RBTree current node is empty //
+        return *this;
+    }
+    else if (current_node->left!=nullptr) { //case B: left child isn't empty
+        current_node = current_node->left; // move to left child
+        while (current_node->right!=nullptr) {
+            current_node = current_node->right; // get Lsubtree's rightmost child (largest)
+        }
+    }
+    else {                         //case C: remaining cases (no left child)   
+        NodePtr p {current_node->parent}; // keep track of parent
+        while (p!=nullptr && current_node==p->left) { // move up the tree
+            current_node = p; //get parent for which current node is right child
+            p = p->parent; //move up increment
+        }
+        current_node = p; //if parent is empty
+    }
+    return *this;
   }
 
 
