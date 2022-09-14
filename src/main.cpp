@@ -4,7 +4,7 @@
 #include "RBT.hpp"
 
 
-/*// #TODO: testing Node class
+// #TODO: testing
 int main() {
   
   typedef int node_type; //where int is the T into RBT
@@ -17,11 +17,7 @@ int main() {
   std::cout << nodo.left << std::endl;
   std::cout << nodo.right << std::endl;
   std::cout << nodo.parent << std::endl;
-  return 0;
-}
-//#TODO: testing RBT_iterator class
-*/
-int main() {
+
   RBTree<int> rbt{};
   rbt.insert(61); //insert
   rbt.insert(52);
@@ -42,15 +38,15 @@ int main() {
   rbt.delete_(52); //delete
   rbt.delete_(55); //delete
   rbt.delete_(10); //delete
-/*std::cout << (rbt.find(61)) << std::endl; //find & contains
+  std::cout << (rbt.find(61)) << std::endl; //find & contains
   std::cout << (rbt.contains(60)) << std::endl; //0
   std::cout << (rbt.contains(61)) << std::endl; //1
   std::cout << (rbt.contains(85)) << std::endl; //1
   std::cout << (rbt.contains(1)) << std::endl;  //0
-  std::cout << std::endl;*/
+  std::cout << std::endl;
   rbt.print_ordered_keys(1);  //total order
   std::cout << std::endl;
-/*rbt.print_ordered_keys(2);  //from top to bottom right
+  rbt.print_ordered_keys(2);  //from top to bottom right
   std::cout << std::endl;
   rbt.print_ordered_keys(3); //from bottom left to top
   std::cout << std::endl;
@@ -60,9 +56,9 @@ int main() {
   std::cout << rbt.get_successor(rbt.get_root())->data << std::endl; // 1st right
   std::cout << rbt.get_predecessor(rbt.get_root())->data << std::endl; // 1nd left
   std::cout << (rbt.get_root()->data) << std::endl;
-  rbt.clear_tree();  //clear whole */
-  //rbt.print_tree();  //print whole
-
+  //rbt.clear_tree();  //clear whole
+  rbt.print_tree();  //print whole
+/*
   //copy & move constructors/assignments
   //RBTree<int> rbt2{};   // constructor
   //RBTree<int> rbt2{rbt};  // copy constructor
@@ -75,27 +71,31 @@ int main() {
   //rbt2.print_tree(); // testing for deep copy so not shallow (not 102 added to original)
   
   //constant iterator use
- /* auto it{rbt->begin()};
-  auto end{rbt->end()};NodePtr current_node; ///< node currently pointed by the iterator.
+  auto it{rbt.begin()};
+  auto end{rbt.end()};
+  std::cout << *it << std::endl; //dereference & begin OK
+  std::cout << *end << std::endl; //dereference & end OK
+  
+  //NodePtr current_node; ///< node currently pointed by the iterator.
     if(it==end) { return; }
     for(; it != end; ++it) {
       std::cout << *it << std::endl
-    } */
-  //auto it = rbt.begin();
-  //auto it2 = rbt.end();
-  //std::cout << *it << std::endl; //dereference & begin OK
-  //std::cout << it->first << std::endl; //dereference & end OK
+    }
   rbt.print_tree();
   std::cout << "Testing const_iterator" << std::endl;
-  for (auto it=rbt.begin(); it!=rbt.end(); it++) {
-    //std::cout << *it << std::endl;
+  for (auto it=rbt.begin(); it!=rbt.end(); ++it) {
+    //auto it2 = *++it;
+    std::cout << &it << std::endl;
     }
-  
+  while(it!=end) {
+    std::cout << *it << std::endl; // dereference the itr to get data
+    it++; // increment itr to point to next element
+  }
     //for(auto &element : rbt){
     //  rbt.delete(element.data);
   //std::cout << *(++it) << std::endl;
   //std::cout << *(it++) << std::endl;
- /* std::cout << *(--it) << std::endl;
+  std::cout << *(--it) << std::endl;
   std::cout << *(it--) << std::endl;
   std::cout << it==it2 << std::endl;
   std::cout << it!=it2 << std::endl; */

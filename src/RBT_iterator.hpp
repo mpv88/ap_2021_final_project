@@ -49,19 +49,17 @@ public:
   ///\brief RBTree's constant iterator prefix ++ operator (i.e. ++IT).
   ///\return Reference const_iterator to the new current RBTree node, after advancing IT. 
   ///       Used to pre-increment the RBTree's const_iterator.
-  ///       Reference: https://www.cs.odu.edu/~zeil/cs361/latest/Public/treetraversal/index.html
+  ///       https://www.cs.odu.edu/~zeil/cs361/latest/Public/treetraversal/index.html
   const_iterator& operator++() {
-    //current_node = current_node->successor();
-    //return *this;
-    if(current_node) {
-      if(current_node->right) {
-        current_node = current_node->right->leftmost();
-      } else {
-        current_node = current_node->rightmost();
-      }
+    if(current_node->right!=nullptr) {
+      current_node = current_node->right->leftmost();
+    }
+    else {
+      current_node = current_node->rightmost();
     }
     return *this;
   }
+
 
 
   ///\brief RBTree's constant iterator postfix ++ operator (i.e. IT++).
@@ -78,7 +76,13 @@ public:
   ///\return Reference const_iterator to the new current RBTree node, after moving backwards IT. 
   ///       Used to pre-decrement the RBTree's const_iterator.
   const_iterator& operator--() {
-    current_node = current_node->predecessor();
+    if(current_node!=nullptr) {
+      if(current_node->left) {
+        current_node = current_node->left->rightmost();
+      } else {
+        current_node = current_node->leftmost();
+      }
+    }
     return *this;
   }
 

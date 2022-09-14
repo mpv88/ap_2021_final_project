@@ -30,7 +30,7 @@ public:
   ///\param parent pointer to the parent node.
   /// Initializer List initializes the data members of a class,
   /// default color is BLACK, default parent is empty [overloaded].
-  _Node(T key, Color clr=BLACK, _Node *left=nullptr, _Node *right=nullptr, _Node *parent=nullptr) : data{key}, color{clr}, left{left}, right{right}, parent{parent} {}
+  _Node(T key, Color clr=BLACK, _Node *parent=nullptr) : data{key}, color{clr}, left{nullptr}, right{nullptr}, parent{parent} {}
 
   ///\brief Destructor of a RBTree's node.
   ///
@@ -40,7 +40,7 @@ public:
   ///\brief Starting from a node, follows recursively the path towards the leftmost element. 
   ///\return A pointer which points to the leftmost (smallest) key.
   _Node* leftmost() noexcept {
-    if(left) {
+    if(left!=nullptr) {
       return left->leftmost();
     }
     return this;
@@ -50,12 +50,38 @@ public:
   ///\brief Starting from a node, follows recursively the path towards the lowest right ancestor. 
   ///\return A pointer which points to the rightmost (largest) key.
   _Node* rightmost() const {
-    if(parent) {
+    if(parent!=nullptr) {
       if(parent->right==this) {
         return parent->rightmost();
       }
     }
 	  return parent;
+  }
+
+  ///\brief Getter for the data stored in the RBTree's node. 
+  ///\return Reference to the data contained inside a node's instance.
+  T& get_data() noexcept {
+    return data;
+    }
+
+
+  ///\brief Getter for the left child of a RBTree's node. 
+  ///\return Reference to the node's left child.
+  _Node*& get_left() {
+      return left;
+    }
+
+
+///\brief Getter for the right child of a RBTree's node. 
+///\return Reference to the node's right child.
+  _Node*& get_right() {
+      return right;
+    }
+
+///\brief Getter for the parent of a RBTree's node. 
+///\return Reference to the node's parent.
+_Node*& get_parent() {
+  return parent;
   }
 
 
