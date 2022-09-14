@@ -14,6 +14,8 @@ enum Color { BLACK=0, RED=1 }; ///< enumerated type color declaration.
 template <class T> 
 class _Node {
 public:
+  friend class const_iterator; //allows const_iterator using leftmost() and rightmost()
+
   T data;                      ///< template key of the node.
   Color color;                 ///< color of the node.
   _Node *left, *right, *parent; ///< pointers to parent, left and right children.
@@ -32,8 +34,32 @@ public:
 
   ///\brief Destructor of a RBTree's node.
   ///
-  ~_Node() {}
+  ~_Node() noexcept {}
+
+
+  ///\brief Starting from a node, follows recursively the path towards the leftmost element. 
+  ///\return A pointer which points to the leftmost (smallest) key.
+  _Node* leftmost() noexcept {
+    if(left) {
+      return left->leftmost();
+    }
+    return this;
+  }
+
+
+  ///\brief Starting from a node, follows recursively the path towards the lowest right ancestor. 
+  ///\return A pointer which points to the rightmost (largest) key.
+  _Node* rightmost() const {
+    if(parent) {
+      if(parent->right==this) {
+        return parent->rightmost();
+      }
+    }
+	  return parent;
+  }
+
 
 };
+
 
 #endif // NODE_HPP

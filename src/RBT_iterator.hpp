@@ -18,9 +18,8 @@ class RBTree<T, CMP>::const_iterator {
 
 private:
   NodePtr current_node; ///< node currently pointed by the iterator.
-  
-public:
 
+public:
   ///\brief RBTree's constant iterator constructor.
   ///\param node RBTree's node over which const iterator is constructed.
   explicit const_iterator(NodePtr node) : current_node{node} {}
@@ -52,27 +51,17 @@ public:
   ///       Used to pre-increment the RBTree's const_iterator.
   ///       Reference: https://www.cs.odu.edu/~zeil/cs361/latest/Public/treetraversal/index.html
   const_iterator& operator++() {
-  //if (current_node==nullptr) { //case A: RBTree current node is empty //
-  //  current_node = this->root; //#FIXME: https://stackoverflow.com/questions/6198224/how-to-refer-to-enclosing-instance-from-c-inner-class
-  if (current_node!=nullptr) {//case A: RBTree current node is empty //
-        return *this;
+    //current_node = current_node->successor();
+    //return *this;
+    if(current_node) {
+      if(current_node->right) {
+        current_node = current_node->right->leftmost();
+      } else {
+        current_node = current_node->rightmost();
+      }
+    }
+    return *this;
   }
-  else if (current_node->right!=nullptr) { //case B: right child isn't empty
-    current_node = current_node->right; // move to right child
-    while (current_node->left!=nullptr) {
-        current_node = current_node->left; // get Rsubtree's leftmost child (smallest)
-        }
-    }
-  else {                         //case C: remaining cases (no right child)   
-         NodePtr p {current_node->parent}; // keep track of parent
-         while (p!=nullptr && current_node==p->right) { // move up the tree
-            current_node = p; //get parent for which current node is left child
-            p = p->parent; //move up increment
-          }
-        current_node = p; //if parent is empty
-    }
-  return *this;
-  }     
 
 
   ///\brief RBTree's constant iterator postfix ++ operator (i.e. IT++).
@@ -89,23 +78,7 @@ public:
   ///\return Reference const_iterator to the new current RBTree node, after moving backwards IT. 
   ///       Used to pre-decrement the RBTree's const_iterator.
   const_iterator& operator--() {
-    if (current_node!=nullptr) {//case A: RBTree current node is empty //
-        return *this;
-    }
-    else if (current_node->left!=nullptr) { //case B: left child isn't empty
-        current_node = current_node->left; // move to left child
-        while (current_node->right!=nullptr) {
-            current_node = current_node->right; // get Lsubtree's rightmost child (largest)
-        }
-    }
-    else {                         //case C: remaining cases (no left child)   
-        NodePtr p {current_node->parent}; // keep track of parent
-        while (p!=nullptr && current_node==p->left) { // move up the tree
-            current_node = p; //get parent for which current node is right child
-            p = p->parent; //move up increment
-        }
-        current_node = p; //if parent is empty
-    }
+    current_node = current_node->predecessor();
     return *this;
   }
 

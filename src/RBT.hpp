@@ -577,7 +577,7 @@ void RBTree<T, CMP>::insert(const T& value) {
   } else { // if node's data is equal or bigger than node_B's data
     node_B->right = node; // node becomes node_B's right child
   }
-  if (node->parent==nullptr) { // if node's parent is NIL
+  if (node->parent==nullptr) { // recolor when node's parent is NIL
     node->color = BLACK;
     return;
   }
@@ -618,7 +618,7 @@ typename RBTree<T, CMP>::const_iterator RBTree<T, CMP>::begin() const {
 
 template <class T, class CMP>
 typename RBTree<T, CMP>::const_iterator RBTree<T, CMP>::end() const {
-  return const_iterator(NIL);
+  return const_iterator(nullptr);
 }
 
 
