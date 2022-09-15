@@ -47,7 +47,7 @@ int main() {
   std::cout << rbt.get_predecessor(rbt.get_root())->data << std::endl; // 1nd left
   std::cout << (rbt.get_root()->data) << std::endl; */
   rbt.print_tree();  //print whole
-  rbt.clear_tree();  //clear whole
+  rbt.clear_tree(rbt.get_root());  //clear whole
   rbt.print_tree();  //print whole
 
   //copy & move constructors/assignments

@@ -253,7 +253,7 @@ public:
 
   ///\brief Utility function to clear the whole RBTree.
 	///\return A totally empty tree.
-  void clear_tree() noexcept;
+  void clear_tree(NodePtr node) noexcept;
 };
 // --------------------------------IMPLEMENTATION------------------------------------------
 
@@ -687,13 +687,15 @@ void RBTree<T, CMP>::print_tree() const {
   }
 }
 
-//#FIXME: why segmentation fault?
+
 template<class T, class CMP>
- void RBTree<T, CMP>::clear_tree() noexcept {
-    if (root==nullptr) return; 
-    //p = clear_tree(get_root()->left); 
-    //p = clear_tree(get_root()->right);
-    delete root;
+ void RBTree<T, CMP>::clear_tree(NodePtr node) noexcept {
+  if (node!=nullptr) {
+    clear_tree(node->left); 
+    clear_tree(node->right); 
+    delete node;
+  }
+  std::cout << root->data << std::endl;
 }
 
 /*TODO:
