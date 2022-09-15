@@ -690,7 +690,7 @@ void RBTree<T, CMP>::print_tree() const {
 //#FIXME: why segmentation fault?
 template<class T, class CMP>
  void RBTree<T, CMP>::clear_tree() noexcept {
-    if (root==NIL) return; 
+    if (root==nullptr) return; 
     //p = clear_tree(get_root()->left); 
     //p = clear_tree(get_root()->right);
     delete root;

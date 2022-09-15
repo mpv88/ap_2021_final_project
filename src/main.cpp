@@ -28,7 +28,7 @@ int main() {
   rbt.delete_(52); //delete
   rbt.delete_(55); //delete
   rbt.delete_(10); //delete
-  std::cout << (rbt.find(61)) << std::endl; //find & contains
+/*   std::cout << (rbt.find(61)) << std::endl; //find & contains
   std::cout << (rbt.contains(60)) << std::endl; //0
   std::cout << (rbt.contains(61)) << std::endl; //1
   std::cout << (rbt.contains(85)) << std::endl; //1
@@ -45,8 +45,9 @@ int main() {
   std::cout << rbt.get_rightmost(rbt.get_root())->data << std::endl; // max
   std::cout << rbt.get_successor(rbt.get_root())->data << std::endl; // 1st right
   std::cout << rbt.get_predecessor(rbt.get_root())->data << std::endl; // 1nd left
-  std::cout << (rbt.get_root()->data) << std::endl;
-  //rbt.clear_tree();  //clear whole
+  std::cout << (rbt.get_root()->data) << std::endl; */
+  rbt.print_tree();  //print whole
+  rbt.clear_tree();  //clear whole
   rbt.print_tree();  //print whole
 
   //copy & move constructors/assignments
@@ -81,14 +82,16 @@ int main() {
     std::cout << *it << std::endl; //
     it++;
   } */
-   auto it{rbt.rbegin()};
+
+  /*  auto it{rbt.rbegin()};
   //std::cout << *it << std::endl; //dereference & begin OK
   auto end{rbt.rend()};
   //std::cout << *end << std::endl; //dereference nullptr leads to seg fault
   while(it != end) {
   std::cout << *it << std::endl;
   --it;
-  }
+  } */
+
     //for(auto &element : rbt){
     //  rbt.delete(element.data);
   //std::cout << *(++it) << std::endl;
