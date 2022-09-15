@@ -39,9 +39,19 @@ public:
 
   ///\brief Starting from a node, follows recursively the path towards the leftmost element. 
   ///\return A pointer which points to the leftmost (smallest) key.
-  _Node* leftmost() noexcept {
-    if(left!=nullptr) {
-      return left->leftmost();
+  _Node* f_leftmost() noexcept {
+    if(left!=nullptr and left->data!=0) { //neither out of tree nor a leaf
+      return left->f_leftmost();
+    }
+    return this;
+  }
+
+
+  ///\brief Starting from a node, follows recursively the path towards the rightmost element. 
+  ///\return A pointer which points to the rightmost (largest) key.
+  _Node* b_rightmost() noexcept {
+    if(right!=nullptr and right->data!=0) { //neither out of tree nor a leaf
+      return left->b_rightmost();
     }
     return this;
   }
@@ -49,38 +59,51 @@ public:
 
   ///\brief Starting from a node, follows recursively the path towards the lowest right ancestor. 
   ///\return A pointer which points to the rightmost (largest) key.
-  _Node* rightmost() const {
-    if(parent!=nullptr) {
+  _Node* f_rightmost() const {
+    if(parent!=nullptr and parent->data!=0) { //neither out of tree nor a leaf
       if(parent->right==this) {
-        return parent->rightmost();
+        return parent->f_rightmost();
       }
     }
 	  return parent;
   }
 
+
+  ///\brief Starting from a node, follows recursively the path towards the highest left ancestor. 
+  ///\return A pointer which points to the leftmost (smallest) key.
+  _Node* b_leftmost() const {
+    if(parent!=nullptr and parent->data!=0) { //neither out of tree nor a leaf
+      if(parent->left==this) {
+        return parent->b_rightmost();
+      }
+    }
+	  return parent;
+  }
+
+
   ///\brief Getter for the data stored in the RBTree's node. 
   ///\return Reference to the data contained inside a node's instance.
-  T& get_data() noexcept {
+  const T& get_data() const noexcept {
     return data;
     }
 
 
   ///\brief Getter for the left child of a RBTree's node. 
   ///\return Reference to the node's left child.
-  _Node*& get_left() {
+  const _Node*& get_left() const {
       return left;
     }
 
 
 ///\brief Getter for the right child of a RBTree's node. 
 ///\return Reference to the node's right child.
-  _Node*& get_right() {
+  const _Node*& get_right() const {
       return right;
     }
 
 ///\brief Getter for the parent of a RBTree's node. 
 ///\return Reference to the node's parent.
-_Node*& get_parent() {
+const _Node*& get_parent() const {
   return parent;
   }
 

@@ -65,8 +65,8 @@ print:
 test: 
 	$(CXX) $(CXXFLAGS) -c $(TESTES) -o $(TESTS)
 	@echo "compiled "$^" successfully!"
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(TESTS) ./build/RBT.o -o $(TGT_DIR)/$(TST)$(EXE_EXT)
-	@echo "linking completed, tests are ready!"
+	#$(CXX) $(CXXFLAGS) $(LDFLAGS) $(TESTS) ./build/RBT.o -o $(TGT_DIR)/$(TST)$(EXE_EXT)
+	#@echo "linking completed, tests are ready!"
 
 		
 .PHONY: all clean clears docs format print test

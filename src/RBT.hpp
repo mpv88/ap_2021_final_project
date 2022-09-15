@@ -208,14 +208,24 @@ public:
   void delete_(const T& value);
 
 
-  ///\brief Function to get a constant tree iterator over all the tree keys.
+  ///\brief Function to start a forward iteration on the binary search tree.
 	///\return RBTree's const_iterator to the in-order first element of the tree.
   RBTree<T, CMP>::const_iterator begin() const;
 
 
-  ///\brief Function to get the last value for a tree iterator.
-	///\return A RBTree without the node which contained the value inserted.
+  ///\brief Function to end a forward iteration on the binary search tree.
+	///\return RBTree's const_iterator to nullptr (located after RBTree's last element).
   RBTree<T, CMP>::const_iterator end() const;
+
+
+  ///\brief Function to start a backwards iteration on the binary search tree.
+	///\return RBTree's const_iterator to the in-order last element of the tree.
+  RBTree<T, CMP>::const_iterator rbegin() const;
+
+
+  ///\brief Function to end a backwards iteration on the binary search tree.
+	///\return RBTree's const_iterator to nullptr (located before RBTree's first element).
+  RBTree<T, CMP>::const_iterator rend() const;
 
 
   ///\brief A function to discover the successor of the current node.
@@ -618,6 +628,18 @@ typename RBTree<T, CMP>::const_iterator RBTree<T, CMP>::begin() const {
 
 template <class T, class CMP>
 typename RBTree<T, CMP>::const_iterator RBTree<T, CMP>::end() const {
+  return const_iterator(nullptr);
+}
+
+
+template <class T, class CMP>
+typename RBTree<T, CMP>::const_iterator RBTree<T, CMP>::rbegin() const {
+  return const_iterator(get_rightmost(get_root()));
+}
+
+
+template <class T, class CMP>
+typename RBTree<T, CMP>::const_iterator RBTree<T, CMP>::rend() const {
   return const_iterator(nullptr);
 }
 

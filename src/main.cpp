@@ -7,16 +7,6 @@
 // #TODO: testing
 int main() {
   
-  typedef int node_type; //where int is the T into RBT
-  typedef _Node<node_type> Node;
-
-  Node nodo{5, RED};
-  //nodo=1; // default constructor
-  std::cout << nodo.data << std::endl;
-  std::cout << nodo.color << std::endl;
-  std::cout << nodo.left << std::endl;
-  std::cout << nodo.right << std::endl;
-  std::cout << nodo.parent << std::endl;
 
   RBTree<int> rbt{};
   rbt.insert(61); //insert
@@ -58,7 +48,7 @@ int main() {
   std::cout << (rbt.get_root()->data) << std::endl;
   //rbt.clear_tree();  //clear whole
   rbt.print_tree();  //print whole
-/*
+
   //copy & move constructors/assignments
   //RBTree<int> rbt2{};   // constructor
   //RBTree<int> rbt2{rbt};  // copy constructor
@@ -71,33 +61,41 @@ int main() {
   //rbt2.print_tree(); // testing for deep copy so not shallow (not 102 added to original)
   
   //constant iterator use
-  auto it{rbt.begin()};
-  auto end{rbt.end()};
-  std::cout << *it << std::endl; //dereference & begin OK
-  std::cout << *end << std::endl; //dereference & end OK
+
   
   //NodePtr current_node; ///< node currently pointed by the iterator.
-    if(it==end) { return; }
-    for(; it != end; ++it) {
-      std::cout << *it << std::endl
-    }
-  rbt.print_tree();
-  std::cout << "Testing const_iterator" << std::endl;
-  for (auto it=rbt.begin(); it!=rbt.end(); ++it) {
-    //auto it2 = *++it;
-    std::cout << &it << std::endl;
-    }
-  while(it!=end) {
-    std::cout << *it << std::endl; // dereference the itr to get data
-    it++; // increment itr to point to next element
+  //if(it==end) { return; }
+  //for(it; it != end; ++it) {
+  //   std::cout << *it << std::endl;
+  //}
+  //rbt.print_tree();
+  //std::cout << "Testing const_iterator" << std::endl;
+  //for (auto it=rbt.begin(); it!=rbt.end(); ++it) {
+   // std::cout << &it << std::endl;
+    //}
+/*   auto it{rbt.begin()};
+  auto end{rbt.end()};
+  //std::cout << *it << std::endl; //dereference & begin OK
+  //std::cout << *end << std::endl; //dereference nullptr leads to seg fault
+  while(it != end) {
+    std::cout << *it << std::endl; //
+    it++;
+  } */
+   auto it{rbt.rbegin()};
+  //std::cout << *it << std::endl; //dereference & begin OK
+  auto end{rbt.rend()};
+  //std::cout << *end << std::endl; //dereference nullptr leads to seg fault
+  while(it != end) {
+  std::cout << *it << std::endl;
+  --it;
   }
     //for(auto &element : rbt){
     //  rbt.delete(element.data);
   //std::cout << *(++it) << std::endl;
   //std::cout << *(it++) << std::endl;
-  std::cout << *(--it) << std::endl;
-  std::cout << *(it--) << std::endl;
-  std::cout << it==it2 << std::endl;
-  std::cout << it!=it2 << std::endl; */
+  //std::cout << *(--it) << std::endl;
+  //std::cout << *(it--) << std::endl;
+  //std::cout << it==it2 << std::endl;
+  //std::cout << it!=it2 << std::endl;
   return 0;
 };

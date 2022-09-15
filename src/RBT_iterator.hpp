@@ -51,15 +51,14 @@ public:
   ///       Used to pre-increment the RBTree's const_iterator.
   ///       https://www.cs.odu.edu/~zeil/cs361/latest/Public/treetraversal/index.html
   const_iterator& operator++() {
-    if(current_node->right!=nullptr) {
-      current_node = current_node->right->leftmost();
+    if(current_node->right!=nullptr and current_node->right->data!=0) { // if right exists and not a leaf
+      current_node = current_node->right->f_leftmost(); //down-right and to left most
     }
-    else {
-      current_node = current_node->rightmost();
+    else { // if right does not exist
+      current_node = current_node->f_rightmost();
     }
     return *this;
   }
-
 
 
   ///\brief RBTree's constant iterator postfix ++ operator (i.e. IT++).
@@ -76,12 +75,11 @@ public:
   ///\return Reference const_iterator to the new current RBTree node, after moving backwards IT. 
   ///       Used to pre-decrement the RBTree's const_iterator.
   const_iterator& operator--() {
-    if(current_node!=nullptr) {
-      if(current_node->left) {
-        current_node = current_node->left->rightmost();
-      } else {
-        current_node = current_node->leftmost();
-      }
+    if(current_node->left!=nullptr and current_node->left->data!=0) { // if left exists and not a leaf
+      current_node = current_node->left->b_rightmost(); //down-left and to right most
+    }
+    else { // if left does not exist
+      current_node = current_node->b_leftmost();
     }
     return *this;
   }
@@ -114,7 +112,7 @@ public:
 
 };
 
-//TODO: a sketch class for showing inheritance
+//TODO: (optionally) a sketch class for showing inheritance
 ///\brief RBTree's regular iterator class.
 ///       Used to iterate over a sequence and manipulate RBTree's elements.
 template <class T, class CMP> 
