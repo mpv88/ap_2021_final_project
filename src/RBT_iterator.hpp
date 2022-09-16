@@ -6,15 +6,11 @@
 #ifndef RBT_ITERATOR_HPP
 #define RBT_ITERATOR_HPP
 
-#include "Node.hpp"
-#include "RBT.hpp"
-
 
 ///\brief RBTree's constant iterator class.
 ///       Used to iterate over a sequence and access only RBTree's elements.
 template <class T, class CMP> 
 class RBTree<T, CMP>::const_iterator {
-  //friend class RBTree;
 
 private:
   NodePtr current_node; ///< node currently pointed by the iterator.

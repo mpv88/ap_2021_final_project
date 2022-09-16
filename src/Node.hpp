@@ -14,7 +14,6 @@ enum Color { BLACK=0, RED=1 }; ///< enumerated type color declaration.
 template <class T> 
 class _Node {
 public:
-  friend class const_iterator; // allows const_iterator using leftmost() and rightmost().
 
   T data;                      ///< template key of the node.
   Color color;                 ///< color of the node.
