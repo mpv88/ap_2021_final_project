@@ -51,7 +51,7 @@ public:
   ///\return A pointer which points to the rightmost (largest) key.
   _Node* b_rightmost() noexcept {
     if(right!=nullptr and right->data!=0) { //neither out of tree nor a leaf
-      return left->b_rightmost();
+      return right->b_rightmost();
     }
     return this;
   }
