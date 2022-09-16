@@ -569,33 +569,32 @@ void RBTree<T, CMP>::insert(const T& value) {
   NodePtr node_B{nullptr}; // temporary helper node_B
   NodePtr node_A{get_root()}; // temporary helper node_A
   while (node_A!=NIL) { // root is different than NIL
-    node_B = node_A; // node_B becomes node_A
+    node_B = node_A;
     if (comparator(node->data, node_A->data)) {
       node_A = node_A->left; 
     } else if (comparator(node_A->data, node->data)) {
       node_A = node_A->right;
-    } else {  // key already present
-      std::cout << "Value " << value << " already in the RBTree" << std::endl;
-      return;
+    } else {
+      return; // value already exists
     }
   }
   node->parent = node_B; // node's parent becomes node_B
-  if (node_B==nullptr) {
-    this->root = node;  // if tree was empty, node becomes root
-  } else if (comparator(node->data, node_B->data)) { // if node's data is smaller than node_B's data
-    node_B->left = node; // node becomes node_B's left child
-  } else { // if node's data is equal or bigger than node_B's data
-    node_B->right = node; // node becomes node_B's right child
+    if (node_B==nullptr) {
+      this->root = node;  // if tree was empty, node becomes root
+    } else if (comparator(node->data, node_B->data)) { // if node's data is smaller than node_B's data
+      node_B->left = node; // node becomes node_B's left child
+    } else { // if node's data is equal or bigger than node_B's data
+      node_B->right = node; // node becomes node_B's right child
+    }
+    if (node->parent==nullptr) { // recolor when node's parent is NIL
+      node->color = BLACK;
+      return;
+    }
+    if (node->parent->parent==nullptr) {
+      return;
+    }
+    rebalance_on_insert(node);
   }
-  if (node->parent==nullptr) { // recolor when node's parent is NIL
-    node->color = BLACK;
-    return;
-  }
-  if (node->parent->parent==nullptr) {
-    return;
-  }
-  rebalance_on_insert(node);
-}
 
 
 template <class T, class CMP>
@@ -690,13 +689,14 @@ void RBTree<T, CMP>::print_tree() const {
 
 template<class T, class CMP>
  void RBTree<T, CMP>::clear_tree(NodePtr node) noexcept {
-  if (node!=nullptr) {
-    clear_tree(node->left); 
-    clear_tree(node->right); 
-    delete node;
+  if (node==nullptr) {
+    return;
   }
-  std::cout << root->data << std::endl;
-}
+  clear_tree(node->left); 
+  clear_tree(node->right); 
+  delete node;
+  }
+
 
 /*TODO:
 CLASSES:

@@ -1,15 +1,14 @@
-#define BOOST_TEST_MODULE RBTree_Tests
-//#define BOOST_TEST_LOG_LEVEL = message RBTree_Tests
-#include "RBT.hpp"
-#include <boost/test/included/unit_test.hpp>
+//source: https://www.boost.org/doc/libs/1_80_0/libs/test/doc/html/boost_test/utf_reference/testing_tool_ref.html
 
+#define BOOST_TEST_MODULE RBTree_Tests
+#include "RBT.hpp"
+#include <boost/mpl/list.hpp>
+#include <boost/test/included/unit_test.hpp>
 #include <iostream>
 
 BOOST_AUTO_TEST_SUITE(RBTree_Node)
 //--------------------------------------
-BOOST_AUTO_TEST_CASE(Initializazion) {
-  BOOST_TEST_MESSAGE( "Testing _Node's initialization :" );
-
+BOOST_AUTO_TEST_CASE(Constructors) {
   BOOST_TEST_MESSAGE( "A Node<double> :" );
   _Node<double> nod1{1.55}; // default
 
@@ -20,32 +19,48 @@ BOOST_AUTO_TEST_CASE(Initializazion) {
   BOOST_CHECK_EQUAL(nod1.parent, nullptr);
 
   BOOST_TEST_MESSAGE( "A Node<int> :" );
-  typedef int node_type; // declare T type intended
-  typedef _Node<node_type> Node;
-  Node nod2{5, RED}; //custom
-  
+  _Node nod2{5, RED}; //custom
+
   BOOST_CHECK_EQUAL(nod2.data, 5);
   BOOST_CHECK_EQUAL(nod2.color, RED);
   BOOST_CHECK_EQUAL(nod2.left, nullptr);
   BOOST_CHECK_EQUAL(nod2.right, nullptr);
   BOOST_CHECK_EQUAL(nod2.parent, nullptr);
 }
-//--------------------------------------
-BOOST_AUTO_TEST_CASE(Methods) {
-
-}
 
 BOOST_AUTO_TEST_SUITE_END()
-
 //----------------------------------------------------------------
+
 BOOST_AUTO_TEST_SUITE(RBTree_class)
-
-
 //--------------------------------------
-BOOST_AUTO_TEST_CASE(Initialization) {
-//RBTree<int> rbt;
-//rbt.insert(61);
+BOOST_AUTO_TEST_CASE(Constructors) {
+  RBTree<int> rbt{};
+  RBTree<int> rbt1{61};
+
+  BOOST_TEST_MESSAGE( "A RBTree<int> :" );
+  BOOST_CHECK_EQUAL(rbt.get_root()->data, 61);
+  BOOST_CHECK_EQUAL(rbt.get_root()->color, BLACK);
+  BOOST_CHECK_NE(rbt.get_root()->left, nullptr);
+  BOOST_CHECK_NE(rbt.get_root()->right, nullptr);
+  BOOST_CHECK_EQUAL(rbt.get_root()->parent, nullptr);
 }
 
 //--------------------------------------
 BOOST_AUTO_TEST_SUITE_END()
+
+
+//BOOST_CHECK_NE(left, right);
+//BOOST_CHECK_EQUAL(left, right);
+//BOOST_CHECK_EQUAL_COLLECTIONS(left_begin, left_end, right_begin, right_end);
+//BOOST_CHECK_CLOSE_FRACTION(left, right, tolerance);
+//BOOST_CHECK_CLOSE(left, right, tolerance);
+//BOOST_CHECK_GE(left, right);
+//BOOST_CHECK_GT(left, right);
+//BOOST_CHECK_LE(left, right);
+//BOOST_CHECK_LT(left, right);
+//BOOST_CHECK_MESSAGE(predicate, message);
+//BOOST_CHECK_NO_THROW(expression);
+//BOOST_CHECK_THROW(expression, exception_type);
+//BOOST_CHECK_EXCEPTION(expression, exception_type, predicate);
+//BOOST_CHECK_SMALL(value, tolerance);
+//

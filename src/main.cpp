@@ -21,7 +21,7 @@ int main() {
   rbt.insert(81);
   rbt.insert(93);
   rbt.insert(90);
-  rbt.insert(101);
+  rbt.insert(102);
   rbt.insert(102);
   rbt.delete_(102); //delete
   rbt.delete_(82); //delete
@@ -46,8 +46,12 @@ int main() {
   std::cout << rbt.get_successor(rbt.get_root())->data << std::endl; // 1st right
   std::cout << rbt.get_predecessor(rbt.get_root())->data << std::endl; // 1nd left
   std::cout << (rbt.get_root()->data) << std::endl; */
-  rbt.print_tree();  //print whole
+  //rbt.print_tree();  //print whole
   rbt.clear_tree(rbt.get_root());  //clear whole
+  /* if (rbt.get_root() != nullptr) {
+    std::cout << "root isn't nullptr" << std::endl;
+  } */
+  //rbt.insert(102);
   rbt.print_tree();  //print whole
 
   //copy & move constructors/assignments
