@@ -63,4 +63,4 @@ BOOST_AUTO_TEST_SUITE_END()
 //BOOST_CHECK_THROW(expression, exception_type);
 //BOOST_CHECK_EXCEPTION(expression, exception_type, predicate);
 //BOOST_CHECK_SMALL(value, tolerance);
-//
+// while with 50 int, same with 50 double, test iteratorS, print tree, test find, print inorder traversal, etc..

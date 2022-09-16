@@ -121,10 +121,9 @@ public:
 	///\param rbt The RBTree which will be copied to another new tree.
 	///\return A 'deep copy' of RBTree, by means of a call to the constructor.
   RBTree(const RBTree &rbt) {
-      copy(root, nullptr, rbt.root);  // deep copy
-      //root = new Node (*rbt.root);  // shallow copy
-
-}
+    copy(root, nullptr, rbt.root);  // deep copy
+    //root = new Node (*rbt.root);  // shallow copy
+  }
 
 
   ///\brief Copy assignment for RBTree.
@@ -137,8 +136,8 @@ public:
       }
       copy(root, nullptr, rbt.root);
     }
-  return *this;
-}
+    return *this;
+  }
 
 
   ///\brief Move constructor for RBTree.
@@ -199,7 +198,7 @@ public:
   ///\brief Function to find a value in the RBTree (see: recursive_search).
 	///\param value The value to be checked if present within the RBTree.
 	///\return The value searched if present inside the tree, nothing otherwise.
-  T find(const T& value) const;
+  const T find(const T& value) const;
   
 
   ///\brief Function to delete a value from the tree.
@@ -594,7 +593,7 @@ void RBTree<T, CMP>::insert(const T& value) {
       return;
     }
     rebalance_on_insert(node);
-  }
+}
 
 
 template <class T, class CMP>
@@ -608,7 +607,7 @@ bool RBTree<T, CMP>::contains(const T& value) const {
 
 
 template <class T, class CMP>
-T RBTree<T, CMP>::find(const T& value) const {
+const T RBTree<T, CMP>::find(const T& value) const {
     return recursive_search(root, value)->data;
 }
 
@@ -711,7 +710,7 @@ PUBLIC METHODS:
                     const T* operator->() const                       OK
                     const_iterator& operator++()                      OK
                     const_iterator operator++(int)                    OK
-                    const_iterator& operator--()                      NOT OK
+                    const_iterator& operator--()                      OK
                     const_iterator operator--(int)                    OK
                     bool operator==(const const_iterator&) const      OK
                     bool operator!=(const const_iterator&) const      OK
@@ -730,8 +729,7 @@ _
 5) check if all methods are implemented                               OK
 6) terminate regular iterator + inheritance on const_iter             ???
 7) set up unit test suite:                                          in progress...
-while with 50 int, same with 50 double, test iteratorS, print tree, test find,
-print inorder traversal, etc..
+
 */
 
 #include "RBT_iterator.hpp"

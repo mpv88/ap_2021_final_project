@@ -14,7 +14,7 @@ enum Color { BLACK=0, RED=1 }; ///< enumerated type color declaration.
 template <class T> 
 class _Node {
 public:
-  friend class const_iterator; //allows const_iterator using leftmost() and rightmost()
+  friend class const_iterator; // allows const_iterator using leftmost() and rightmost().
 
   T data;                      ///< template key of the node.
   Color color;                 ///< color of the node.
@@ -74,14 +74,14 @@ public:
   _Node* b_leftmost() const {
     if(parent!=nullptr and parent->data!=0) { //neither out of tree nor a leaf
       if(parent->left==this) {
-        return parent->b_rightmost();
+        return parent->b_leftmost();
       }
     }
 	  return parent;
   }
 
 
-  ///\brief Getter for the data stored in the RBTree's node. 
+  ///\brief Getter for the data stored within the RBTree's node. 
   ///\return Reference to the data contained inside a node's instance.
   const T& get_data() const noexcept {
     return data;

@@ -14,7 +14,7 @@
 ///       Used to iterate over a sequence and access only RBTree's elements.
 template <class T, class CMP> 
 class RBTree<T, CMP>::const_iterator {
-  friend class RBTree;
+  //friend class RBTree;
 
 private:
   NodePtr current_node; ///< node currently pointed by the iterator.
@@ -75,14 +75,14 @@ public:
   ///\return Reference const_iterator to the new current RBTree node, after moving backwards IT. 
   ///       Used to pre-decrement the RBTree's const_iterator.
   const_iterator& operator--() {
-    if(current_node->left!=nullptr and current_node->left->data!=0) { // if left exists and not a leaf
+   if(current_node->left!=nullptr and current_node->left->data!=0) { // if left exists and not a leaf
       current_node = current_node->left->b_rightmost(); //down-left and to right most
     }
     else { // if left does not exist
       current_node = current_node->b_leftmost();
     }
     return *this;
-  }
+  } 
 
 
   ///\brief RBTree's constant iterator postfix -- operator (i.e. IT--).

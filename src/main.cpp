@@ -48,12 +48,9 @@ int main() {
   std::cout << rbt.get_predecessor(rbt.get_root())->data << std::endl; // 1nd left
   std::cout << (rbt.get_root()->data) << std::endl; */
   //rbt.print_tree();  //print whole
-  rbt.clear_tree(rbt.get_root());  //clear whole
-  /* if (rbt.get_root() != nullptr) {
-    std::cout << "root isn't nullptr" << std::endl;
-  } */
-  //rbt.print_tree();
+  //rbt.clear_tree(rbt.get_root());  //clear whole
   rbt.insert(102);
+  std::cout << rbt.get_height(rbt.get_root()) << std::endl; 
   rbt.print_tree();  //print whole
 
   //copy & move constructors/assignments
@@ -89,14 +86,17 @@ int main() {
     it++;
   } */
 
-  /*  auto it{rbt.rbegin()};
+   auto it{rbt.rbegin()};
   //std::cout << *it << std::endl; //dereference & begin OK
   auto end{rbt.rend()};
   //std::cout << *end << std::endl; //dereference nullptr leads to seg fault
-  while(it != end) {
+/*  for ( ; it!=end; ++it)
+      std::cout << *it << std::endl; */
+
+   while(it != end) {
   std::cout << *it << std::endl;
   --it;
-  } */
+  }
 
     //for(auto &element : rbt){
     //  rbt.delete(element.data);
