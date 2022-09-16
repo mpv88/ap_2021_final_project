@@ -692,9 +692,11 @@ template<class T, class CMP>
   if (node==nullptr) {
     return;
   }
-  clear_tree(node->left); 
-  clear_tree(node->right); 
-  delete node;
+  delete(node->left); 
+  delete(node->right); 
+  delete node;  
+  //this->~RBTree(); //permanent alternative destruciton
+  std::cout << "RBTree is now empty, nothing to print here!" << std::endl;
   }
 
 

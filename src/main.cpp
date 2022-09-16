@@ -9,6 +9,7 @@ int main() {
   
 
   RBTree<int> rbt{};
+  rbt.print_tree();
   rbt.insert(61); //insert
   rbt.insert(52);
   rbt.insert(20);
@@ -51,7 +52,8 @@ int main() {
   /* if (rbt.get_root() != nullptr) {
     std::cout << "root isn't nullptr" << std::endl;
   } */
-  //rbt.insert(102);
+  //rbt.print_tree();
+  rbt.insert(102);
   rbt.print_tree();  //print whole
 
   //copy & move constructors/assignments
