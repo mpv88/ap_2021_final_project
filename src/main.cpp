@@ -77,6 +77,8 @@ int main() {
   //std::cout << *it << std::endl; //dereference & begin OK
   auto end{rbt.end()};
   //std::cout << *end << std::endl; //dereference nullptr leads to seg fault
+  std::cout << (it==rbt.begin()) << std::endl; //1
+  std::cout << (it!=rbt.end()) << std::endl; //1
    while(it!=end) {
     std::cout << *it << std::endl; //
     it++;

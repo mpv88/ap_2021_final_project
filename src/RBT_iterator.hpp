@@ -35,7 +35,7 @@ public:
 
 
   ///\brief RBTree's constant iterator member access operator.
-  ///\return Const T pointer to the node pointed (i.e. current) by the iterator. 
+  ///\return Pointer to a const T node pointed (i.e. current) by the iterator. 
   ///       Used to access the value associated to the RBTree's const_iterator.
   const T* operator->() const {
     return &(*(*(this)));

@@ -1,6 +1,7 @@
 //source: https://www.boost.org/doc/libs/1_80_0/libs/test/doc/html/boost_test/utf_reference/testing_tool_ref.html
 
-#define BOOST_TEST_MODULE RBTree_Tests
+#define BOOST_TEST_MODULE RBTree_tests
+//#define BOOST_TEST_SHOW_PROGRESS true
 #include "RBT.hpp"
 #include <boost/mpl/list.hpp>
 #include <boost/test/included/unit_test.hpp>
@@ -34,9 +35,10 @@ BOOST_AUTO_TEST_SUITE_END()
 BOOST_AUTO_TEST_SUITE(RBTree_class)
 //--------------------------------------
 BOOST_AUTO_TEST_CASE(Constructors) {
-  RBTree<int> rbt{};
-  RBTree<int> rbt1{61};
-
+  RBTree<int> rbt{}; //default constructor
+  rbt.print_tree();
+  RBTree<int> rbt1{1.5}; //custom constructor
+  rbt1.print_tree();
   BOOST_TEST_MESSAGE( "A RBTree<int> :" );
   BOOST_CHECK_EQUAL(rbt.get_root()->data, 61);
   BOOST_CHECK_EQUAL(rbt.get_root()->color, BLACK);
