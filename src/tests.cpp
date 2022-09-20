@@ -6,6 +6,7 @@
 #include <boost/mpl/list.hpp>
 #include <boost/test/included/unit_test.hpp>
 #include <iostream>
+#include <vector>
 
 BOOST_AUTO_TEST_SUITE(RBTree_Node)
 //--------------------------------------
@@ -37,16 +38,42 @@ BOOST_AUTO_TEST_SUITE(RBTree_class)
 BOOST_AUTO_TEST_CASE(Constructors) {
   RBTree<int> rbt{}; //default constructor
   rbt.print_tree();
-  RBTree<int> rbt1{1.5}; //custom constructor
-  rbt1.print_tree();
   BOOST_TEST_MESSAGE( "A RBTree<int> :" );
-  BOOST_CHECK_EQUAL(rbt.get_root()->data, 61);
-  BOOST_CHECK_EQUAL(rbt.get_root()->color, BLACK);
+  BOOST_CHECK_NE(rbt.get_root()->data, 1.5);
+  BOOST_CHECK_NE(rbt.get_root()->color, BLACK);
   BOOST_CHECK_NE(rbt.get_root()->left, nullptr);
   BOOST_CHECK_NE(rbt.get_root()->right, nullptr);
-  BOOST_CHECK_EQUAL(rbt.get_root()->parent, nullptr);
+  BOOST_CHECK_NE(rbt.get_root()->parent, nullptr);
+  RBTree<double> rbt1{1.5}; //custom constructor
+  rbt1.print_tree();
+  BOOST_TEST_MESSAGE( "A RBTree<double> :" );
+  BOOST_CHECK_EQUAL(rbt1.get_root()->data, 1.5);
+  BOOST_CHECK_EQUAL(rbt1.get_root()->color, BLACK);
+  BOOST_CHECK_EQUAL(rbt1.get_root()->left, nullptr);
+  BOOST_CHECK_EQUAL(rbt1.get_root()->right, nullptr);
+  BOOST_CHECK_EQUAL(rbt1.get_root()->parent, nullptr);
+  RBTree<int> rbt2{}; //custom comparator
+  /* std::vector<int> v{61,52,20,16,55,85,76,71,65,81,93,90,101};
+  for(long unsigned int i{0}; i<v.size(); i++) {
+    rbt2.insert(v[i]);
+  }
+  rbt2.print_tree(); */
+  rbt2.insert(61); //insert
+  rbt2.insert(52);
+  rbt2.insert(20);
+  rbt2.insert(16);
+  rbt2.insert(55);
+  rbt2.insert(85);
+  rbt2.insert(76);
+  rbt2.insert(71);
+  rbt2.insert(65);
+  rbt2.insert(81);
+  rbt2.insert(93);
+  rbt2.insert(90);
+  rbt2.insert(101);
+  rbt2.insert(102);
+  rbt2.print_tree();
 }
-
 //--------------------------------------
 BOOST_AUTO_TEST_SUITE_END()
 
