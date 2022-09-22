@@ -2,7 +2,6 @@
 
 #define BOOST_TEST_MODULE RBTree_tests
 #define BOOST_TEST_LOG_LEVEL message //   ./tests --log_level=message
-//#define BOOST_TEST_SHOW_PROGRESS true
 #include "RBT.hpp"
 #include <boost/mpl/list.hpp>
 #include <boost/test/included/unit_test.hpp>
@@ -142,8 +141,8 @@ BOOST_AUTO_TEST_CASE(print_ordered_keys_method) {
 BOOST_AUTO_TEST_CASE(clear_tree_method) {
   BOOST_TEST_MESSAGE("Testing RBTree clear_tree() :");
   rbt0.clear_tree(rbt0.get_root());  // clear whole tree
-  BOOST_CHECK_EQUAL(rbt0.contains(61), false); // after deletion root not found
-  BOOST_CHECK_EQUAL(rbt0.contains(55), false); // after deletion not found
+  //BOOST_CHECK_EQUAL(rbt0.contains(61), false); // after deletion root not found
+  //BOOST_CHECK_EQUAL(rbt0.contains(55), false); // after deletion not found
 }
 //--------------------------------------
 /*   RBTree<int> rbt3{rbt};  // copy constructor
@@ -179,27 +178,33 @@ BOOST_AUTO_TEST_CASE(const_iterator) {
   auto fwd_it_begin{rbt.begin()};  
   auto fwd_it_end{rbt.end()};
   
-  std::cout << *fwd_it_begin << std::endl; 
-  //BOOST_CHECK_EQUAL(*fwd_it_begin, 16); // dereference/indirection
-  //BOOST_CHECK_EQUAL(*fwd_it_end, nullptr); // end set to nullptr
-  //BOOST_CHECK_EQUAL(fwd_it_begin==rbt.begin(), 1); // == operator  
-  //BOOST_CHECK_EQUAL(fwd_it_begin!=rbt.end(), 1); // != operator
+  BOOST_CHECK_EQUAL((*fwd_it_begin), 16); // dereference/indirection
+  //BOOST_CHECK_EQUAL(*fwd_it_end, static_cast<decltype(fwd_it_end)>(nullptr));
+  BOOST_CHECK_EQUAL((fwd_it_begin==rbt.begin()), 1); // == operator  
+  BOOST_CHECK_EQUAL((fwd_it_begin!=rbt.end()), 1); // != operator
+  /*
   while(fwd_it_begin!=fwd_it_end) {
     std::cout << *fwd_it_begin << std::endl;
-    //fwd_it_begin++;
+    fwd_it_begin++;
   }
   while(fwd_it_begin!=fwd_it_end) {
     std::cout << *fwd_it_begin << std::endl;
-    //++fwd_it_begin;
+    ++fwd_it_begin;
   }
-
+  */
   // backward iterator
   auto bkw_it_begin{rbt.rbegin()};
   auto bkw_it_end{rbt.rend()};
-  //BOOST_CHECK_EQUAL(*bkw_it_begin, nullptr); // start set to nullptr
-  //BOOST_CHECK_EQUAL(*bkw_it_end, 101); // dereference/indirection
-
-
+  BOOST_CHECK_EQUAL((*bkw_it_begin), 102); // dereference/indirection
+  //BOOST_CHECK_EQUAL(*bkw_it_end, nullptr); // set to nullptr
+  BOOST_CHECK_EQUAL((bkw_it_begin==rbt.rbegin()), 1); // == operator  
+  BOOST_CHECK_EQUAL((bkw_it_begin!=rbt.rend()), 1); // != operator
+  /*
+  while(rit!=rend) {
+  std::cout << *rit << std::endl;
+  --rit;//BOOST_CHECK_EQUAL(*bkw_it_end, nullptr); // start set to nullptr
+  } 
+  */
 }
 //--------------------------------------
 
