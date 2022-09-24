@@ -2,6 +2,7 @@
 CXX := g++
 
 # directories
+BMK_DIR := ./bmk
 DOC_DIR := ./doxygen
 ICL_DIR := ./include
 OBJ_DIR := ./build
@@ -19,9 +20,10 @@ OBJ_EXT := .o
 EXE_EXT := .x
 
 # paths
+BMKES := $(shell find $(BMK_DIR) -type f -name *$(SRC_EXT))
 TESTES := $(shell find $(TST_DIR) -type f -name *$(SRC_EXT)) # $(wildcard $(TST_DIR)/*$(SRC_EXT))
 INCLUDES := $(wildcard $(ICL_DIR)/*$(ICL_EXT))
-OBJECTS := $(patsubst $(SRC_DIR)/%,$(OBJ_DIR)/%,$(SOURCES:$(SRC_EXT)=$(OBJ_EXT))) # OBJECTS := $(SOURCES:$(SRC_DIR)/%$(SRC_EXT)=$(OBJ_DIR)/%$(OBJ_EXT))
+BMKS := $(patsubst $(BMK_DIR)/%,$(OBJ_DIR)/%,$(BMKES:$(SRC_EXT)=$(OBJ_EXT)))
 TESTS := $(patsubst $(TST_DIR)/%,$(OBJ_DIR)/%,$(TESTES:$(SRC_EXT)=$(OBJ_EXT)))
 
 # output
@@ -33,6 +35,8 @@ RM := rm -rf
 
 #---------------------------------------------------------------------------------------------------------------------
 
+all: $(TGT_DIR)/$(TST)$(EXE_EXT) $(TGT_DIR)/$(BMK)$(EXE_EXT)
+
 $(TGT_DIR)/$(TST)$(EXE_EXT): $(TESTS)
 	mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $^ -o $@
@@ -43,10 +47,16 @@ $(TESTS): $(OBJ_DIR)/%$(OBJ_EXT): $(TST_DIR)/%$(SRC_EXT)
 	$(CXX) $(CXXFLAGS) $(INCLFLAGS) -c $^ -o $@
 	@echo "compiled "$^" successfully!"
 
+#------
 
-bmk:
+$(TGT_DIR)/$(BMK)$(EXE_EXT): $(BMKS)
+	mkdir -p $(dir $@)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $^ -o $@
+	@echo "linking completed, executable is ready!"
 
-
+$(BMKS): $(OBJ_DIR)/%$(OBJ_EXT): $(BMK_DIR)/%$(SRC_EXT)
+	$(CXX) $(CXXFLAGS) $(INCLFLAGS) -c $^ -o $@
+	@echo "compiled "$^" successfully!"
 
 clean:
 	@$(RM) $(DOC_DIR)/html $(DOC_DIR)/latex $(OBJ_DIR) $(TGT_DIR)/*
@@ -66,8 +76,8 @@ format: $(SOURCES) $(INCLUDES) $(TESTES)
 print:
 	@echo "just a recurring utility for debugging Makefile"
 	@echo $(INCLUDES)
-	@echo $(TESTES)
+	@echo $(BMKES)
 		
-.PHONY: all bmk clean clears docs format print
+.PHONY: all clean clears docs format print
 
 # end of file
