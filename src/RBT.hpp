@@ -9,24 +9,16 @@
 #include "Node.hpp"
 
 
-///\brief RBTree is a template class which implements R. Bayer's Red Black Tree (1972).
+///\brief RBTree is a templated class which implements R. Bayer's Red Black Tree (1972).
 ///\param T type of the tree nodes' keys.
 ///\param CMP relational function to compare nodes' keys (default std::less<T>).
 template <class T, class CMP=std::less<T>> 
 class RBTree {
 
-public:
-  typedef T node_type; ///< type of the tree nodes' keys.
-  typedef _Node<node_type> Node; ///< type of template tree node.
-  typedef Node *NodePtr; ///< type of pointer to template tree node.
-
-  ///\brief RBTree's regular iterator class.
-  ///       Used to iterate over a sequence and manipulate RBTree's elements.
-  class iterator;
-
-  ///\brief RBTree's constant iterator class.
-  ///      Used to iterate over a sequence and access only RBTree's elements.
-  class const_iterator;
+  ///   Aliasing existing types with typedef-names for clarity.
+  typedef T node_type;           ///< type of the tree nodes' keys.
+  typedef _Node<node_type> Node; ///< type of templated tree's node.
+  typedef Node *NodePtr;         ///< type of pointer to templated tree's node.
 
 
 private:
@@ -36,8 +28,8 @@ private:
 
   ///\brief A recursive helper function to create a deep copy of a RBTree.
   ///\param copied The starting node for exploring the RBTree, typically its root.
-  ///\param new_parent Supplied parent node in case needed (starting: nullptr).
-  ///\param other_rbt The starting node for exploring the RBTree, typically its root.
+  ///\param new_parent Supplied parent node in case needed (at start is nullptr).
+  ///\param other_rbt The starting node for exploring another (empty) RBTree, typically its root.
   ///\return A deep copy of the original RBTree provided.
   void copy(NodePtr& copied, NodePtr new_parent, NodePtr other_rbt);
 
@@ -46,14 +38,14 @@ private:
   ///\param root The starting node for exploring the RBTree, typically its root.
   ///\param choice A const integer to explicit which type of traversal you want.
   ///\return Prints the ordered keys of RBTree following the type of traversal chosen.
-  void recursive_ordering(NodePtr root, int choice) const;
+  void recursive_ordering(const NodePtr& root, const int choice) const;
 
 
   ///\brief A recursive helper function to find a RBTree's node given its key (see: contains).
   ///\param root The starting node for exploring the RBTree, typically its root.
   ///\param value The value of the key you are searching within the RBTree.
   ///\return Prints the ordered keys of RBTree following the type of traversal chosen.
-  NodePtr recursive_search(NodePtr root, T value) const;
+  NodePtr recursive_search(const NodePtr& root, const T& value) const;
 
 
   ///\brief A recursive helper function to print the RBTree's structure (see: print_tree).
@@ -61,44 +53,48 @@ private:
   ///\param indentation Specifies the degree of indentation for tree's branches.
   ///\param is_right Specifies if we are in the left or right sub-tree.
   ///\return Prints the complete branch-leaf structure of RBTree.
-  void recursive_print(NodePtr root, std::string indentation, bool is_right) const;
+  void recursive_print(const NodePtr& root, const std::string& indentation, const bool is_right) const noexcept;
 
 
   ///\brief Private utility function to help rebalance RBTree's after deletion (see: delete_adjustment).
   ///\param replaced The node we want to be replaced with the replacer node.
   ///\param replacer The node we want to be a replacement of replaced node.
   ///\return Modifies RBTree's structure, swapping one node with another.
-  void node_replacement(NodePtr replaced, NodePtr replacer);
+  void node_replacement(const NodePtr& replaced, const NodePtr& replacer) noexcept;
   
 
   ///\brief Private utility function to help rebalance RBTree's after insertion/deletion.
   ///\param node The node which constitutes the pivot point for the rotation.
   ///\param to_right Direction of desired rotation: 0=left (child up), 1=right (child down).
   ///\return Modifies RBTree's structure, performing a right/left rotation of nodes.
-  void node_rotation(NodePtr node, bool to_right);
+  void node_rotation(NodePtr node, const bool to_right) noexcept;
 
 
   ///\brief Private utility function to rebalance RBTree's after insertion (see: insert).
   ///\param node The node we are going to insert into the previous RBTree structure.
   ///\return Rebalances RBTree's to restore compliance with 5 rules that may have been infringed.
-  void rebalance_on_insert(NodePtr node);
+  void rebalance_on_insert(NodePtr& node) noexcept;
 
 
   ///\brief Private utility function to rebalance RBTree's after deletion (see: delete_adjustment).
   ///\param node The node we are going to delete from the previous RBTree structure.
   ///\return Rebalances RBTree's to restore compliance with 5 rules that may have been infringed.
-  void rebalance_on_delete(NodePtr node);
+  void rebalance_on_delete(NodePtr& node) noexcept;
 
 
   ///\brief Private helper function to rebalance RBTree's after key deletion (see: delete).
   ///\param node The starting node for visiting the RBTree, typically its root.
   ///\param value The value you are going to delete.
   ///\return Rebalanced RBTree's compliant with 5 rules, after implementing the deletion.
-  void delete_adjustment(NodePtr node, T value);
+  void delete_adjustment(const NodePtr& node, const T& value) noexcept;
 
 
 public:
   CMP comparator; ///< comparison operator. 
+
+  ///\brief RBTree's constant iterator class.
+  ///      Used to iterate over a sequence and access-only RBTree's elements.
+  class const_iterator;
 
 
   ///\brief RBTree's constructor.
@@ -109,18 +105,18 @@ public:
 	///\brief Constructor for RBTree given the root node.
 	///\param value The value to be inserted into the RBTree's root node.
 	///\param cmp A custom comparison function for tree nodes (defaulted to std::less).
-	RBTree(T value, CMP cmp=CMP{}) : root{new Node{value}}, comparator{cmp}, NIL{new Node} {}
+	RBTree(T value, CMP cmp=CMP{}): root{new Node{value}}, comparator{cmp}, NIL{new Node} {}
 
 
   ///\brief RBTree's destructor.
-  ///       Default destructor for the RBTree class.
-  ~RBTree() {}
-   
+  ///       Overloaded destructor for the RBTree class.
+  ~RBTree() noexcept  {delete NIL;}
+
 
   ///\brief Copy constructor for RBTree.
 	///\param rbt The RBTree which will be copied to another new tree.
 	///\return A 'deep copy' of RBTree, by means of a call to the constructor.
-  RBTree(const RBTree &rbt) {
+  RBTree(const RBTree& rbt) noexcept {
     copy(root, nullptr, rbt.root);  // deep copy
     //root = new Node (*rbt.root);  // shallow copy
   }
@@ -129,7 +125,7 @@ public:
   ///\brief Copy assignment for RBTree.
 	///\param rbt A const lvalue reference to RBTree that will be copied to an existing tree.
 	///\return The copy of the RBTree.
-  RBTree& operator=(const RBTree& rbt) {
+  RBTree& operator=(const RBTree& rbt) noexcept {
     if (this!=&rbt) {
       if (root!=nullptr) {
         //clear_tree(rbt.root);
@@ -168,90 +164,90 @@ public:
   ///\brief Function to get the RBTree's height.
 	///\param root The starting node for exploring the RBTree, typically its root.
 	///\return The total height of the RBTree, as an integer levels count.
-  int get_height(NodePtr root) const; 
+  unsigned int get_height(const NodePtr& root) const noexcept; 
 
 
   ///\brief A function to discover which is the leftmost node in RBTree.
   ///\param node The starting node for exploring the rest of the RBTree.
   ///\return A pointer to the leftmost node, which is the min key in the RBTree.
-  NodePtr get_leftmost(NodePtr node) const;
+  NodePtr get_leftmost(NodePtr node) const noexcept;
 
 
   ///\brief A function to discover which is the rightmost node in RBTree.
   ///\param node The starting node for exploring the rest of the RBTree.
   ///\return A pointer to the rightmost node, which is the max key in the RBTree.
-  NodePtr get_rightmost(NodePtr node) const;
+  NodePtr get_rightmost(NodePtr node) const noexcept;
 
 
   ///\brief Function to insert a new value in the tree.
 	///\param value The value you are going to insert.
 	///\return A RBTree which includes an additional node with the value inserted.
-  void insert(const T& value);
+  void insert(const T& value) noexcept;
 
-  
+
   ///\brief Function to test whether the tree contains a value (see: recursive_search).
 	///\param value The value to be checked if present within the RBTree.
 	///\return Bool true (1) if the value is in the RBTree, false (0) otherwise.
-  bool contains(const T& value) const;
+  bool contains(const T& value) const noexcept;
 
 
   ///\brief Function to find a value in the RBTree (see: recursive_search).
 	///\param value The value to be checked if present within the RBTree.
 	///\return The value searched if present inside the tree, nothing otherwise.
-  const T find(const T& value) const;
+  const T& find(const T& value) const noexcept;
   
 
   ///\brief Function to delete a value from the tree.
 	///\param value The value you are going to delete.
 	///\return A RBTree without the node which contained the value inserted.
-  void delete_(const T& value);
+  void delete_(const T& value) noexcept;
 
 
   ///\brief Function to start a forward iteration on the binary search tree.
 	///\return RBTree's const_iterator to the in-order first element of the tree.
-  RBTree<T, CMP>::const_iterator begin() const;
+  RBTree<T, CMP>::const_iterator begin() const noexcept;
 
 
   ///\brief Function to end a forward iteration on the binary search tree.
 	///\return RBTree's const_iterator to nullptr (located after RBTree's last element).
-  RBTree<T, CMP>::const_iterator end() const;
+  RBTree<T, CMP>::const_iterator end() const noexcept;
 
 
   ///\brief Function to start a backwards iteration on the binary search tree.
 	///\return RBTree's const_iterator to the in-order last element of the tree.
-  RBTree<T, CMP>::const_iterator rbegin() const;
+  RBTree<T, CMP>::const_iterator rbegin() const noexcept;
 
 
   ///\brief Function to end a backwards iteration on the binary search tree.
 	///\return RBTree's const_iterator to nullptr (located before RBTree's first element).
-  RBTree<T, CMP>::const_iterator rend() const;
+  RBTree<T, CMP>::const_iterator rend() const noexcept;
 
 
   ///\brief A function to discover the successor of the current node.
   ///\param node The starting node for exploring the rest of the RBTree.
   ///\return A pointer to the successive node (one step to the right).
-  NodePtr get_successor(NodePtr node) const;
+  NodePtr get_successor(NodePtr node) const noexcept;
 
 
   ///\brief A function to discover the predecessor of the current node.
   ///\param node The starting node for exploring the rest of the RBTree.
   ///\return A pointer to the preceding node (one step to the left).
-  NodePtr get_predecessor(NodePtr node) const;
+  NodePtr get_predecessor(NodePtr node) const noexcept;
 
 
   ///\brief A wrapper function to print RBT's keys (see: recursive_ordering).
   ///\param choice The type of traversal: 1='in-order', 2='pre-order', 3='post-order'.
 	///\return A call to recursive_ordering which prints the keys.
-  void print_ordered_keys(int choice) const;
+  void print_ordered_keys(const unsigned int choice) const noexcept;
 
 
   ///\brief A wrapper function to print the RBTree (see: recursive_print).
 	///\return The print of the complete RBTree structure.
-  void print_tree() const;
+  void print_tree() const noexcept;
 
 
   ///\brief Utility function to clear the whole RBTree.
-	///\return A totally empty tree.
+	///\return An empty tree.
   void clear_tree(NodePtr node) noexcept;
 
 };
@@ -275,7 +271,7 @@ void RBTree<T, CMP>::copy(NodePtr& copied, NodePtr new_parent, NodePtr other_rbt
 
 
 template <class T, class CMP>
-void RBTree<T, CMP>::recursive_ordering(NodePtr root, const int choice) const {
+void RBTree<T, CMP>::recursive_ordering(const NodePtr& root, const int choice) const {
   if (root!=NIL) {
     switch (choice) {
       case 1: //in-order traversal (left-root-right)
@@ -303,7 +299,7 @@ void RBTree<T, CMP>::recursive_ordering(NodePtr root, const int choice) const {
 
 
 template <class T, class CMP>
-typename RBTree<T, CMP>::NodePtr RBTree<T, CMP>::recursive_search(NodePtr root, T value) const {
+typename RBTree<T, CMP>::NodePtr RBTree<T, CMP>::recursive_search(const NodePtr& root, const T& value) const {
   if (value==root->data or root==NIL) {
     return root;
   }
@@ -316,7 +312,7 @@ typename RBTree<T, CMP>::NodePtr RBTree<T, CMP>::recursive_search(NodePtr root, 
 
 
 template<class T, class CMP>
-void RBTree<T, CMP>::recursive_print(NodePtr root, std::string indentation, bool is_right) const {
+void RBTree<T, CMP>::recursive_print(const NodePtr& root, const std::string& indentation, const bool is_right) const noexcept {
   std::string h_branch {"        "};
   if (root->right) {
     recursive_print(root->right, indentation+(is_right ? h_branch : "L"+h_branch), 1);
@@ -330,7 +326,7 @@ void RBTree<T, CMP>::recursive_print(NodePtr root, std::string indentation, bool
 
 
 template <class T, class CMP>
-void RBTree<T, CMP>::node_replacement(NodePtr replaced, NodePtr replacer) {
+void RBTree<T, CMP>::node_replacement(const NodePtr& replaced, const NodePtr& replacer) noexcept {
   if (replaced->parent==NIL) { // if parent is root 
     root=replacer;   // A: replacer becomes new root
   } else if (replaced==replaced->parent->right) { // if node is right child
@@ -343,7 +339,7 @@ void RBTree<T, CMP>::node_replacement(NodePtr replaced, NodePtr replacer) {
 
 
 template <class T, class CMP>
-void RBTree<T, CMP>::node_rotation(NodePtr node, bool to_right) {
+void RBTree<T, CMP>::node_rotation(NodePtr node, const bool to_right) noexcept {
   NodePtr _node;
   if (to_right) { // right rotation
     _node = node->left; // keep pivot left child
@@ -381,7 +377,7 @@ void RBTree<T, CMP>::node_rotation(NodePtr node, bool to_right) {
 
 
 template<class T, class CMP>
-void RBTree<T, CMP>::rebalance_on_insert(NodePtr node) {
+void RBTree<T, CMP>::rebalance_on_insert(NodePtr& node) noexcept {
   // details on cases at sources:
   // https://en.wikipedia.org/wiki/Red-black_tree
   // https://www.geeksforgeeks.org/red-black-tree-set-2-insert/
@@ -426,7 +422,7 @@ void RBTree<T, CMP>::rebalance_on_insert(NodePtr node) {
 
 
 template <class T, class CMP>
-void RBTree<T, CMP>::rebalance_on_delete(NodePtr node) {
+void RBTree<T, CMP>::rebalance_on_delete(NodePtr& node) noexcept {
   // details on cases at sources:
   // https://en.wikipedia.org/wiki/Red-black_tree
   // https://www.geeksforgeeks.org/red-black-tree-set-3-delete-2/
@@ -486,7 +482,7 @@ void RBTree<T, CMP>::rebalance_on_delete(NodePtr node) {
 
 
 template<class T, class CMP>
-void RBTree<T, CMP>::delete_adjustment(NodePtr node, T value) {
+void RBTree<T, CMP>::delete_adjustment(const NodePtr& node, const T& value) noexcept {
   NodePtr node_A{NIL}, node_B{NIL}, node_C{NIL}; // temporary helper nodes
   if(recursive_search(node, value)!=NIL) {
     node_A = recursive_search(node, value); // if found, node_A stores the node to be canceled
@@ -536,7 +532,7 @@ typename RBTree<T, CMP>::NodePtr RBTree<T, CMP>::get_root() const {
 
 
 template <class T, class CMP>
-int RBTree<T, CMP>::get_height(NodePtr root) const {
+unsigned int RBTree<T, CMP>::get_height(const NodePtr& root) const noexcept {
   if (root==NIL) {
     return 0;
   }
@@ -545,7 +541,7 @@ int RBTree<T, CMP>::get_height(NodePtr root) const {
 
 
 template<class T, class CMP>
-typename RBTree<T, CMP>::NodePtr RBTree<T, CMP>::get_leftmost(NodePtr node) const {
+typename RBTree<T, CMP>::NodePtr RBTree<T, CMP>::get_leftmost(NodePtr node) const noexcept {
   while (node->left!=NIL) {
     node = node->left;
   }
@@ -554,7 +550,7 @@ typename RBTree<T, CMP>::NodePtr RBTree<T, CMP>::get_leftmost(NodePtr node) cons
 
 
 template<class T, class CMP>
-typename RBTree<T, CMP>::NodePtr RBTree<T, CMP>::get_rightmost(NodePtr node) const {
+typename RBTree<T, CMP>::NodePtr RBTree<T, CMP>::get_rightmost(NodePtr node) const noexcept {
   while (node->right!=NIL) {
     node = node->right;
   }
@@ -563,7 +559,7 @@ typename RBTree<T, CMP>::NodePtr RBTree<T, CMP>::get_rightmost(NodePtr node) con
 
 
 template <class T, class CMP>
-void RBTree<T, CMP>::insert(const T& value) {
+void RBTree<T, CMP>::insert(const T& value) noexcept {
   NodePtr node{new Node(value, RED)};
   node->left = node->right = NIL;
   NodePtr node_B{nullptr}; // temporary helper node_B
@@ -598,7 +594,7 @@ void RBTree<T, CMP>::insert(const T& value) {
 
 
 template <class T, class CMP>
-bool RBTree<T, CMP>::contains(const T& value) const {
+bool RBTree<T, CMP>::contains(const T& value) const noexcept {
   if (recursive_search(get_root(), value)->data==value) {
     return true;
   } else {
@@ -608,43 +604,43 @@ bool RBTree<T, CMP>::contains(const T& value) const {
 
 
 template <class T, class CMP>
-const T RBTree<T, CMP>::find(const T& value) const {
+const T& RBTree<T, CMP>::find(const T& value) const noexcept {
     return recursive_search(root, value)->data;
 }
 
 
 template <class T, class CMP>
-void RBTree<T, CMP>::delete_(const T& value) {
+void RBTree<T, CMP>::delete_(const T& value) noexcept {
   delete_adjustment(get_root(), value);
 }
 
 
 template <class T, class CMP>
-typename RBTree<T, CMP>::const_iterator RBTree<T, CMP>::begin() const {
+typename RBTree<T, CMP>::const_iterator RBTree<T, CMP>::begin() const noexcept {
   return const_iterator(get_leftmost(get_root()));
 }
 
 
 template <class T, class CMP>
-typename RBTree<T, CMP>::const_iterator RBTree<T, CMP>::end() const {
+typename RBTree<T, CMP>::const_iterator RBTree<T, CMP>::end() const noexcept {
   return const_iterator(nullptr);
 }
 
 
 template <class T, class CMP>
-typename RBTree<T, CMP>::const_iterator RBTree<T, CMP>::rbegin() const {
+typename RBTree<T, CMP>::const_iterator RBTree<T, CMP>::rbegin() const noexcept {
   return const_iterator(get_rightmost(get_root()));
 }
 
 
 template <class T, class CMP>
-typename RBTree<T, CMP>::const_iterator RBTree<T, CMP>::rend() const {
+typename RBTree<T, CMP>::const_iterator RBTree<T, CMP>::rend() const noexcept {
   return const_iterator(nullptr);
 }
 
 
 template<class T, class CMP>
-typename RBTree<T, CMP>::NodePtr RBTree<T, CMP>::get_successor(NodePtr node) const {
+typename RBTree<T, CMP>::NodePtr RBTree<T, CMP>::get_successor(NodePtr node) const noexcept {
   if (node->right!=NIL) {
     return get_leftmost(node->right);
   }
@@ -658,7 +654,7 @@ typename RBTree<T, CMP>::NodePtr RBTree<T, CMP>::get_successor(NodePtr node) con
 
 
 template<class T, class CMP>
-typename RBTree<T, CMP>::NodePtr RBTree<T, CMP>::get_predecessor(NodePtr node) const {
+typename RBTree<T, CMP>::NodePtr RBTree<T, CMP>::get_predecessor(NodePtr node) const noexcept {
   if (node->left!=NIL) {
     return get_rightmost(node->left);
   }
@@ -672,13 +668,13 @@ typename RBTree<T, CMP>::NodePtr RBTree<T, CMP>::get_predecessor(NodePtr node) c
 
 
 template<class T, class CMP>
- void RBTree<T, CMP>::print_ordered_keys(int const choice) const {
+ void RBTree<T, CMP>::print_ordered_keys(const unsigned int choice) const noexcept {
     recursive_ordering(get_root(), choice);
 }
 
 
 template <class T, class CMP>
-void RBTree<T, CMP>::print_tree() const {
+void RBTree<T, CMP>::print_tree() const noexcept {
   if (root!=NIL) {
     recursive_print(get_root(), "", 1);
   } else {
@@ -695,28 +691,10 @@ template<class T, class CMP>
   delete(node->left); 
   delete(node->right); 
   delete node;  
-  //this->~RBTree(); //permanent alternative destruciton
+  //this->~RBTree(); //permanent alternative destruction
   std::cout << "RBTree is now empty, nothing to print here!" << std::endl;
   }
 
-
-/*TODO:
-  for RBTree:
-                    void insert(const T& value)                       OK
-                    void delete(const T& value)                       OK
-                    bool contains(const T& value) const               OK    
-                    RBTree<T, CMP>::const_iterator begin() const      OK
-                    RBTree<T, CMP>::const_iterator end() const        OK
-
-1) update doxygen                                                     OK
-2) check segmentation fault from root node                            OK
-3) check instances of to-be-changed methods                           OK
-4) replace with to-be-changed methods (N.B. use the comparator->OK)   OK
-_
-5) check if all methods are implemented                               OK
-6) terminate regular iterator + inheritance on const_iter             ???
-7) set up unit test suite:                                          in progress...
-*/
 
 #include "RBT_iterator.hpp"
 #endif // RBT_HPP

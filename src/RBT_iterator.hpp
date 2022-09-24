@@ -29,7 +29,7 @@ public:
   ///\brief RBTree's constant iterator indirection/deference operator.
   ///\return Const T reference to the node'data pointed by the iterator. 
   ///       Used to get the value associated to the RBTree's const_iterator.
-  const T& operator*() const {
+  const T& operator*() const noexcept {
     return current_node->data;
   }  
 
@@ -37,7 +37,7 @@ public:
   ///\brief RBTree's constant iterator member access operator.
   ///\return Pointer to a const T node pointed by the iterator. 
   ///       Used to access the value associated to the RBTree's const_iterator.
-  const T* operator->() const {
+  const T* operator->() const noexcept {
     return &(*(*(this)));
   }
 
@@ -46,7 +46,7 @@ public:
   ///\return Reference const_iterator to the new current RBTree node, after advancing IT. 
   ///       Used to pre-increment the RBTree's const_iterator.
   ///  see: https://www.cs.odu.edu/~zeil/cs361/latest/Public/treetraversal/index.html
-  const_iterator& operator++() {
+  const_iterator& operator++() noexcept {
     if(current_node->right!=nullptr and current_node->right->data!=0) { // if right exists and not a leaf
       current_node = current_node->right->f_leftmost(); //down-right and to left most
     }
@@ -60,7 +60,7 @@ public:
   ///\brief RBTree's constant iterator postfix ++ operator (i.e. IT++).
   ///\return Const iterator to previously current node, after advancing IT. 
   ///       Used to post-increment the RBTree's const_iterator [overloaded].
-  const_iterator operator++(int) {
+  const_iterator operator++(int) noexcept {
     const_iterator retval{*this};
 	++(*this);
 	return retval;
@@ -70,7 +70,7 @@ public:
   ///\brief RBTree's constant iterator prefix -- operator (i.e. --IT).
   ///\return Reference const_iterator to the new current RBTree node, after moving backwards IT. 
   ///       Used to pre-decrement the RBTree's const_iterator.
-  const_iterator& operator--() {
+  const_iterator& operator--() noexcept {
    if(current_node->left!=nullptr and current_node->left->data!=0) { // if left exists and not a leaf
       current_node = current_node->left->b_rightmost(); //down-left and to right most
     }
@@ -84,7 +84,7 @@ public:
   ///\brief RBTree's constant iterator postfix -- operator (i.e. IT--).
   ///\return Const iterator to previously current node, after moving backwards IT. 
   ///       Used to post-decrement the RBTree's const_iterator [overloaded].
-  const_iterator operator--(int) {
+  const_iterator operator--(int) noexcept {
     const_iterator retval{*this};
 	--(*this);
 	return retval;
@@ -95,7 +95,7 @@ public:
   ///\param other Another iterator to be compared with the one at hand.
   ///\return Bool: true if both iterators point to the same node.
   ///       Used to to test whether two iterators are equivalent.
-  bool operator==(const const_iterator& other) const {
+  bool operator==(const const_iterator& other) const noexcept {
     return current_node == other.current_node;
   }
 
@@ -104,7 +104,7 @@ public:
   ///\param other Another iterator to be compared with the one at hand.
   ///\return Bool: false if both iterators point to the same node.
   ///       Used to to test whether two iterators are different.
-  bool operator!=(const const_iterator& other) const {
+  bool operator!=(const const_iterator& other) const noexcept {
     return current_node != other.current_node;
   }
 
