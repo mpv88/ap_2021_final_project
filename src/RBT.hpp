@@ -253,6 +253,7 @@ public:
   ///\brief Utility function to clear the whole RBTree.
 	///\return A totally empty tree.
   void clear_tree(NodePtr node) noexcept;
+
 };
 // --------------------------------IMPLEMENTATION------------------------------------------
 
@@ -700,20 +701,6 @@ template<class T, class CMP>
 
 
 /*TODO:
-CLASSES:
-  RBTree<T, CMP=std::less<T>>                                         OK
-  RBTree<T, CMP=std::less<T>>::const_iterator                         OK
-
-PUBLIC METHODS:
-  for const_iterator:
-                    const T& operator*() const                        OK
-                    const T* operator->() const                       OK
-                    const_iterator& operator++()                      OK
-                    const_iterator operator++(int)                    OK
-                    const_iterator& operator--()                      OK
-                    const_iterator operator--(int)                    OK
-                    bool operator==(const const_iterator&) const      OK
-                    bool operator!=(const const_iterator&) const      OK
   for RBTree:
                     void insert(const T& value)                       OK
                     void delete(const T& value)                       OK
@@ -729,7 +716,6 @@ _
 5) check if all methods are implemented                               OK
 6) terminate regular iterator + inheritance on const_iter             ???
 7) set up unit test suite:                                          in progress...
-
 */
 
 #include "RBT_iterator.hpp"
