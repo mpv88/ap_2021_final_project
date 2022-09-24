@@ -141,7 +141,8 @@ BOOST_AUTO_TEST_CASE(print_ordered_keys_method) {
 BOOST_AUTO_TEST_CASE(clear_tree_method) {
   BOOST_TEST_MESSAGE("Testing RBTree clear_tree() :");
   rbt0.clear_tree(rbt0.get_root());  // clear whole tree
-  //BOOST_CHECK_EQUAL(rbt0.contains(61), false); // after deletion root not found
+  BOOST_CHECK_EQUAL(*rbt0.get_root(), nullptr); // root is nullptr
+  //BOOST_CHECK_EQUAL(rbt0.contains(61), false);// after deletion root not found
   //BOOST_CHECK_EQUAL(rbt0.contains(55), false); // after deletion not found
 }
 //--------------------------------------
@@ -179,6 +180,8 @@ BOOST_AUTO_TEST_CASE(const_iterator) {
   auto fwd_it_end{rbt.end()};
   
   BOOST_CHECK_EQUAL((*fwd_it_begin), 16); // dereference/indirection
+  std::cout << typeid(fwd_it_end).name() << std::endl;
+  //BOOST_CHECK(*fwd_it_end);
   //BOOST_CHECK_EQUAL(*fwd_it_end, static_cast<decltype(fwd_it_end)>(nullptr));
   BOOST_CHECK_EQUAL((fwd_it_begin==rbt.begin()), 1); // == operator  
   BOOST_CHECK_EQUAL((fwd_it_begin!=rbt.end()), 1); // != operator

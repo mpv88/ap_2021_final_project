@@ -18,16 +18,16 @@ private:
 public:
   ///\brief RBTree's constant iterator constructor.
   ///\param node RBTree's node over which const iterator is constructed.
-  explicit const_iterator(NodePtr node) : current_node{node} {}
+  explicit const_iterator(NodePtr node) noexcept: current_node{node} {}
 
 
   ///\brief RBTree's constant iterator destructor.
   ///       RBTree's const iterator is deleted.
-    ~const_iterator() {}
+    ~const_iterator() noexcept {}
 
 
   ///\brief RBTree's constant iterator indirection/deference operator.
-  ///\return Const T reference to the node pointed (i.e. current) by the iterator. 
+  ///\return Const T reference to the node'data pointed by the iterator. 
   ///       Used to get the value associated to the RBTree's const_iterator.
   const T& operator*() const {
     return current_node->data;
@@ -35,7 +35,7 @@ public:
 
 
   ///\brief RBTree's constant iterator member access operator.
-  ///\return Pointer to a const T node pointed (i.e. current) by the iterator. 
+  ///\return Pointer to a const T node pointed by the iterator. 
   ///       Used to access the value associated to the RBTree's const_iterator.
   const T* operator->() const {
     return &(*(*(this)));
@@ -45,7 +45,7 @@ public:
   ///\brief RBTree's constant iterator prefix ++ operator (i.e. ++IT).
   ///\return Reference const_iterator to the new current RBTree node, after advancing IT. 
   ///       Used to pre-increment the RBTree's const_iterator.
-  ///       https://www.cs.odu.edu/~zeil/cs361/latest/Public/treetraversal/index.html
+  ///  see: https://www.cs.odu.edu/~zeil/cs361/latest/Public/treetraversal/index.html
   const_iterator& operator++() {
     if(current_node->right!=nullptr and current_node->right->data!=0) { // if right exists and not a leaf
       current_node = current_node->right->f_leftmost(); //down-right and to left most
@@ -92,6 +92,7 @@ public:
 
 
   ///\brief RBTree's constant iterator equality operator.
+  ///\param other Another iterator to be compared with the one at hand.
   ///\return Bool: true if both iterators point to the same node.
   ///       Used to to test whether two iterators are equivalent.
   bool operator==(const const_iterator& other) const {
@@ -100,6 +101,7 @@ public:
 
 
   ///\brief RBTree's constant iterator disequality operator.
+  ///\param other Another iterator to be compared with the one at hand.
   ///\return Bool: false if both iterators point to the same node.
   ///       Used to to test whether two iterators are different.
   bool operator!=(const const_iterator& other) const {
@@ -108,20 +110,5 @@ public:
 
 };
 
-//TODO: (optionally) a sketch class for showing inheritance
-///\brief RBTree's regular iterator class.
-///       Used to iterate over a sequence and manipulate RBTree's elements.
-template <class T, class CMP> 
-class RBTree<T, CMP>::iterator: public RBTree<T, CMP>::const_iterator {
-
-
-private:
-
-
-public:
-
-
-
-};
 
 #endif //RBT_ITERATOR_HPP
