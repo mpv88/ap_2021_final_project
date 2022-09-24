@@ -105,7 +105,7 @@ public:
 	///\brief Constructor for RBTree given the root node.
 	///\param value The value to be inserted into the RBTree's root node.
 	///\param cmp A custom comparison function for tree nodes (defaulted to std::less).
-	RBTree(T value, CMP cmp=CMP{}): root{new Node{value}}, comparator{cmp}, NIL{new Node} {}
+	RBTree(T value, CMP cmp=CMP{}): root{new Node{value}}, NIL{new Node}, comparator{cmp} {}
 
 
   ///\brief RBTree's destructor.
