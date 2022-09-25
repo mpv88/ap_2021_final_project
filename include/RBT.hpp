@@ -1,6 +1,6 @@
 ///\file RBT.hpp
 ///\author mpv
-///\brief header file with all RBT's members' declarations and methods' definitionss.
+///\brief header file with all RBT's members' declarations and methods' definitions.
 
 #ifndef RBT_HPP
 #define RBT_HPP
