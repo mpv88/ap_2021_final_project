@@ -1,10 +1,10 @@
 ///\file bmk.cpp
 ///\author mpv
 ///\brief Bmk test driver
-/// Small benchmarking experiment to (I) measure and (II) compare the look-up performance of realized RBTree (contains() method) versus find() method of std::map and std::unordered_map.
-/// First, some randomly generated integer numbers have been created and inserted into those three containers, thus increasing linearly nodes' number -in tens increments- from 100 to 10000. 
-/// Secondly, the average time of retreiving 1000 random numbers from each container has been measured and finally plotted.
-/// Expectations are to find a better performance for std::unordered_map, as it is based on hash table while the other two (std::map and our RBTree) are based on red-black tree structures. 
+/// Small benchmarking experiment to (I) measure and (II) compare the look-up performance for find() method on the realized RBTree versus std::map and std::unordered_map.
+/// First, some randomly generated int/double numbers have been created and inserted into those three containers, thus increasing linearly nodes' number -in 50 increments- from 50 to 20000. 
+/// Secondly, the average time of retreiving different and growing buckets of elements (numbers) from each container has been measured and finally plotted.
+/// Expectations were to find a better performance for std::unordered_map (as based on hash table) while the other two (std::map and our RBTree) are based on red-black tree implementations, possibly slower. 
 
 #include <chrono>
 #include <fstream>
