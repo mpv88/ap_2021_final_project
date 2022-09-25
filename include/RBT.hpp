@@ -327,7 +327,7 @@ void RBTree<T, CMP>::recursive_print(const NodePtr& root, const std::string& ind
 
 template <class T, class CMP>
 void RBTree<T, CMP>::node_replacement(const NodePtr& replaced, const NodePtr& replacer) noexcept {
-  if (replaced->parent==NIL) { // if parent is root 
+  if (replaced->parent==NIL) { // if node's parent is NIL 
     root=replacer;   // A: replacer becomes new root
   } else if (replaced==replaced->parent->right) { // if node is right child
     replaced->parent->right=replacer; // B: replacer becomes right child
@@ -381,44 +381,44 @@ void RBTree<T, CMP>::rebalance_on_insert(NodePtr& node) noexcept {
   // details on cases at sources:
   // https://en.wikipedia.org/wiki/Red-black_tree
   // https://www.geeksforgeeks.org/red-black-tree-set-2-insert/
-  while (node->parent->color==RED) { // parent is RED
+  while (node->parent->color==RED) { // parent is RED (rule #4)
     if (node->parent==node->parent->parent->right) { // if parent is right child
-      NodePtr uncle{node->parent->parent->left}; // left uncle
-      if (uncle->color==RED) { // case: L_uncle is RED (simple recolor)
-        node->parent->parent->color = RED; // grandparent becomes RED
-        node->parent->color = BLACK; // parent becomes BLACK
-        uncle->color = BLACK; // uncle becomes BLACK
-        node = node->parent->parent; // node becomes grandparent
-      } else {
-        if (node==node->parent->left) { // case: L_uncle is BLACK and node is left child
-          node = node->parent; // node becomes parent
-          node_rotation(node, 1); // right rotation
-        }                            // case: L_uncle is BLACK and node is right child
-        node->parent->parent->color = RED; // grandparent becomes RED
-        node->parent->color = BLACK; // parent becomes BLACK
-        node_rotation(node->parent->parent, 0); // left rotation
+      NodePtr uncle{node->parent->parent->left}; // uncle is on left
+      if (uncle->color==RED) { // case: L_uncle is RED (simple recolor) I
+        node->parent->parent->color = RED; // -grandparent becomes RED
+        node->parent->color = BLACK; // -parent becomes BLACK
+        uncle->color = BLACK; // -uncle becomes BLACK
+        node = node->parent->parent; // -node becomes grandparent (to check if is root)
+      } else {  // case: L_uncle is BLACK (or NIL) I
+        if (node==node->parent->left) { // and node is left child:
+          node = node->parent; // -node becomes parent
+          node_rotation(node, 1); // -right rotation on parent and then left rotation
+        }                            // and node is right child:
+        node->parent->parent->color = RED; // -grandparent becomes RED
+        node->parent->color = BLACK; // -parent becomes BLACK
+        node_rotation(node->parent->parent, 0); // -left rotation on grandparent
       }
     } else {  // if parent is left child
-      NodePtr uncle{node->parent->parent->right}; // right uncle
-      if (uncle->color==RED) { // case: R_uncle is RED (simple recolor)
-        node->parent->parent->color = RED; // grandparent becomes RED
-        node->parent->color = BLACK; // parent becomes BLACK
-        uncle->color = BLACK; // uncle becomes BLACK
-        node = node->parent->parent; // node becomes grandparent
-      } else {
-        if (node==node->parent->right) { // case: R_uncle is BLACK and node is right child
-          node = node->parent; // node becomes parent
-          node_rotation(node, 0); // left rotation
-        }                            // case: R_uncle is BLACK and node is left child
-        node->parent->parent->color = RED; // grandparent becomes RED
-        node->parent->color = BLACK; // parent becomes BLACK
-        node_rotation(node->parent->parent, 1); // right rotation
+      NodePtr uncle{node->parent->parent->right}; // uncle is on right
+      if (uncle->color==RED) { // case: R_uncle is RED (simple recolor) II
+        node->parent->parent->color = RED; // -grandparent becomes RED
+        node->parent->color = BLACK; // -parent becomes BLACK
+        uncle->color = BLACK; // -uncle becomes BLACK
+        node = node->parent->parent; // -node becomes grandparent (to check if is root)
+      } else {  // case: R_uncle is BLACK (or NIL) II
+        if (node==node->parent->right) { // and node is right child:
+          node = node->parent; // -node becomes parent
+          node_rotation(node, 0); // -left rotation on parent and then right rotation
+        }                            // and node is left child:
+        node->parent->parent->color = RED; // -grandparent becomes RED
+        node->parent->color = BLACK; // -parent becomes BLACK
+        node_rotation(node->parent->parent, 1); // -right rotation
       }
     }
-    if (node==root) {break;} // stop when node is root
+    if (node==root) {break;} // case: node is root (tree was empty) I
   }
-  root->color = BLACK; // keep root BLACK
-}
+  root->color = BLACK; // always keep root BLACK (even when grandparent is the root)
+} // case: node's parent is BLACK omitted as no violations I
 
 
 template <class T, class CMP>
@@ -427,57 +427,57 @@ void RBTree<T, CMP>::rebalance_on_delete(NodePtr& node) noexcept {
   // https://en.wikipedia.org/wiki/Red-black_tree
   // https://www.geeksforgeeks.org/red-black-tree-set-3-delete-2/
   while (node->color==BLACK and node!=root) { // node is BLACK and not root
-    if (node==node->parent->left) { // if node is left child
-      NodePtr sibiling{node->parent->right}; // right sibiling
-      if (sibiling->color==RED) { // case: R_sibiling is RED (recolor and rotation)
-        node->parent->color = RED; // parent becomes RED
-        sibiling->color = BLACK; // sibiling becomes BLACK
-        node_rotation(node->parent, 0); // left rotation
-        sibiling = node->parent->right; // sibiling becomes anew parent right child
+    if (node==node->parent->left) { // if node is a left child
+      NodePtr sibiling{node->parent->right}; // sibiling is on right
+      if (sibiling->color==RED) { // case: R_sibiling is RED (recolor and rotation) I
+        node->parent->color = RED; // -parent becomes RED
+        sibiling->color = BLACK; // -sibiling becomes BLACK
+        node_rotation(node->parent, 0); // -left rotation on parent
+        sibiling = node->parent->right; // -new sibiling becomes parent's right child
       }
-      if (sibiling->right->color==BLACK and sibiling->left->color==BLACK) { // case: both R_sibiling's children are BLACK
-        node = node->parent; // node becomes parent
-        sibiling->color = RED; // sibiling becomes RED
+      if (sibiling->right->color==BLACK and sibiling->left->color==BLACK) { // case: both R_sibiling's children BLACK I
+        node = node->parent; // -node becomes parent
+        sibiling->color = RED; // -sibiling becomes RED
       } else {
-        if (sibiling->right->color==BLACK) { // case: R_sibiling's right child is BLACK and left child is RED
-          sibiling->color = RED; // sibiling becomes RED
-          sibiling->left->color = BLACK; // sibiling's left child becomes BLACK
-          node_rotation(sibiling, 1); // right rotation
-          sibiling = node->parent->right; // sibiling becomes anew parent right child
-        } // case: R_sibiling's right child is RED
-        sibiling->color = node->parent->color; // sibiling's color becomes parent's color
-        sibiling->right->color = BLACK; // sibiling's right child becomes BLACK
-        node->parent->color = BLACK; // parent becomes BLACK
-        node_rotation(node->parent, 0); // left rotation
-        node = root; // node becomes root
+        if (sibiling->right->color==BLACK) { // case: R_sibiling is BLACK and its right child is BLACK, left child is RED I
+          sibiling->color = RED; // -sibiling becomes RED
+          sibiling->left->color = BLACK; // -sibiling's left child becomes BLACK
+          node_rotation(sibiling, 1); // -right rotation on sibiling
+          sibiling = node->parent->right; // -new sibiling becomes parent's right child
+        } // case: R_sibiling is BLACK and its's right child is RED (always follows the previous case) I
+        sibiling->color = node->parent->color; // -sibiling's color becomes parent's color
+        sibiling->right->color = BLACK; // -sibiling's right child becomes BLACK
+        node->parent->color = BLACK; // -parent becomes BLACK
+        node_rotation(node->parent, 0); // -left rotation on node's parent
+        node = root; // -double black is removed
       }
     } else {   // if node is right child
-      NodePtr sibiling{node->parent->left}; // left sibiling
-      if (sibiling->color==RED) { // case: L_sibiling is RED (recolor and rotation)
-        node->parent->color = RED; // parent becomes RED
-        sibiling->color = BLACK; // sibiling becomes BLACK
-        node_rotation(node->parent, 1); // right rotation
-        sibiling = node->parent->left; // sibiling becomes anew parent left child
+      NodePtr sibiling{node->parent->left}; // sibiling is on left
+      if (sibiling->color==RED) { // case: L_sibiling is RED (recolor and rotation) II
+        node->parent->color = RED; // -parent becomes RED
+        sibiling->color = BLACK; // -sibiling becomes BLACK
+        node_rotation(node->parent, 1); // -right rotation on parent
+        sibiling = node->parent->left; // -new sibiling becomes parent's left child
       }
-      if (sibiling->left->color==BLACK and sibiling->right->color==BLACK) { // case: both L_sibiling's children are BLACK
-        node = node->parent; // node becomes parent
-        sibiling->color = RED; // sibiling becomes RED
+      if (sibiling->left->color==BLACK and sibiling->right->color==BLACK) { // case: both L_sibiling's children BLACK II
+        node = node->parent; // -node becomes parent
+        sibiling->color = RED; // -sibiling becomes RED
       } else {
-        if (sibiling->left->color==BLACK) { // case: L_sibiling's left child is BLACK and right child is RED
-          sibiling->color = RED; // sibiling becomes RED
-          sibiling->right->color = BLACK; // sibiling's right child becomes BLACK
-          node_rotation(sibiling, 0); // left rotation
-          sibiling = node->parent->left; // sibiling becomes anew parent left child
-        } // case: L_sibiling's left child is RED
-        sibiling->color = node->parent->color; // sibiling's color becomes parent's color
-        sibiling->left->color = BLACK; // sibiling's left child becomes BLACK
-        node->parent->color = BLACK; // parent becomes BLACK
-        node_rotation(node->parent, 1); // right rotation
-        node = root; // node becomes root
+        if (sibiling->left->color==BLACK) { // case: L_sibiling is BLACK and its's left child is BLACK, right child is RED II
+          sibiling->color = RED; // -sibiling becomes RED
+          sibiling->right->color = BLACK; // -sibiling's right child becomes BLACK
+          node_rotation(sibiling, 0); // -left rotation on sibiling
+          sibiling = node->parent->left; // -new sibiling becomes parent's left child
+        } // case: L_sibiling is BLACK and its's left child is RED (always follows the previous case) II
+        sibiling->color = node->parent->color; // -sibiling's color becomes parent's color
+        sibiling->left->color = BLACK; // -sibiling's left child becomes BLACK
+        node->parent->color = BLACK; // -parent becomes BLACK
+        node_rotation(node->parent, 1); // -right rotation on node's parent
+        node = root; // -double black is removed
       }
     }
   }
-  node->color = BLACK; // keep root BLACK
+  node->color = BLACK; // always keep node BLACK
 }
 
 
@@ -489,19 +489,19 @@ void RBTree<T, CMP>::delete_adjustment(const NodePtr& node, const T& value) noex
   } else {
     std::cout << "Value " << value << " not found" << std::endl;
     return;
-  }
+  } // proceed similarly to a bst tree deletion
   node_B = node_A; // node_B becomes node_A
   Color B_color{node_B->color}; // save original color of node_B node
-  if (node_A->left==NIL) { // case: node_A has no left child
-    node_C = node_A->right; // node_C becomes node_A's right child
-    node_replacement(node_A, node_A->right); // node_A is replaced by node_A's right child
-  } else if (node_A->right==NIL) { // case: node_A has no right child
-    node_C = node_A->left; // node_C becomes node_A's left child
-    node_replacement(node_A, node_A->left); // node_A is replaced by node_A's left child
-  } else { // case: node_A has both children
-    node_B = get_leftmost(node_A->right); // node_B becomes node_A's right child's leftmost node
-    B_color = node_B->color; // update color of node_B node
-    node_C = node_B->right; // node_C becomes node_B's right child
+  if (node_A->left==NIL) { // case: node_A has no left child I
+    node_C = node_A->right; // -node_C becomes node_A's right child
+    node_replacement(node_A, node_A->right); // -node_A is replaced by node_A's right child
+  } else if (node_A->right==NIL) { // case: node_A has no right child I
+    node_C = node_A->left; // -node_C becomes node_A's left child
+    node_replacement(node_A, node_A->left); // -node_A is replaced by node_A's left child
+  } else { // case: node_A has both children I
+    node_B = get_leftmost(node_A->right); // -node_B becomes node_A's right subtree leftmost node
+    B_color = node_B->color; // -update color of node_B node
+    node_C = node_B->right; // -node_C becomes node_B's right child
     if (node_B->parent==node_A) { // subcase: node_B's parent equals node_A
       node_C->parent = node_B; // node_C's parent becomes node_B
     } else { // subcase: node_B's parent not equals node_A
@@ -514,9 +514,9 @@ void RBTree<T, CMP>::delete_adjustment(const NodePtr& node, const T& value) noex
     node_B->left->parent = node_B; // node_B's left child's parent becomes node_B
     node_B->color = node_A->color; // node_B's color becomes node_A's color
   }
-  delete node_A;
-  if (B_color==BLACK) { // if node_B was BLACK, we need to fix the tree deleting node_C
-    rebalance_on_delete(node_C);  
+  delete node_A; // case: node_A is a leaf node (direct deletion) I
+  if (B_color==BLACK) { // if node_B was BLACK, we need to fix the tree (if RED we are done)
+    rebalance_on_delete(node_C); // double black extra node C
   }
 }
 
@@ -565,7 +565,7 @@ void RBTree<T, CMP>::insert(const T& value) noexcept {
   NodePtr node_B{nullptr}; // temporary helper node_B
   NodePtr node_A{get_root()}; // temporary helper node_A
   while (node_A!=NIL) { // root is different than NIL
-    node_B = node_A;
+    node_B = node_A;  // keep track of previous node (possible parent)
     if (comparator(node->data, node_A->data)) {
       node_A = node_A->left; 
     } else if (comparator(node_A->data, node->data)) {
@@ -577,9 +577,9 @@ void RBTree<T, CMP>::insert(const T& value) noexcept {
   node->parent = node_B; // node's parent becomes node_B
     if (node_B==nullptr) {
       this->root = node;  // if tree was empty, node becomes root
-    } else if (comparator(node->data, node_B->data)) { // if node's data is smaller than node_B's data
+    } else if (comparator(node->data, node_B->data)) { // node's smaller than node_B
       node_B->left = node; // node becomes node_B's left child
-    } else { // if node's data is equal or bigger than node_B's data
+    } else { // node's bigger than node_B
       node_B->right = node; // node becomes node_B's right child
     }
     if (node->parent==nullptr) { // recolor when node's parent is NIL
@@ -642,10 +642,10 @@ typename RBTree<T, CMP>::const_iterator RBTree<T, CMP>::rend() const noexcept {
 template<class T, class CMP>
 typename RBTree<T, CMP>::NodePtr RBTree<T, CMP>::get_successor(NodePtr node) const noexcept {
   if (node->right!=NIL) {
-    return get_leftmost(node->right);
+    return get_leftmost(node->right); //leftmost node on right subtree
   }
   while (node==node->parent->right and node->parent!=NIL) {
-    // lowest grandparent whose left child is a node's ancestor as well
+    // lowest ancestor whose left child is a node's ancestor as well
     node = node->parent;
     node->parent = node->parent->parent;
   }
@@ -656,10 +656,10 @@ typename RBTree<T, CMP>::NodePtr RBTree<T, CMP>::get_successor(NodePtr node) con
 template<class T, class CMP>
 typename RBTree<T, CMP>::NodePtr RBTree<T, CMP>::get_predecessor(NodePtr node) const noexcept {
   if (node->left!=NIL) {
-    return get_rightmost(node->left);
+    return get_rightmost(node->left); // rightmost node on left subtree
   }
   while (node==node->parent->left and node->parent!=NIL) {
-    // lowest grandparent whose right child is a node's ancestor as well
+    // lowest ancestor whose right child is a node's ancestor as well
     node = node->parent;
     node->parent = node->parent->parent;
   }
