@@ -31,6 +31,7 @@ std::vector<int> generate_random(const int& numbers) {
 }
 
 std::vector<double> generate_random(const int& numbers, const bool& is_double) {
+  if(is_double) std::cout << "double generated" << std::endl;
   std::vector<double> v;
   std::random_device rd;
   std::mt19937 gen(rd());
