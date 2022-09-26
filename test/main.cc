@@ -93,11 +93,12 @@ int main() {
   --rit;
   }            //backw iterator is ok
 
-  //std::cout << *(++it) << std::endl;
-  //std::cout << *(it++) << std::endl;
-  //std::cout << *(--it) << std::endl;
-  //std::cout << *(it--) << std::endl;
-  //std::cout << it==it2 << std::endl;
-  //std::cout << it!=it2 << std::endl;
+
+  RBTree<int>* ptr_tree = &rbt;
+  for(auto p = ptr_tree->begin(); p != ptr_tree->end(); ++p) {
+    std::cout << *p << "  ";
+  }
+  std::cout << std::endl;
+
   return 0;
 };

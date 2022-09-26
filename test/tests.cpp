@@ -37,6 +37,7 @@ BOOST_AUTO_TEST_SUITE_END()
 BOOST_AUTO_TEST_SUITE(RBTree_class)
 RBTree<int> rbt{}; //define base case
 RBTree<int, std::greater<int>> rbt0{}; //define alternative template
+
 //--------------------------------------
 BOOST_AUTO_TEST_CASE(constructors) {
 
@@ -141,52 +142,56 @@ BOOST_AUTO_TEST_CASE(print_ordered_keys_method) {
 BOOST_AUTO_TEST_CASE(clear_tree_method) {
   BOOST_TEST_MESSAGE("Testing RBTree clear_tree() :");
   rbt0.clear_tree(rbt0.get_root());  // clear whole tree
-  //BOOST_CHECK_EQUAL(*rbt0.get_root(), nullptr); // root is nullptr
-  //BOOST_CHECK_EQUAL(rbt0.contains(61), false);// after deletion root not found
+  //BOOST_CHECK_EQUAL(rbt0.find(102), 0);// after deletion root not found
   //BOOST_CHECK_EQUAL(rbt0.contains(55), false); // after deletion not found
 }
 //--------------------------------------
-/*   RBTree<int> rbt3{rbt};  // copy constructor
-  RBTree<int> rbt4{};
-  rbt4 = rbt; // copy assignment
-  BOOST_AUTO_TEST_CASE(copy_move_constructors_and_assignments) {
-  BOOST_TEST_MESSAGE("Testing RBTree copy_move :");
-
+/*BOOST_AUTO_TEST_CASE(copy constructor_&_assignement) {
+  BOOST_TEST_MESSAGE("Testing RBTree copy constructor & assignment :");
+  RBTree<int> rbt3{rbt};  // copy constructor
+  RBTree<int> rbt4{}; 
+  rbt3.print_tree();
+  std::cout << std::endl;
+  rbt4 = rbt;             // copy assignment
+  rbt4.print_tree();
+  std::cout << std::endl;
   BOOST_CHECK_EQUAL(rbt3.find(71), rbt.find(71));
-  
-  RBTree<int> rbt2{std::move(rbt)};  // move constructor MAY modify original object (not always)
-  rbt2 = std::move(rbt); // move assignment
-  rbt2.print_tree();	  // print copied tre
   rbt.insert(102);
   rbt.print_tree();
-  rbt2.print_tree(); // testing for deep copy so not shallow (not 102 added to original)
-
+  rbt2.print_tree();      // testing for deep copy (102 not added to original)
+}
+//--------------------------------------
+BOOST_AUTO_TEST_CASE(move constructor_&_assignement) {
+  BOOST_TEST_MESSAGE("Testing RBTree move constructor & assignment :");
+  RBTree<int> rbt2{std::move(rbt)};  // move constructor MAY modify original object (not always)
+  rbt2 = std::move(rbt); // move assignment
 } */
+//------------------------------
 
 BOOST_AUTO_TEST_SUITE_END()
 //----------------------------------------------------------------
 
 BOOST_AUTO_TEST_SUITE(RBTree_const_iterator)
 RBTree<int> rbt{}; //define base case
-//--------------------------------------
+RBTree<int>* tree_ptr{&rbt};
+
 BOOST_AUTO_TEST_CASE(const_iterator) {
+  // fill up the tree
   std::vector<int> v{61,52,20,16,55,85,76,71,65,81,93,90,101,102};
   for(long unsigned int i{0}; i<v.size(); i++) {
   rbt.insert(v[i]);
   }
-  BOOST_TEST_MESSAGE("Testing RBTree const_iterator :");
-  // forward iterator
-  auto fwd_it_begin{rbt.begin()};  
-  auto fwd_it_end{rbt.end()};
+
+  BOOST_TEST_MESSAGE("Testing RBTree forward const_iterator :");
+  RBTree<int>::const_iterator fwd_it_begin{rbt.begin()};
+  RBTree<int>::const_iterator fwd_it_end{rbt.end()};
   
-  BOOST_CHECK_EQUAL((*fwd_it_begin), 16); // dereference/indirection
-  std::cout << typeid(fwd_it_end).name() << std::endl;
-  //BOOST_CHECK(*fwd_it_end);
-  //BOOST_CHECK_EQUAL(*fwd_it_end, static_cast<decltype(fwd_it_end)>(nullptr));
+  BOOST_CHECK_EQUAL((*fwd_it_begin), 16); // dereference/indirection operator
+  BOOST_CHECK_EQUAL((*tree_ptr->begin()), 16); // access operator
   BOOST_CHECK_EQUAL((fwd_it_begin==rbt.begin()), 1); // == operator  
   BOOST_CHECK_EQUAL((fwd_it_begin!=rbt.end()), 1); // != operator
-  /*
-  while(fwd_it_begin!=fwd_it_end) {
+
+/*while(fwd_it_begin!=fwd_it_end) {
     std::cout << *fwd_it_begin << std::endl;
     fwd_it_begin++;
   }
@@ -194,14 +199,15 @@ BOOST_AUTO_TEST_CASE(const_iterator) {
     std::cout << *fwd_it_begin << std::endl;
     ++fwd_it_begin;
   }
-  */
-  // backward iterator
-  auto bkw_it_begin{rbt.rbegin()};
-  auto bkw_it_end{rbt.rend()};
-  BOOST_CHECK_EQUAL((*bkw_it_begin), 102); // dereference/indirection
-  //BOOST_CHECK_EQUAL(*bkw_it_end, nullptr); // set to nullptr
-  BOOST_CHECK_EQUAL((bkw_it_begin==rbt.rbegin()), 1); // == operator  
-  BOOST_CHECK_EQUAL((bkw_it_begin!=rbt.rend()), 1); // != operator
+ */
+  BOOST_TEST_MESSAGE("Testing RBTree backward const_iterator :");
+  RBTree<int>::const_iterator bwd_it_begin{rbt.rbegin()};
+  RBTree<int>::const_iterator bwd_it_end{rbt.rend()};
+
+  BOOST_CHECK_EQUAL((*bwd_it_begin), 102); // dereference/indirection operator
+  BOOST_CHECK_EQUAL((*tree_ptr->rbegin()), 102); // access operator
+  BOOST_CHECK_EQUAL((bwd_it_begin==rbt.rbegin()), 1); // == operator  
+  BOOST_CHECK_EQUAL((bwd_it_begin!=rbt.rend()), 1); // != operator
   /*
   while(rit!=rend) {
   std::cout << *rit << std::endl;
@@ -215,8 +221,8 @@ BOOST_AUTO_TEST_SUITE_END()
 //----------------------------------------------------------------
 
 
-/*
-/// boost assertions:
+
+/*/ ----------------------------------------boost assertions list:
 BOOST_CHECK_NE(left, right);
 BOOST_CHECK_EQUAL(left, right);
 BOOST_CHECK_EQUAL_COLLECTIONS(left_begin, left_end, right_begin, right_end);
