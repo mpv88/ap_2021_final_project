@@ -35,22 +35,21 @@ BOOST_AUTO_TEST_SUITE_END()
 //----------------------------------------------------------------
 
 BOOST_AUTO_TEST_SUITE(RBTree_class)
-RBTree<int> rbt{}; //define base case
 RBTree<int, std::greater<int>> rbt0{}; //define alternative template
+RBTree<int> rbt{}; // default constructor
+RBTree<int> rbt1{1}; // int constructor
+RBTree<double> rbt2{1.5}; // double constructor
 
 //--------------------------------------
 BOOST_AUTO_TEST_CASE(constructors) {
-
-  RBTree<int> rbt1{}; //default constructor
   rbt.print_tree();
   BOOST_TEST_MESSAGE("A RBTree<int> :");
-  BOOST_CHECK_NE(rbt1.get_root()->data, 1);
-  BOOST_CHECK_NE(rbt1.get_root()->color, BLACK);
-  BOOST_CHECK_EQUAL(rbt1.get_root()->left, nullptr); //why is nullptr?!
-  BOOST_CHECK_NE(rbt1.get_root()->right, nullptr);
-  BOOST_CHECK_NE(rbt1.get_root()->parent, nullptr);
+  BOOST_CHECK_EQUAL(rbt1.get_root()->data, 1);
+  BOOST_CHECK_EQUAL(rbt1.get_root()->color, BLACK);
+  BOOST_CHECK_EQUAL(rbt1.get_root()->left, nullptr);
+  BOOST_CHECK_EQUAL(rbt1.get_root()->right, nullptr);
+  BOOST_CHECK_EQUAL(rbt1.get_root()->parent, nullptr);
 
-  RBTree<double> rbt2{1.5}; //custom constructor
   rbt2.print_tree();
   BOOST_TEST_MESSAGE("A RBTree<double> :");
   BOOST_CHECK_EQUAL(rbt2.get_root()->data, 1.5);
@@ -146,33 +145,52 @@ BOOST_AUTO_TEST_CASE(clear_tree_method) {
   //BOOST_CHECK_EQUAL(rbt0.contains(55), false); // after deletion not found
 }
 //--------------------------------------
-/*BOOST_AUTO_TEST_CASE(copy constructor_&_assignement) {
+
+BOOST_AUTO_TEST_SUITE_END()
+//----------------------------------------------------------------
+
+BOOST_AUTO_TEST_SUITE(RBTree_copy_move_semantics)
+RBTree<int> rbt{999}; 
+RBTree<int> rbt3{rbt};              // copy constructor
+RBTree<int> rbt4{};
+RBTree<int> rbt5{std::move(rbt)};   //move constructor
+RBTree<int> rbt6{};
+
+BOOST_AUTO_TEST_CASE(copy_constructor_and_assignement) {
   BOOST_TEST_MESSAGE("Testing RBTree copy constructor & assignment :");
-  RBTree<int> rbt3{rbt};  // copy constructor
-  RBTree<int> rbt4{}; 
+  rbt.print_tree();
+  std::cout << std::endl;
   rbt3.print_tree();
   std::cout << std::endl;
-  rbt4 = rbt;             // copy assignment
+  BOOST_CHECK_EQUAL(rbt3.find(999), rbt.find(999));
+  BOOST_CHECK_NE(&rbt3.find(999), &rbt.find(999)); // testing deep copy (different addresses)
+
+  rbt4 = rbt;                       // copy assignment
   rbt4.print_tree();
   std::cout << std::endl;
-  BOOST_CHECK_EQUAL(rbt3.find(71), rbt.find(71));
-  rbt.insert(102);
-  rbt.print_tree();
-  rbt2.print_tree();      // testing for deep copy (102 not added to original)
+  BOOST_CHECK_EQUAL(rbt4.find(999), rbt.find(999));
+  BOOST_CHECK_NE(&rbt4.find(999), &rbt.find(999)); // testing deep copy (different addresses)
 }
 //--------------------------------------
-BOOST_AUTO_TEST_CASE(move constructor_&_assignement) {
+BOOST_AUTO_TEST_CASE(move_constructor_and_assignement) {
   BOOST_TEST_MESSAGE("Testing RBTree move constructor & assignment :");
-  RBTree<int> rbt2{std::move(rbt)};  // move constructor MAY modify original object (not always)
-  rbt2 = std::move(rbt); // move assignment
-} */
-//------------------------------
+  rbt5.print_tree();
+  std::cout << std::endl;
+  BOOST_CHECK_EQUAL(rbt5.find(999), rbt.find(999));
+  BOOST_CHECK_EQUAL(&rbt5.find(999), &rbt.find(999)); // testing move (same address)
+  rbt6 = std::move(rbt5);           // move assignment
+  rbt6.print_tree();
+  std::cout << std::endl;
+  BOOST_CHECK_EQUAL(rbt6.find(999), rbt5.find(999));
+  BOOST_CHECK_EQUAL(&rbt6.find(999), &rbt5.find(999)); // testing move (same address)
+}
+//--------------------------------------
 
 BOOST_AUTO_TEST_SUITE_END()
 //----------------------------------------------------------------
 
 BOOST_AUTO_TEST_SUITE(RBTree_const_iterator)
-RBTree<int> rbt{}; //define base case
+RBTree<int> rbt{}; // define base case
 RBTree<int>* tree_ptr{&rbt};
 
 BOOST_AUTO_TEST_CASE(const_iterator) {
@@ -185,21 +203,22 @@ BOOST_AUTO_TEST_CASE(const_iterator) {
   BOOST_TEST_MESSAGE("Testing RBTree forward const_iterator :");
   RBTree<int>::const_iterator fwd_it_begin{rbt.begin()};
   RBTree<int>::const_iterator fwd_it_end{rbt.end()};
-  
+
   BOOST_CHECK_EQUAL((*fwd_it_begin), 16); // dereference/indirection operator
   BOOST_CHECK_EQUAL((*tree_ptr->begin()), 16); // access operator
   BOOST_CHECK_EQUAL((fwd_it_begin==rbt.begin()), 1); // == operator  
   BOOST_CHECK_EQUAL((fwd_it_begin!=rbt.end()), 1); // != operator
 
-/*while(fwd_it_begin!=fwd_it_end) {
+  /*
+  while(fwd_it_begin!=fwd_it_end) {
     std::cout << *fwd_it_begin << std::endl;
     fwd_it_begin++;
   }
   while(fwd_it_begin!=fwd_it_end) {
     std::cout << *fwd_it_begin << std::endl;
     ++fwd_it_begin;
-  }
- */
+  }*/
+
   BOOST_TEST_MESSAGE("Testing RBTree backward const_iterator :");
   RBTree<int>::const_iterator bwd_it_begin{rbt.rbegin()};
   RBTree<int>::const_iterator bwd_it_end{rbt.rend()};
@@ -208,10 +227,15 @@ BOOST_AUTO_TEST_CASE(const_iterator) {
   BOOST_CHECK_EQUAL((*tree_ptr->rbegin()), 102); // access operator
   BOOST_CHECK_EQUAL((bwd_it_begin==rbt.rbegin()), 1); // == operator  
   BOOST_CHECK_EQUAL((bwd_it_begin!=rbt.rend()), 1); // != operator
+
   /*
-  while(rit!=rend) {
-  std::cout << *rit << std::endl;
-  --rit;//BOOST_CHECK_EQUAL(*bkw_it_end, nullptr); // start set to nullptr
+  while(bwd_it_begin!=bwd_it_end) {
+    std::cout << *bwd_it_begin << std::endl;
+    bwd_it_begin--;
+  }
+  while(rit!=bwd_it_end) {
+    std::cout << *bwd_it_begin << std::endl;
+    --bwd_it_begin;
   } 
   */
 }
@@ -223,6 +247,7 @@ BOOST_AUTO_TEST_SUITE_END()
 
 
 /*/ ----------------------------------------boost assertions list:
+source: https://www.boost.org/doc/libs/1_80_0/libs/test/doc/html/boost_test/utf_reference/testing_tool_ref.html
 BOOST_CHECK_NE(left, right);
 BOOST_CHECK_EQUAL(left, right);
 BOOST_CHECK_EQUAL_COLLECTIONS(left_begin, left_end, right_begin, right_end);
