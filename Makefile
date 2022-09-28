@@ -69,7 +69,7 @@ clears:
 docs: $(DOC_DIR)/doxy_config
 	doxygen $<
 
-format: $(SOURCES) $(INCLUDES) $(TESTES)
+format: $(INCLUDES) $(TESTES)
 	@clang-format -i $^ -verbose || echo "Please install clang-format to run this command"
 	@echo "formatted "$^" successfully!"
 	
