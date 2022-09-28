@@ -31,7 +31,7 @@ Current folder contains a simple implementation of a templated Red-Black Tree cl
 * `include` folder is composed of 3 header files:
     * `Node.hpp`: declarations and implementation of members and methods for Node class;
     * `RBT.hpp`: declarations and implementation of members and methods for RBTree class;
-    * `RBT_iterator`: declarations and implementation of members and methods for RBTree's const_iterator subclass.
+    * `RBT_iterator.hpp`: declarations and implementation of members and methods for RBTree's const_iterator subclass.
 
 * `test` folder includes both a `tests.cpp` file containing the official unit-tests for the above mentioned classes -all performed with the Boost.Test framework-, paired with an unofficial `main.cc` file, aimed at showing how to use most part of classes' features.
 
