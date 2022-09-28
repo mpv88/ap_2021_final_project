@@ -4,13 +4,17 @@
 #include "RBT.hpp"
 
 
-// #TODO: testing
+// testing RBTree main class
 int main() {
-  
-
+    
+  // create a new RBTree
   RBTree<int> rbt{};
+
+  // print empty tree
   rbt.print_tree();
-  rbt.insert(61); //insert
+
+  // insert some values & following (automatic) tree rebalancing
+  rbt.insert(61);
   rbt.insert(52);
   rbt.insert(20);
   rbt.insert(16);
@@ -24,81 +28,115 @@ int main() {
   rbt.insert(90);
   rbt.insert(101);
   rbt.insert(102);
-  rbt.delete_(102); //delete
-  rbt.delete_(82); //delete
-  rbt.delete_(52); //delete
-  rbt.delete_(55); //delete
-  rbt.delete_(10); //delete
-  std::cout << (rbt.find(61)) << std::endl; //find & contains
+
+  // delete some nodes & following (automatic) tree rebalancing
+  rbt.delete_(102);
+  rbt.delete_(82); 
+  rbt.delete_(52);
+  rbt.delete_(55); 
+  rbt.delete_(10);
+
+  // retreive some keys within the tree (find & contains methods)
+  std::cout << (rbt.find(61)) << std::endl; // 61
   std::cout << (rbt.contains(60)) << std::endl; //0
   std::cout << (rbt.contains(61)) << std::endl; //1
   std::cout << (rbt.contains(85)) << std::endl; //1
   std::cout << (rbt.contains(1)) << std::endl;  //0
   std::cout << std::endl;
-  rbt.print_ordered_keys(1);  //total order
+
+  // print tree traversal methods
+  rbt.print_ordered_keys(1);  // total order
   std::cout << std::endl;
-  rbt.print_ordered_keys(2);  //from top to bottom right
+  rbt.print_ordered_keys(2);  // from top to bottom right
   std::cout << std::endl;
-  rbt.print_ordered_keys(3); //from bottom left to top
+  rbt.print_ordered_keys(3); // from bottom left to top
   std::cout << std::endl;
+
+  // get and print the tree's root value
+  std::cout << (rbt.get_root()->data) << std::endl;
+  
+  // get and print the tree's height
   std::cout << rbt.get_height(rbt.get_root()) << std::endl; //get height + root
+  
+  // get and print the tree's smallest and largest values
   std::cout << rbt.get_leftmost(rbt.get_root())->data << std::endl; // min
   std::cout << rbt.get_rightmost(rbt.get_root())->data << std::endl; // max
+  
+  // get and print the values of predecessor and successor nodes of a given node (e.g. the root)
   std::cout << rbt.get_successor(rbt.get_root())->data << std::endl; // 1st right
   std::cout << rbt.get_predecessor(rbt.get_root())->data << std::endl; // 1nd left
-  std::cout << (rbt.get_root()->data) << std::endl;
-  //rbt.print_tree();  //print whole
-  //rbt.clear_tree(rbt.get_root());  //clear whole
-  //rbt.insert(102);
-  //std::cout << rbt.get_height(rbt.get_root()) << std::endl; 
-  //rbt.print_tree();  //print whole
+  
+  // print the tree
+  rbt.print_tree();
 
-  //copy & move constructors/assignments
-  RBTree<int> rbt2{};   // constructor
-  //RBTree<int> rbt2{rbt};  // copy constructor
-  //RBTree<int> rbt2{std::move(rbt)};  // move constructor MAY modify original object (not always)
-  //rbt2 = rbt; // copy assignment
-  rbt2 = std::move(rbt); // move assignment
-  rbt2.print_tree();	  // print copied tre
+  // checking copy & move constructors/assignments
+  RBTree<int> rbt2{rbt};  // copy constructor
+  RBTree<int> rbt3{};   // default constructor
+  rbt3 = rbt2; // copy assignment
+  rbt2.print_tree();	  // print copied tree
+  
+  RBTree<int> rbt4{std::move(rbt)};  // move constructor MAY modify original object
+  RBTree<int> rbt5{};   // default constructor
+  rbt5 = std::move(rbt); // move assignment
+
+  rbt2.print_tree();	  // print copied tree
   rbt.insert(102);
   rbt.print_tree();
   rbt2.print_tree(); // testing for deep copy so not shallow (not 102 added to original)
   
-  //constant iterator use
+  // clear trees
+  rbt2.clear_tree(rbt2.get_root());
+  rbt3.clear_tree(rbt3.get_root());
 
-  
-  //NodePtr current_node; ///< node currently pointed by the iterator.
-  rbt.print_ordered_keys(1);  //total order
-  std::cout << std::endl;
-  //if(it==end) { return; }
-  //for(it; it != end; ++it) {
-  //   std::cout << *it << std::endl;
-   auto it{rbt.begin()};
-  //std::cout << *it << std::endl; //dereference & begin OK
+  // constant fwd iterator use
+  auto it{rbt.begin()};
   auto end{rbt.end()};
-  //std::cout << *end << std::endl; //dereference nullptr leads to seg fault
+  
+  // test iterator's indirection operator
+  std::cout << *it << std::endl; // dereference & begin OK
+  //std::cout << *end << std::endl; // dereference nullptr leads to seg fault
+  
+  // test equality and inequality operators
   std::cout << (it==rbt.begin()) << std::endl; //1
   std::cout << (it!=rbt.end()) << std::endl; //1
-   while(it!=end) {
-    std::cout << *it << std::endl; //
+  
+  // test fwd prefix iterator
+  while(it!=end) {
+    std::cout << *it << std::endl;
+    ++it;
+  }
+
+  // test fwd potfix iterator
+  while(it!=end) {
+    std::cout << *it << std::endl;
     it++;
-  }               //fwd iterator is ok
+  }
 
-   auto rit{rbt.rbegin()};
-  //std::cout << *rit << std::endl; //dereference nullptr leads to seg fault
+  // constant bwd iterator use
+  auto rit{rbt.rbegin()};
   auto rend{rbt.rend()};
-  //std::cout << *rend << std::endl; //dereference & begin OK t
-   while(rit!=rend) {
-  std::cout << *rit << std::endl;
-  --rit;
-  }            //backw iterator is ok
+  
+  // test iterator's indirection operator
+  std::cout << *rit << std::endl; //  dereference & begin OK
+  //std::cout << *rend << std::endl; // dereference nullptr leads to seg fault
+  
+  // test bwd prefix iterator
+  while(rit!=rend) {
+    std::cout << *rit << std::endl;
+    --rit;
+  }
 
+  // test bwd postfix iterator
+  while(rit!=rend) {
+    std::cout << *rit << std::endl;
+    rit--;
+  }
 
-  RBTree<int>* ptr_tree = &rbt;
-  for(auto p = ptr_tree->begin(); p != ptr_tree->end(); ++p) {
-    std::cout << *p << "  ";
+  // test iterator's access operator
+  RBTree<int>* tree_ptr = &rbt;
+  for(auto i=tree_ptr->begin(); i!=tree_ptr->end(); ++i) {
+    std::cout << *i << "|";
   }
   std::cout << std::endl;
-
   return 0;
 };
