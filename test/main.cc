@@ -1,7 +1,7 @@
 // RBT driver
 
 #include <iostream>
-#include "RBT.hpp"
+#include "../include/RBT.hpp"
 
 
 // testing RBTree main class
@@ -106,7 +106,7 @@ int main() {
     ++it;
   }
 
-  // test fwd potfix iterator
+  // test fwd postfix iterator (skipped)
   while(it!=end) {
     std::cout << *it << std::endl;
     it++;
@@ -126,7 +126,7 @@ int main() {
     --rit;
   }
 
-  // test bwd postfix iterator
+  // test bwd postfix iterator (skipped)
   while(rit!=rend) {
     std::cout << *rit << std::endl;
     rit--;
